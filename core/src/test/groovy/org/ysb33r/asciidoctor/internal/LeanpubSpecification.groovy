@@ -46,8 +46,11 @@ class LeanpubSpecification extends Specification {
     }
 
     void generateOutput(final String documentFileName) {
-        // Will write to outputDi
-        def options = OptionsBuilder.options().backend('leanpub').destinationDir(outputDir)
+        def options = [
+            to_dir : outputDir.absolutePath,
+            mkdirs : true,
+            backend : 'leanpub'
+        ]
         asciidoctor.convertFile(new File(resourceDir,documentFileName),options )
 
     }

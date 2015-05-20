@@ -27,7 +27,6 @@ import spock.lang.Issue
  */
 class FileLayoutSpec extends LeanpubSpecification {
 
-    @IgnoreRest
     def "Each chapter should be written to a separate file and Book.txt updated"() {
 
         when: 'Generating a simple book with three chapters'
@@ -70,10 +69,10 @@ class FileLayoutSpec extends LeanpubSpecification {
             new File(manuscriptDir,'preface.txt').exists()
 
         and: 'frontmatter should contain a single line'
-            new File(manuscriptDir,'frontmatter.txt') == '''{frontmatter}'''
+            new File(manuscriptDir,'frontmatter.txt').text == '''{frontmatter}'''
 
         and: 'mainmatter should contain a single line'
-            new File(manuscriptDir,'mainmatter.txt') == '''{mainmatter}'''
+            new File(manuscriptDir,'mainmatter.txt').text == '''{mainmatter}'''
 
         and: 'Book.txt should contain preface, chapter entries + frontmatter, mainmatter files'
             book1.text == '''frontmatter.txt

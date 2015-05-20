@@ -1,0 +1,4 @@
+= Asciidoctor Leanpub Converter
+
+Very early stages to showing a converter written in Groovy using the experimental
+asciidoctorj-1.6.0 branch

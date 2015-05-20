@@ -44,10 +44,10 @@ class LeanpubConverter extends AbstractConverter {
     @Override
     Object convert(AbstractNode node, String transform, Map<Object, Object> opts) {
         if (node instanceof DocumentRuby) {
-//            setup(node,transform,opts )
+            setup(node,opts )
             def result =  node.content
             closeout()
-            return result
+            this
         } else {
             def method = "convert${(transform?:node.nodeName).capitalize()}"
 
@@ -60,27 +60,60 @@ class LeanpubConverter extends AbstractConverter {
         }
     }
 
+//    Object write( def source, File target ) {
+//        source as LeanpubConverter
+//    }
+
     private void setup(AbstractNode node,Map<Object, Object> opts) {
         Map<String,Object> docOptions = [:]
         node.document.options.each { k,v -> docOptions["${k}".toString()] = v}
-//        destDir = new File()
+        destDir = new File(docOptions.to_dir ?: '.','manuscript').absoluteFile
     }
 
     /** Writes all of the index file
      *
      */
     private void closeout() {
-        // Switch to Books.txt
+        destDir.mkdirs()
+        new File(destDir,'Book1.txt').withWriter { w ->
+            if(frontmatter) {
+                w.println 'frontmatter.txt'
+            }
+            if(preface) {
+                w.println 'preface.txt'
+            }
+            if(mainmatter) {
+                w.println 'mainmatter.txt'
+            }
+            (1..chapters.size()).each {
+                w.println "chapter_${it}.txt"
+            }
+        }
+
+        if(preface) {
+            new File(destDir,'preface.txt').text = preface.toString()
+        }
+
+//        if(mainmatter) {
+//            new File(destDir,'preface.txt').text = preface.toString()
+//        }
+
+        chapters.eachWithIndex { chapter,index ->
+            new File(destDir,"chapter_${index+1}.txt").text = chapter.toString()
+        }
     }
 
     private def convertSection(AbstractNode node, Map<String, Object> opts) {
         Section section = node as Section
 
-        if(section.sectname()=='chapter') {
-            newChapter(section)
-        }
+        def content = '#'.multiply(section.number()) + ' ' + section.title + LINESEP + section.content
 
-        '#'.multiply(section.number()) + ' ' + section.title +"\n${section.content}"
+        if(section.sectname()=='chapter') {
+            chapters += content
+        } else if (section.sectname()=='preface') {
+            preface = content
+        }
+        content
     }
 
     /** Paragraph conversion just passes the content back.
@@ -94,12 +127,7 @@ class LeanpubConverter extends AbstractConverter {
 
     private def convertInline_quoted(AbstractNode node, Map<String, Object> opts) {
         Inline inline = node as Inline
-//        if(QuotedTextConverter.metaClass.static.respondsTo(inline.type,String)) {
-            QuotedTextConverter."${inline.type}"(inline.text)
-//        } else {
-//            log.warn "Quoted text type '${inline.type}' not found>. Passing through as-is"
-//            inline.text
-//        }
+        QuotedTextConverter."${inline.type}"(inline.text)
     }
 
     private def convertUlist(AbstractNode node,Map<String, Object> opts) {
@@ -113,16 +141,20 @@ class LeanpubConverter extends AbstractConverter {
         ' '.multiply(item.level*3) + '* ' + item.text + LINESEP
     }
 
-    /** Do everything necessary to create a new Leanpub chapter.
-     * Need to change to a new file for output everytime we get here
-     * @param section
-     */
-    private void newChapter(Section section) {
-        chapters+= section.title
-    }
+//    /** Do everything necessary to create a new Leanpub chapter.
+//     * Need to change to a new file for output everytime we get here
+//     * @param section
+//     */
+//    private void newChapter(Section section) {
+//        chapters+= section.title
+//    }
 
-//    private File destDir
-    private List<String> chapters = []
+    private File destDir
+    private List<Object> chapters = []
+    private Object preface
+    private Object mainmatter
+    private Object frontmatter
+
 }
 
 /*
