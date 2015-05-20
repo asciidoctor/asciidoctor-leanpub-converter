@@ -1,0 +1,66 @@
+= Title
+Asciidoctor Team <foo@bar.example>
+
+[chapter]
+== Chapter A
+
+[source,groovy]
+----
+@InputFiles
+FileCollection getDocuments() {
+    project.files(this.documents)
+}
+
+void setDocuments(Object... docs) {
+    this.documents.clear()
+    this.documents.addAll(docs as List)
+}
+
+void documents(Object... docs) {
+    this.documents.addAll(docs as List)
+}
+
+private List<Object> documents
+----
+
+[chapter]
+== Chapter B
+
+.Source code with title
+[source,groovy]
+----
+@InputFiles
+FileCollection getDocuments() {
+    project.files(this.documents)
+}
+----
+
+[chapter]
+== Chapter C
+
+[source,groovy]
+----
+@InputFiles    <1>
+FileCollection getDocuments() {
+    project.files(this.documents) <2>
+}
+
+void setDocuments(Object... docs) { <3>
+    this.documents.clear()
+    this.documents.addAll(docs as List)
+}
+
+void documents(Object... docs) { <4>
+    this.documents.addAll(docs as List)
+}
+
+private List<Object> documents <5>
+----
+<1> Create a getter and annotate with `@InputFiles` or `@OutputFiles`. The purpose of the getter is to translate upon access
+    to a `FileCollection` object.
+<2> Translate from the list of `Object` using the built-in `project.files` method. This handles a large variety of types
+    including files, strings and closures as well as lists and arrays thereof.
+<3> Use a setter to allow for `setDocuments('foo','bar')` replacement of current content with a new set of content. This becomes
+    very useful should another plugin author decide to extend your task type.
+<4> Use a method with the name of the property to allow for a expressive `document 'foo','bar'` style.
+<5> The property is left private as appropriate access is already provided.

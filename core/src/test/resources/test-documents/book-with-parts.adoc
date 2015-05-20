@@ -1,0 +1,40 @@
+= Title
+Asciidoctor Team <foo@bar.example>
+
+= Part One
+
+[chapter]
+== Chapter A
+
+=== Level 3
+
+Plain text at level 3
+
+==== Level 4
+
+Plain text at level 4
+
+===== Level 5
+
+Plain text at level 5
+
+[chapter]
+== Chapter B
+
+With no text
+
+= Part Two
+
+[chapter]
+== Chapter C
+
+Text
+
+[chapter]
+== Chapter D
+
+More text
+
+
+
+
