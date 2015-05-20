@@ -76,31 +76,30 @@ class LeanpubConverter extends AbstractConverter {
     private void closeout() {
         destDir.mkdirs()
         new File(destDir,'Book1.txt').withWriter { w ->
-            if(frontmatter) {
-                w.println 'frontmatter.txt'
-            }
             if(preface) {
+                w.println 'frontmatter.txt'
                 w.println 'preface.txt'
-            }
-            if(mainmatter) {
                 w.println 'mainmatter.txt'
             }
             (1..chapters.size()).each {
                 w.println "chapter_${it}.txt"
             }
+
+            // TODO: Add backmatter file name
         }
 
         if(preface) {
+            new File(destDir,'frontmatter.txt').text = '{frontmatter}'
             new File(destDir,'preface.txt').text = preface.toString()
+            new File(destDir,'mainmatter.txt').text = '{mainmatter}'
         }
-
-//        if(mainmatter) {
-//            new File(destDir,'preface.txt').text = preface.toString()
-//        }
 
         chapters.eachWithIndex { chapter,index ->
             new File(destDir,"chapter_${index+1}.txt").text = chapter.toString()
         }
+
+        // TODO: Add backmatter content
+
     }
 
     private def convertSection(AbstractNode node, Map<String, Object> opts) {
@@ -152,8 +151,6 @@ class LeanpubConverter extends AbstractConverter {
     private File destDir
     private List<Object> chapters = []
     private Object preface
-    private Object mainmatter
-    private Object frontmatter
 
 }
 
