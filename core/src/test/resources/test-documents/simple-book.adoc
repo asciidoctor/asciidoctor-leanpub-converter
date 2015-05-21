@@ -25,8 +25,6 @@ _Italic text_
 
 *_Bold italic text_*
 
-Underlined text
-
 Super^script^ text
 
 `Monospace text`
@@ -47,3 +45,8 @@ Non{nbsp}breaking{nbsp}spaces
 .. List #2 #1
 .. List #2 #2
 . List #3
+
+[chapter]
+== Chapter with Underlined Text
+
++++____Underlined text one____+++

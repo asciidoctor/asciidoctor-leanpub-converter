@@ -2,3 +2,23 @@
 
 Very early stages to showing a converter written in Groovy using the experimental
 asciidoctorj-1.6.0 branch
+
+Level 0 heading becomes a Leanpub part and creates a new part file
+
+```
+= This becomes a part
+```
+
+Level 1 heading becomes a Leanpub chapter. In addition if it is annotated with `[chapter]` it creates a new chapter file
+
+```
+[chapter]
+== This becomes a chapter
+```
+
+Level 1 heading annotated with `[preface]` becomes a Leanpub preface
+
+```
+[preface]
+== This is a preface
+```

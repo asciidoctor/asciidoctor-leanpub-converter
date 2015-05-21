@@ -1,5 +1,6 @@
 = Title
 Asciidoctor Team <foo@bar.example>
+:doctype: book
 
 = Part One
 
