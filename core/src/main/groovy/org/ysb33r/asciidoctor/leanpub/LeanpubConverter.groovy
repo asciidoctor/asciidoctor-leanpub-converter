@@ -149,15 +149,27 @@ class LeanpubConverter extends AbstractConverter {
 
     private def convertUlist(AbstractNode node,Map<String, Object> opts) {
         ListNode listNode = node as ListNode
+        listNode.items.collect { ListItem item -> item.convert() }.join('')
+    }
 
+    private def convertOlist(AbstractNode node,Map<String, Object> opts) {
+        ListNode listNode = node as ListNode
         listNode.items.collect { ListItem item -> item.convert() }.join('')
     }
 
     private def convertList_item(AbstractNode node,Map<String, Object> opts) {
         ListItem item = node as ListItem
-        ' '.multiply(item.level*2-2) + '* ' + item.text + LINESEP
-    }
+        switch(node.parent.context) {
+            case 'olist':
+                return ' '.multiply(item.level*2-2) + '1. ' + item.text + LINESEP + node.content
+            case 'ulist':
+                return ' '.multiply(item.level*2-2) + '* ' + item.text + LINESEP + node.content
+            default:
+                log.error "List item type ${node.parent.context} is not defined. Will not transform this node, but will try to carry on"
+                null
+        }
 
+    }
 
     private File destDir
     private List<ConvertedSection> leanpubSections = []

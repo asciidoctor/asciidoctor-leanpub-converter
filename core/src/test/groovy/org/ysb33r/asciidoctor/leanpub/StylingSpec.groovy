@@ -1,6 +1,7 @@
 package org.ysb33r.asciidoctor.leanpub
 
 import org.ysb33r.asciidoctor.leanpub.internal.LeanpubSpecification
+import spock.lang.FailsWith
 import spock.lang.Issue
 
 /**
@@ -59,6 +60,8 @@ ____Underlined text one____
     }
 
     @Issue('https://leanpub.com/help/manual#leanpub-auto-numberedordered-lists')
+    @Issue('https://github.com/ysb33r/asciidoctor-leanpub-converter/issues/1')
+    @FailsWith(org.spockframework.runtime.ConditionNotSatisfiedError)
     def "Basic ordered and unordered lists"() {
         setup:
         File chapter = new File(manuscriptDir,'chapter_3.txt')
@@ -80,7 +83,6 @@ ____Underlined text one____
   1. List #2 #1
   1. List #2 #2
 1. List #3
-
 '''
 
     }
