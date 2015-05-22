@@ -16,6 +16,8 @@
  */
 // ============================================================================
 
+apply plugin : 'maven'
+
 dependencies {
     compile 'org.codehaus.groovy:groovy-all:[2.3.4,2.4.99]'
     compile 'org.asciidoctor:asciidoctorj:1.6.0-SNAPSHOT'

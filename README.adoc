@@ -3,22 +3,49 @@
 Very early stages to showing a converter written in Groovy using the experimental
 asciidoctorj-1.6.0 branch
 
-Level 0 heading becomes a Leanpub part and creates a new part file
+
+== Building
 
 ```
-= This becomes a part
+git clone https://github.com/asciidoctor/asciidoctorj.git -b asciidoctorj-1.6.0
+cd asciidoctorj
+vi gradle.properties
 ```
+
+Change the version to `1.6.0-SNAPSHOT`. It is still set as `1.5.3-SNAPSHOT`, but let's avoid confusion with another
+`asciidoctorj` development branch. Save your change, then do
+
+```
+cd asciidoctorj-core
+../gradlew -i build publishToMavenLocal
+```
+
+Now you are ready to clone and build this
+
+```
+cd ../../
+git clone https://github.com/ysb33r/asciidoctor-leanpub-converter.git
+cd asciidoctor-leanpub-converter/core
+./gradlew build install
+```
+
+== Notes
+Level 0 heading becomes a Leanpub part and creates a new part file
+
+....
+= This becomes a part
+....
 
 Level 1 heading becomes a Leanpub chapter. In addition if it is annotated with `[chapter]` it creates a new chapter file
 
-```
+....
 [chapter]
 == This becomes a chapter
-```
+....
 
 Level 1 heading annotated with `[preface]` becomes a Leanpub preface
 
-```
+....
 [preface]
 == This is a preface
-```
+....
