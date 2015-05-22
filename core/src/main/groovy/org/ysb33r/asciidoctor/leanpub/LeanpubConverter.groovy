@@ -157,9 +157,16 @@ class LeanpubConverter extends AbstractConverter {
         listNode.items.collect { ListItem item -> item.convert() }.join('')
     }
 
+    private def convertColist(AbstractNode node,Map<String, Object> opts) {
+        ListNode listNode = node as ListNode
+        listNode.items.collect { ListItem item -> item.convert() }.join('')
+    }
+
     private def convertList_item(AbstractNode node,Map<String, Object> opts) {
         ListItem item = node as ListItem
         switch(node.parent.context) {
+            case 'colist':
+                return ' '.multiply(item.level*2-2) + '1. ' + item.text + LINESEP + node.content
             case 'olist':
                 return ' '.multiply(item.level*2-2) + '1. ' + item.text + LINESEP + node.content
             case 'ulist':
@@ -169,6 +176,23 @@ class LeanpubConverter extends AbstractConverter {
                 null
         }
 
+    }
+
+    private def convertListing(AbstractNode node,Map<String, Object> opts) {
+        Block block = node as Block
+        "convert${block.attributes.style.capitalize()}Listing"(node,opts)
+    }
+
+    private def convertSourceListing(Block block,Map<String, Object> opts) {
+        List<String> annotations = [ "lang=\"${block.attributes.language}\"" ]
+        if(block.title) {
+            annotations+="title=\"${block.title}\""
+        }
+
+        '{' + annotations.join(', ') + '}' + LINESEP +
+            '~'.multiply(8) + LINESEP +
+            block.source()  + LINESEP +
+            '~'.multiply(8) + LINESEP
     }
 
     private File destDir

@@ -11,15 +11,15 @@ class SourcecodeSpec extends LeanpubSpecification {
     @Issue('https://leanpub.com/help/manual#leanpub-auto-code')
     def "Source code should add the language term"() {
         setup:
-            File chapter = new File(LeanpubSpecification.manuscriptDir,'chapter_2.txt')
+            File chapter = new File(LeanpubSpecification.manuscriptDir,'chapter_1.txt')
 
         when:
             generateOutput('sourcecode.adoc')
 
         then:
-            chapter.readLines() == '''# Chapter A
+            chapter.text == '''# Chapter Source Listing
 
-{lang=groovy}
+{lang="groovy"}
 ~~~~~~~~
 @InputFiles
 FileCollection getDocuments() {
@@ -42,7 +42,7 @@ private List<Object> documents
     }
 
     @Issue('https://leanpub.com/help/manual#leanpub-auto-code')
-    def "Source code shoudl add title if it is available"() {
+    def "Source code should add title if it is available"() {
         setup:
         File chapter = new File(LeanpubSpecification.manuscriptDir,'chapter_2.txt')
 
@@ -50,9 +50,9 @@ private List<Object> documents
         generateOutput('sourcecode.adoc')
 
         then:
-        chapter.readLines() == '''# Chapter A
+        chapter.text == '''# Chapter Source Listing with Title
 
-{title="Source code with title", lang=groovy}
+{lang="groovy", title="Source code with title"}
 ~~~~~~~~
 @InputFiles
 FileCollection getDocuments() {
@@ -64,5 +64,10 @@ FileCollection getDocuments() {
     }
 
     // TODO: Source code with call outs
+    // https://github.com/ysb33r/asciidoctor-leanpub-converter/issues/2
+
+    // TODO: Support linenumbers via leanpub_xxx attributes or similar
+    // {line-numbers=on,starting-line-number=32}
+    // https://github.com/ysb33r/asciidoctor-leanpub-converter/issues/3
 
 }

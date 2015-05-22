@@ -2,7 +2,7 @@
 Asciidoctor Team <foo@bar.example>
 
 [chapter]
-== Chapter A
+== Chapter Source Listing
 
 [source,groovy]
 ----
@@ -24,7 +24,7 @@ private List<Object> documents
 ----
 
 [chapter]
-== Chapter B
+== Chapter Source Listing with Title
 
 .Source code with title
 [source,groovy]
@@ -36,25 +36,25 @@ FileCollection getDocuments() {
 ----
 
 [chapter]
-== Chapter C
+== Chapter Source Listing with Callouts
 
 [source,groovy]
 ----
-@InputFiles    <1>
+@InputFiles    // <1>
 FileCollection getDocuments() {
-    project.files(this.documents) <2>
+    project.files(this.documents) // <2>
 }
 
-void setDocuments(Object... docs) { <3>
+void setDocuments(Object... docs) { // <3>
     this.documents.clear()
     this.documents.addAll(docs as List)
 }
 
-void documents(Object... docs) { <4>
+void documents(Object... docs) { // <4>
     this.documents.addAll(docs as List)
 }
 
-private List<Object> documents <5>
+private List<Object> documents // <5>
 ----
 <1> Create a getter and annotate with `@InputFiles` or `@OutputFiles`. The purpose of the getter is to translate upon access
     to a `FileCollection` object.
