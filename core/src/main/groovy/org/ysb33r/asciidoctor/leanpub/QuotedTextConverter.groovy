@@ -25,3 +25,6 @@ class QuotedTextConverter {
     }
 }
 
+// subscript
+// double curved quotes
+// single curved quotes

@@ -165,6 +165,14 @@ class LeanpubConverter extends AbstractTextConverter {
         '---' + LINESEP
     }
 
+    def convertLiteral(AbstractNode node,Map<String, Object> opts) {
+        Block block = node as Block
+        '{linenos=off}' + LINESEP +
+            block.lines().collect {
+                ' '.multiply(4) + it
+            }.join(LINESEP) + LINESEP
+    }
+
     def convertListingTypeSource(Block block,Map<String, Object> opts) {
         List<String> annotations = [ "lang=\"${block.attributes.language}\"" ]
         if(block.title) {
