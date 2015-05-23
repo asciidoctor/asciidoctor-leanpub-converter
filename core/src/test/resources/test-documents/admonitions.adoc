@@ -1,0 +1,17 @@
+= Admonitions
+
+[chapter]
+== Chapter with Warning
+
+Some text here, then
+
+WARNING: This is a warning admonition.
+  And some more text.
+
+[chapter]
+== Another Chapter with Warning
+
+With some more text in between
+
+.Warning with title
+WARNING: This is a warning with title

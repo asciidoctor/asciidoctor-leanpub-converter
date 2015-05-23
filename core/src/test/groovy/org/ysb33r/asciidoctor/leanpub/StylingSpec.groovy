@@ -44,21 +44,6 @@ Non&nbsp;breaking&nbsp;spaces
 
     }
 
-    @Issue('https://leanpub.com/help/manual#leanpub-auto-styling-text')
-    def "Underlined text not supported by Asciidoctor, so expecting passthrough to be used"() {
-        setup:
-        File chapter = new File(manuscriptDir,'chapter_4.txt')
-
-        when:
-        generateOutput('simple-book.adoc')
-
-        then:
-        chapter.text == '''# Chapter with Underlined Text
-
-____Underlined text one____
-'''
-    }
-
     @Issue('https://leanpub.com/help/manual#leanpub-auto-numberedordered-lists')
     @Issue('https://github.com/ysb33r/asciidoctor-leanpub-converter/issues/1')
     @FailsWith(org.spockframework.runtime.ConditionNotSatisfiedError)
@@ -85,5 +70,34 @@ ____Underlined text one____
 1. List #3
 '''
 
+    }
+
+    @Issue('https://leanpub.com/help/manual#leanpub-auto-styling-text')
+    def "Underlined text not supported by Asciidoctor, so expecting passthrough to be used"() {
+        setup:
+        File chapter = new File(manuscriptDir,'chapter_4.txt')
+
+        when:
+        generateOutput('simple-book.adoc')
+
+        then:
+        chapter.text == '''# Chapter with Underlined Text
+
+____Underlined text one____
+'''
+    }
+
+    def "Horizontal rule"() {
+        setup:
+        File chapter = new File(manuscriptDir,'chapter_5.txt')
+
+        when:
+        generateOutput('simple-book.adoc')
+
+        then:
+        chapter.text == '''# Chapter with Lines
+
+---
+'''
     }
 }

@@ -50,3 +50,8 @@ Non{nbsp}breaking{nbsp}spaces
 == Chapter with Underlined Text
 
 +++____Underlined text one____+++
+
+[chapter]
+== Chapter with Lines
+
+'''

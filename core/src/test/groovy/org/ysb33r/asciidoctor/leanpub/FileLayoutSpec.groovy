@@ -40,10 +40,10 @@ class FileLayoutSpec extends LeanpubSpecification {
                         name.startsWith('chapter_')
                     }
                 }
-            ).size() == 4
+            ).size() == 5
 
         and: 'Book.txt should contain the same number of entries'
-            index.size() == 4
+            index.size() == 5
             index.every { it.startsWith('chapter_') }
     }
 

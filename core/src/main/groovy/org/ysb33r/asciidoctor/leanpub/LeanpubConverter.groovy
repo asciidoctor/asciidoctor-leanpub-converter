@@ -8,13 +8,13 @@ import org.asciidoctor.ast.Inline
 import org.asciidoctor.ast.ListItem
 import org.asciidoctor.ast.ListNode
 import org.asciidoctor.ast.Section
-import org.asciidoctor.converter.AbstractConverter
+import org.ysb33r.asciidoctor.AbstractTextConverter
 
 /**
  * @author Schalk W. Cronjé
  */
 @Slf4j
-class LeanpubConverter extends AbstractConverter {
+class LeanpubConverter extends AbstractTextConverter {
 
     static final String LINESEP = "\n"
     static final String BOOK = 'Book.txt'
@@ -23,45 +23,45 @@ class LeanpubConverter extends AbstractConverter {
         super(backend, opts)
     }
 
-    /**
-     * Converts an {@link org.asciidoctor.ast.AbstractNode} using the specified transform along
-     * with additional options. If a transform is not specified, implementations
-     * typically derive one from the {@link org.asciidoctor.ast.AbstractNode#getNodeName()} property.
-     *
-     * <p>Implementations are free to decide how to carry out the conversion. In
-     * the case of the built-in converters, the tranform value is used to
-     * dispatch to a handler method. The TemplateConverter uses the value of
-     * the transform to select a template to render.
-     *
-     * @param node The concrete instance of AbstractNode to convert
-     * @param transform An optional String transform that hints at which transformation
-     *             should be applied to this node. If a transform is not specified,
-     *             the transform is typically derived from the value of the
-     *             node's node_name property. (optional, default: null)
-     * @param opts An optional map of options that provide additional hints about
-     *             how to convert the node. (optional, default: empty map)
-     * @return the converted result
-     */
-    @Override
-    Object convert(AbstractNode node, String transform, Map<Object, Object> opts) {
-        if (node instanceof DocumentRuby) {
-            setup(node,opts )
-            def result =  node.content
-            closeout()
-            this
-        } else {
-            def method = "convert${(transform?:node.nodeName).capitalize()}"
+//    /**
+//     * Converts an {@link org.asciidoctor.ast.AbstractNode} using the specified transform along
+//     * with additional options. If a transform is not specified, implementations
+//     * typically derive one from the {@link org.asciidoctor.ast.AbstractNode#getNodeName()} property.
+//     *
+//     * <p>Implementations are free to decide how to carry out the conversion. In
+//     * the case of the built-in converters, the tranform value is used to
+//     * dispatch to a handler method. The TemplateConverter uses the value of
+//     * the transform to select a template to render.
+//     *
+//     * @param node The concrete instance of AbstractNode to convert
+//     * @param transform An optional String transform that hints at which transformation
+//     *             should be applied to this node. If a transform is not specified,
+//     *             the transform is typically derived from the value of the
+//     *             node's node_name property. (optional, default: null)
+//     * @param opts An optional map of options that provide additional hints about
+//     *             how to convert the node. (optional, default: empty map)
+//     * @return the converted result
+//     */
+//    @Override
+//    Object convert(AbstractNode node, String transform, Map<Object, Object> opts) {
+//        if (node instanceof DocumentRuby) {
+//            setup(node,opts )
+//            def result =  node.content
+//            closeout()
+//            this
+//        } else {
+//            def method = "convert${(transform?:node.nodeName).capitalize()}"
+//
+//            if(this.class.metaClass.respondsTo(this,method,AbstractNode,Map)) {
+//                return "${method}" (node,  opts)
+//            } else {
+//                log.error "${method} (node:${node.class.name}) is not defined. Will not transform this node, but will try to carry on"
+//                return null
+//            }
+//        }
+//    }
 
-            if(this.class.metaClass.respondsTo(this,method,AbstractNode,Map)) {
-                return "${method}" (node,  opts)
-            } else {
-                log.error "${method} (node:${node.class.name}) is not defined. Will not transform this node, but will try to carry on"
-                return null
-            }
-        }
-    }
-
-    private void setup(AbstractNode node,Map<Object, Object> opts) {
+    void setupDocument(AbstractNode node,Map<Object, Object> opts) {
         Map<String,Object> docOptions = [:]
         node.document.options.each { k,v -> docOptions["${k}".toString()] = v}
         destDir = new File(docOptions.to_dir ?: '.','manuscript').absoluteFile
@@ -71,7 +71,7 @@ class LeanpubConverter extends AbstractConverter {
     /** Writes all of the index file
      *
      */
-    private void closeout() {
+    def closeDocument(def content) {
         destDir.mkdirs()
 
         def chapterNames = []
@@ -105,7 +105,7 @@ class LeanpubConverter extends AbstractConverter {
 
     }
 
-    private def convertSection(AbstractNode node, Map<String, Object> opts) {
+    def convertSection(AbstractNode node, Map<String, Object> opts) {
         Section section = node as Section
         int sectionIndex = -1
         log.debug "Transforming section: name=${section.sectname()}, level=${section.level} title=${section.title}"
@@ -133,57 +133,40 @@ class LeanpubConverter extends AbstractConverter {
         content
     }
 
-    /** Paragraph conversion just passes the content back.
-     *
-     * @return
-     */
-    private def convertParagraph(AbstractNode node, Map<String, Object> opts) {
-        Block block = node as Block
-        block.content + LINESEP
-    }
-
-    private def convertInline_quoted(AbstractNode node, Map<String, Object> opts) {
+    def convertInlineQuoted(AbstractNode node, Map<String, Object> opts) {
         Inline inline = node as Inline
         QuotedTextConverter."${inline.type}"(inline.text)
     }
 
-    private def convertUlist(AbstractNode node,Map<String, Object> opts) {
-        ListNode listNode = node as ListNode
-        listNode.items.collect { ListItem item -> item.convert() }.join('')
+    def convertAnchorTypeXref(AbstractNode node, Map<String, Object> opts) {
+        Inline inline = node as Inline
+        "[${inline.text ?: inline.attributes.fragment}](#${CrossReference.safeId(inline.attributes.refid)})"
     }
 
-    private def convertOlist(AbstractNode node,Map<String, Object> opts) {
-        ListNode listNode = node as ListNode
-        listNode.items.collect { ListItem item -> item.convert() }.join('')
+    def convertAnchorTypeLink(AbstractNode node, Map<String, Object> opts) {
+        Inline inline = node as Inline
+println "****** ${inline.attributes}"
+        return null
     }
 
-    private def convertColist(AbstractNode node,Map<String, Object> opts) {
-        ListNode listNode = node as ListNode
-        listNode.items.collect { ListItem item -> item.convert() }.join('')
+    def convertListItemTypeColist(ListItem item, Map<String, Object> opts) {
+        ' '.multiply(item.level*2-2) + '1. ' + item.text + LINESEP + item.content
     }
 
-    private def convertList_item(AbstractNode node,Map<String, Object> opts) {
-        ListItem item = node as ListItem
-        switch(node.parent.context) {
-            case 'colist':
-                return ' '.multiply(item.level*2-2) + '1. ' + item.text + LINESEP + node.content
-            case 'olist':
-                return ' '.multiply(item.level*2-2) + '1. ' + item.text + LINESEP + node.content
-            case 'ulist':
-                return ' '.multiply(item.level*2-2) + '* ' + item.text + LINESEP + node.content
-            default:
-                log.error "List item type ${node.parent.context} is not defined. Will not transform this node, but will try to carry on"
-                null
-        }
-
+    def convertListItemTypeOlist(ListItem item, Map<String, Object> opts) {
+        ' '.multiply(item.level*2-2) + '1. ' + item.text + LINESEP + item.content
     }
 
-    private def convertListing(AbstractNode node,Map<String, Object> opts) {
+    def convertListItemTypeUlist(ListItem item, Map<String, Object> opts) {
+        return ' '.multiply(item.level*2-2) + '* ' + item.text + LINESEP + item.content
+    }
+
+    def convertThematicBreak(AbstractNode node,Map<String, Object> opts) {
         Block block = node as Block
-        "convert${block.attributes.style.capitalize()}Listing"(node,opts)
+        '---' + LINESEP
     }
 
-    private def convertSourceListing(Block block,Map<String, Object> opts) {
+    def convertListingTypeSource(Block block,Map<String, Object> opts) {
         List<String> annotations = [ "lang=\"${block.attributes.language}\"" ]
         if(block.title) {
             annotations+="title=\"${block.title}\""
@@ -195,9 +178,39 @@ class LeanpubConverter extends AbstractConverter {
             '~'.multiply(8) + LINESEP
     }
 
+    def convertAdmonition(AbstractNode node,Map<String, Object> opts) {
+        Block block = node as Block
+
+        String prefix = styleMap[block.attributes.name]
+        if(!prefix) {
+            log.warn "${block.attributes.name} not recognised as a Leanpub admonition. Will render as normal text"
+            block.attributes.style + ': ' + block.lines().join(LINESEP)
+        } else {
+            String content = ''
+            if(block.title) {
+                content+= prefix + '> ## ' + block.title + LINESEP
+                block.lines().each {
+                    content+= prefix + '> ' + it + LINESEP
+                }
+            }
+            content + LINESEP
+        }
+    }
+
     private File destDir
     private List<ConvertedSection> leanpubSections = []
     private Object preface
+
+    private static final def styleMap = [
+        'warning'   : 'W',
+        'tip'       : 'T',
+        'note'      : 'I',
+//        'caution'   : '',
+//        'important' : ''
+    ]
+
+
+
 
 }
 
