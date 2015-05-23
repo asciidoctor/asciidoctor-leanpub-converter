@@ -145,7 +145,7 @@ class LeanpubConverter extends AbstractTextConverter {
 
     def convertAnchorTypeLink(AbstractNode node, Map<String, Object> opts) {
         Inline inline = node as Inline
-        return "[${inline.text}](${'NULL'})"
+        return "[${inline.text}](${inline.target})"
     }
 
     def convertListItemTypeColist(ListItem item, Map<String, Object> opts) {
@@ -188,9 +188,9 @@ class LeanpubConverter extends AbstractTextConverter {
             String content = ''
             if(block.title) {
                 content+= prefix + '> ## ' + block.title + LINESEP
-                block.lines().each {
-                    content+= prefix + '> ' + it + LINESEP
-                }
+            }
+            block.lines().each {
+                content+= prefix + '> ' + it + LINESEP
             }
             content + LINESEP
         }

@@ -37,7 +37,7 @@ This is a [reference with text](#RefText2).
         generateOutput('anchors-and-references.adoc')
 
         then:
-        chapter.text == '''#  Chapter B
+        chapter.text == '''# Chapter B
 
 With reference to the [Spock Framework](http://docs.spockframework.org/en/latest) used in testing.
 '''

@@ -9,7 +9,6 @@ import spock.lang.Issue
  */
 class AdmonitionsSpec extends LeanpubSpecification {
 
-    @FailsWith(org.spockframework.runtime.ConditionNotSatisfiedError)
     @Issue('https://github.com/ysb33r/asciidoctor-leanpub-converter/issues/4')
     @Issue('https://leanpub.com/help/manual#leanpub-auto-warning')
     def "Warning"() {
@@ -25,6 +24,8 @@ class AdmonitionsSpec extends LeanpubSpecification {
 Some text here, then
 
 W> This is a warning admonition.
+W>   And some more text.
+
 '''
 
     }
