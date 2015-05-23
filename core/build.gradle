@@ -27,3 +27,10 @@ dependencies {
 }
 
 archivesBaseName = 'asciidoctor-leanpub-core'
+
+test {
+    testLogging {
+        showStandardStreams = true
+        exceptionFormat "full"
+    }
+}

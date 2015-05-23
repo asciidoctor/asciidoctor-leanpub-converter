@@ -2,6 +2,7 @@ package org.ysb33r.asciidoctor.leanpub
 
 import org.ysb33r.asciidoctor.leanpub.internal.LeanpubSpecification
 import spock.lang.FailsWith
+import spock.lang.Ignore
 import spock.lang.Issue
 
 /**
@@ -26,5 +27,22 @@ This is a [reference with text](#RefText2).
 '''
 
     }
+
+    @Issue('https://leanpub.com/help/manual#leanpub-auto-links')
+    def "Hyperlinks"() {
+        setup:
+        File chapter = new File(manuscriptDir,'chapter_2.txt')
+
+        when:
+        generateOutput('anchors-and-references.adoc')
+
+        then:
+        chapter.text == '''#  Chapter B
+
+With reference to the [Spock Framework](http://docs.spockframework.org/en/latest) used in testing.
+'''
+
+    }
+
 
 }

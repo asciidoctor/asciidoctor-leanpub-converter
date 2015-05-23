@@ -7,3 +7,7 @@ This is a reference to <<Asciidoctor Project>>.
 
 This is a <<RefText2,reference with text>>.
 
+[chapter]
+== Chapter B
+
+With reference to the http://docs.spockframework.org/en/latest[Spock Framework] used in testing.

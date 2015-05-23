@@ -145,8 +145,7 @@ class LeanpubConverter extends AbstractTextConverter {
 
     def convertAnchorTypeLink(AbstractNode node, Map<String, Object> opts) {
         Inline inline = node as Inline
-println "****** ${inline.attributes}"
-        return null
+        return "[${inline.text}](${'NULL'})"
     }
 
     def convertListItemTypeColist(ListItem item, Map<String, Object> opts) {
