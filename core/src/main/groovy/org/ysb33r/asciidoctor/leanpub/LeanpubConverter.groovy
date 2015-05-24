@@ -3,10 +3,8 @@ package org.ysb33r.asciidoctor.leanpub
 import groovy.util.logging.Slf4j
 import org.asciidoctor.ast.AbstractNode
 import org.asciidoctor.ast.Block
-import org.asciidoctor.ast.DocumentRuby
 import org.asciidoctor.ast.Inline
 import org.asciidoctor.ast.ListItem
-import org.asciidoctor.ast.ListNode
 import org.asciidoctor.ast.Section
 import org.ysb33r.asciidoctor.AbstractTextConverter
 
@@ -18,6 +16,11 @@ class LeanpubConverter extends AbstractTextConverter {
 
     static final String LINESEP = "\n"
     static final String BOOK = 'Book.txt'
+    static final String DOCFOLDER = 'manuscript'
+    static final String FRONTCOVER = 'images/title_page'
+    static final def FRONTCOVER_EXTENSIONS = ['jpg','png']
+
+    String encoding = 'utf-8'
 
     LeanpubConverter(final String backend,Map<Object, Object> opts) {
         super(backend, opts)
@@ -64,7 +67,7 @@ class LeanpubConverter extends AbstractTextConverter {
     void setupDocument(AbstractNode node,Map<Object, Object> opts) {
         Map<String,Object> docOptions = [:]
         node.document.options.each { k,v -> docOptions["${k}".toString()] = v}
-        destDir = new File(docOptions.to_dir ?: '.','manuscript').absoluteFile
+        destDir = new File(docOptions.to_dir ?: '.',DOCFOLDER).absoluteFile
         node.attributes.put('nbsp','&nbsp;')
     }
 
@@ -167,10 +170,45 @@ class LeanpubConverter extends AbstractTextConverter {
 
     def convertLiteral(AbstractNode node,Map<String, Object> opts) {
         Block block = node as Block
+
+        // If a method referencing the role exists use that, otherwise fall back to default
+        if(block.attributes.role ) {
+            def method = itemMethodName('convertLiteral',block.attributes.role)
+            if (this.metaClass.respondsTo(this,methodName,block,opts)) {
+                return "${methodName}"(block,opts)
+            }
+        }
+
         '{linenos=off}' + LINESEP +
             block.lines().collect {
                 ' '.multiply(4) + it
             }.join(LINESEP) + LINESEP
+    }
+
+    def convertVerse(AbstractNode node,Map<String, Object> opts) {
+        Block block = node as Block
+
+        // If a method referencing the role exists use that, otherwise fall back to default
+        if(block.attributes.role ) {
+            def method = itemMethodName('convertVerse',block.attributes.role)
+            if (this.metaClass.respondsTo(this,method,block,opts)) {
+                return "${method}"(block,opts)
+            }
+        }
+
+        (block.title ? ("A> ## ${block.title}" + LINESEP) : '') +
+            block.lines().collect {
+                'A> ' + it
+            }.join(LINESEP) + LINESEP +
+            (block.attributes.attribution ? "A> ${LINESEP}A> -- **${block.attributes.attribution}**${LINESEP}" : '') +
+            (block.attributes.citetitle ? "A> *${block.attributes.citetitle}*${LINESEP}" : '')
+    }
+
+    def convertVersePoem(Block block,Map<String, Object> opts) {
+        '{style="poem"}' + LINESEP +
+            '~'.multiply(6)  + LINESEP +
+            block.lines().join(LINESEP) + LINESEP +
+            '~'.multiply(6)  + LINESEP
     }
 
     def convertListingTypeSource(Block block,Map<String, Object> opts) {
@@ -203,6 +241,8 @@ class LeanpubConverter extends AbstractTextConverter {
             content + LINESEP
         }
     }
+
+
 
     private File destDir
     private List<ConvertedSection> leanpubSections = []

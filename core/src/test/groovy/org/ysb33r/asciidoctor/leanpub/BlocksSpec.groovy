@@ -9,7 +9,7 @@ import spock.lang.Issue
 class BlocksSpec extends LeanpubSpecification {
 
     @Issue('https://leanpub.com/help/manual#crosslink_from_endnotes')
-    def "Anchors"() {
+    def "Literal Block"() {
         setup:
             File chapter = new File(manuscriptDir,'chapter_1.txt')
 
@@ -26,5 +26,42 @@ class BlocksSpec extends LeanpubSpecification {
 
     }
 
+    @Issue('https://github.com/ysb33r/asciidoctor-leanpub-converter/issues/10')
+    @Issue('https://leanpub.com/help/manual#crosslink_from_endnotes')
+    def "Poetry"() {
+        setup:
+        File chapter = new File(manuscriptDir,'chapter_2.txt')
+
+        when:
+        generateOutput('blocks.adoc')
+
+        then:
+        chapter.text == '''# A Poetry Block
+
+{style="poem"}
+~~~~~~
+Kommetjie, Kommegas, wees my gas
+Hier in my houthuis
+~~~~~~
+'''
+    }
+
+    def "Verse"() {
+        setup:
+        File chapter = new File(manuscriptDir,'chapter_3.txt')
+
+        when:
+        generateOutput('blocks.adoc')
+
+        then:
+        chapter.text == '''# A Verse Block
+
+A> The fog comes
+A> on little cat feet
+A> ''' + LeanpubConverter.LINESEP +
+'''A> -- **Carl Sandburg**
+A> *Fog*
+'''
+    }
 
 }

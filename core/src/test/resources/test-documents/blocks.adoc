@@ -7,3 +7,22 @@
 Kommetjie, Kommegas, wees my gas
 Hier in my houthuis
 ....
+
+
+[chapter]
+== A Poetry Block
+
+[verse.poem]
+____
+Kommetjie, Kommegas, wees my gas
+Hier in my houthuis
+____
+
+[chapter]
+== A Verse Block
+
+[verse, Carl Sandburg, Fog]
+____
+The fog comes
+on little cat feet
+____

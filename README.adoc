@@ -32,20 +32,30 @@ cd asciidoctor-leanpub-converter/core
 == Notes
 Level 0 heading becomes a Leanpub part and creates a new part file
 
-....
+```
 = This becomes a part
-....
+```
 
 Level 1 heading becomes a Leanpub chapter. In addition if it is annotated with `[chapter]` it creates a new chapter file
 
-....
+
+```
 [chapter]
 == This becomes a chapter
-....
+```
 
 Level 1 heading annotated with `[preface]` becomes a Leanpub preface
 
-....
+```
 [preface]
 == This is a preface
+```
+
+Poetry blocks are supported by adding a `poem` role to a literal block
+
+```
+[role="poem"]
 ....
+Poem goes here
+....
+```

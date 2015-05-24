@@ -102,6 +102,7 @@ abstract class AbstractTextConverter extends AbstractConverter {
     abstract def convertThematicBreak(AbstractNode node,Map<String, Object> opts)
     abstract def convertAdmonition(AbstractNode node,Map<String, Object> opts)
     abstract def convertLiteral(AbstractNode node,Map<String, Object> opts)
+    abstract def convertVerse(AbstractNode node,Map<String, Object> opts)
 
 
     /** Paragraph conversion just passes the content back.
@@ -157,5 +158,10 @@ abstract class AbstractTextConverter extends AbstractConverter {
     }
 
     abstract def convertListingTypeSource(Block block,Map<String, Object> opts)
+
+//    def convertPreamble(AbstractNode node, Map<String, Object> opts) {
+//        Block block = node as Block
+//        println "***** ${block.content}"
+//    }
 
 }
