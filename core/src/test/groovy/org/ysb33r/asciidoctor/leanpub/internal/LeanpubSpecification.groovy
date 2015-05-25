@@ -30,6 +30,7 @@ class LeanpubSpecification extends Specification {
     Asciidoctor asciidoctor
     static final File outputDir = new File('./build/test/leanpub')
     static final File manuscriptDir = new File(outputDir,'manuscript')
+    static final File imagesDir = new File(manuscriptDir,'images')
     static final File book1 = new File(manuscriptDir,LeanpubConverter.BOOK)
     static final File resourceDir = new File('./build/resources/test/test-documents')
 

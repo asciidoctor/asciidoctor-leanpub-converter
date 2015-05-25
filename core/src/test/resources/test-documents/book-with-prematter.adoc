@@ -1,0 +1,11 @@
+= Title
+Asciidoctor Team <foo@bar.example>
+:leanpub_lang: afrikaans
+:imagesdir: ./build/resources/test/test-documents/images
+:front-cover-image: image:Simple.png[]
+
+[chapter]
+== Chapter A
+
+:leanpub_lang: english
+Text

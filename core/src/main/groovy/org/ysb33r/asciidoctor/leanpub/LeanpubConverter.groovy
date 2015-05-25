@@ -1,12 +1,16 @@
 package org.ysb33r.asciidoctor.leanpub
 
 import groovy.util.logging.Slf4j
+import org.apache.commons.io.FileUtils
 import org.asciidoctor.ast.AbstractNode
 import org.asciidoctor.ast.Block
 import org.asciidoctor.ast.Inline
 import org.asciidoctor.ast.ListItem
 import org.asciidoctor.ast.Section
 import org.ysb33r.asciidoctor.AbstractTextConverter
+
+import java.util.regex.Matcher
+import java.util.regex.Pattern
 
 /**
  * @author Schalk W. Cronjé
@@ -17,8 +21,8 @@ class LeanpubConverter extends AbstractTextConverter {
     static final String LINESEP = "\n"
     static final String BOOK = 'Book.txt'
     static final String DOCFOLDER = 'manuscript'
-    static final String FRONTCOVER = 'images/title_page'
-    static final def FRONTCOVER_EXTENSIONS = ['jpg','png']
+    static final String FRONTCOVER = 'title_page.png'
+    static final Pattern INLINE_IMG_PATTERN = ~/^image:(.+?)\[(.*?)\]$/
 
     String encoding = 'utf-8'
 
@@ -65,9 +69,21 @@ class LeanpubConverter extends AbstractTextConverter {
 //    }
 
     void setupDocument(AbstractNode node,Map<Object, Object> opts) {
+        log.debug "Document options at start: ${node.document.options}"
+        log.debug "Document attributes at start: ${node.document.attributes}"
+
         Map<String,Object> docOptions = [:]
-        node.document.options.each { k,v -> docOptions["${k}".toString()] = v}
+        node.document.options.each { k,v ->
+            docOptions["${k}".toString()] = v
+        }
+
         destDir = new File(docOptions.to_dir ?: '.',DOCFOLDER).absoluteFile
+        docDir = new File(docOptions.docdir ?: '.').absoluteFile
+
+        log.debug "Destination directory set to ${destDir}"
+        log.debug "Document directory set to ${docDir}"
+
+        setFrontCoverFromAttribute(imagesDir(node),node.document.attributes['front-cover-image'])
         node.attributes.put('nbsp','&nbsp;')
     }
 
@@ -75,7 +91,8 @@ class LeanpubConverter extends AbstractTextConverter {
      *
      */
     def closeDocument(def content) {
-        destDir.mkdirs()
+        File imagesToDir = new File(destDir,'images')
+        imagesToDir.mkdirs()
 
         def chapterNames = []
         leanpubSections.findAll { ConvertedSection it ->
@@ -105,6 +122,10 @@ class LeanpubConverter extends AbstractTextConverter {
         }
 
         // TODO: Add backmatter content
+
+        if(frontCoverImage) {
+            FileUtils.copyFile(frontCoverImage,new File(imagesToDir,FRONTCOVER))
+        }
 
     }
 
@@ -242,9 +263,30 @@ class LeanpubConverter extends AbstractTextConverter {
         }
     }
 
+    private void setFrontCoverFromAttribute(final File imgDir,final String frontCover) {
+        frontCoverImage = null
+        if(frontCover) {
+            Matcher matcher = frontCover =~ INLINE_IMG_PATTERN
+            if(matcher.matches()) {
+                File tmpImage = new File(imgDir ?: new File(docDir,'images'),matcher[0][1])
+                if(!tmpImage.name.endsWith('.png')) {
+                    log.warn "Front cover image '${tmpImage.name}' does not have a PNG extension. Ignoring front cover."
+                } else if(!tmpImage.exists()) {
+                    log.warn "Front cover image '${tmpImage}' not found. Ignoring front cover."
+                } else {
+                    frontCoverImage = tmpImage
+                }
+            } else {
+                log.warn "front-cover-image is not a valid pattern. Ignoring front cove"
+            }
 
+        }
 
+    }
+
+    private File docDir
     private File destDir
+    private File frontCoverImage
     private List<ConvertedSection> leanpubSections = []
     private Object preface
 

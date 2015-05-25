@@ -22,6 +22,7 @@ dependencies {
     compile 'org.codehaus.groovy:groovy-all:[2.3.4,2.4.99]'
     compile 'org.asciidoctor:asciidoctorj:1.6.0-SNAPSHOT'
     compile 'org.slf4j:slf4j-api:1.7.5'
+    compile 'commons-io:commons-io:2.4'
 
     testRuntime 'org.slf4j:slf4j-simple:1.7.5'
 }

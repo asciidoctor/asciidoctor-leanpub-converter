@@ -94,6 +94,11 @@ abstract class AbstractTextConverter extends AbstractConverter {
         }
     }
 
+    File imagesDir(AbstractNode node) {
+        node.document.attributes['imagesdir'] ? new File(node.document.attributes['imagesdir']) : null
+    }
+
+
     abstract void setupDocument(AbstractNode node,Map<Object,Object> opts)
     abstract def closeDocument(def content)
 
