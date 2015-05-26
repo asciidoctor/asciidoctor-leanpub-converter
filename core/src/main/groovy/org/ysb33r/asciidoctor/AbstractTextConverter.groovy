@@ -43,6 +43,13 @@ abstract class AbstractTextConverter extends AbstractConverter {
         itemMethodName('convert',transform?:nodeName)
     }
 
+    /** If a method starts with {@code convert} it will be reported as missing, but processing will be continued
+     * Any other missing method will throw a MissingMethodException.
+     *
+     * @param name
+     * @param args
+     * @return
+     */
     def methodMissing(String name, args) {
 
         if(name.startsWith('convert') && args.size() == 2 && args[0] instanceof AbstractNode) {
@@ -70,10 +77,9 @@ abstract class AbstractTextConverter extends AbstractConverter {
      * with additional options. If a transform is not specified, implementations
      * typically derive one from the {@link org.asciidoctor.ast.AbstractNode#getNodeName()} property.
      *
-     * <p>Implementations are free to decide how to carry out the conversion. In
-     * the case of the built-in converters, the tranform value is used to
-     * dispatch to a handler method. The TemplateConverter uses the value of
-     * the transform to select a template to render.
+     * <p>For a document node, setupDocument is called at the start of processing and closeDocument at
+     * the end of processing. IN between all other ndoes are processed. This allow for streaming output to
+     * any media.
      *
      * @param node The concrete instance of AbstractNode to convert
      * @param transform An optional String transform that hints at which transformation
@@ -94,12 +100,29 @@ abstract class AbstractTextConverter extends AbstractConverter {
         }
     }
 
+    /** Try to resolve an image directory, but looking for {@code imagesdir}.
+     *
+     * @param node
+     * @return Returns a File instance of resovled, otherwise null
+     */
     File imagesDir(AbstractNode node) {
         node.document.attributes['imagesdir'] ? new File(node.document.attributes['imagesdir']) : null
     }
 
-
+    /** Called before any processing on the document node starts. Use this to set up any appropriate
+     * properties based upon document options and backend attributes.
+     *
+     * @param node
+     * @param opts
+     */
     abstract void setupDocument(AbstractNode node,Map<Object,Object> opts)
+
+    /** Called after document node processing has been completed. The completed the content is passed from
+     * final post-processing before returning the object.
+     *
+     * @param content
+     * @return An object representing completed content
+     */
     abstract def closeDocument(def content)
 
     abstract def convertSection(AbstractNode node, Map<String, Object> opts)
@@ -112,7 +135,7 @@ abstract class AbstractTextConverter extends AbstractConverter {
 
     /** Paragraph conversion just passes the content back.
      *
-     * @return
+     * @return Content plus an additional line separator
      */
     def convertParagraph(AbstractNode node, Map<String, Object> opts) {
         Block block = node as Block

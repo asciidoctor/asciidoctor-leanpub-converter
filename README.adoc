@@ -29,14 +29,18 @@ cd asciidoctor-leanpub-converter/core
 ./gradlew build install
 ```
 
-== Notes
+== Parts & Chapters
+
 Level 0 heading becomes a Leanpub part and creates a new part file
 
 ```
 = This becomes a part
 ```
 
-Level 1 heading becomes a Leanpub chapter. In addition if it is annotated with `[chapter]` it creates a new chapter file
+Level 1 heading becomes a Leanpub chapter. In addition if it is annotated with `[chapter]` it creates a new chapter file.
+At least one level 1 heading should be annotated with `[chapter]`.
+When writing a multi-part book, ensure that level 1 headings that follow a level 0, are annotated wth '
+`[chapter]`, otherwise they will disappear from the Leanpub output.
 
 
 ```
@@ -51,11 +55,20 @@ Level 1 heading annotated with `[preface]` becomes a Leanpub preface
 == This is a preface
 ```
 
-Poetry blocks are supported by adding a `poem` role to a literal block
+== Blocks
+
+Poetry blocks are supported by adding a `poem` role to a verse block
 
 ```
-[role="poem"]
+[verse.poem]
 ....
 Poem goes here
 ....
 ```
+
+== Cover page
+
+Use `:front-cover-page: image:NameOfImage.png[]` to add a Leanpub cover. Currently no size checking is done, but a
+PNG extension is required. See https://leanpub.com/help/manual#leanpub-auto-how-to-insert-cover-images--cover-pages(Leanpub docs)
+for more detail on size requirements.
+
