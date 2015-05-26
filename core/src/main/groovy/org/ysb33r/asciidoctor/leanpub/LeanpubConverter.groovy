@@ -78,7 +78,7 @@ class LeanpubConverter extends AbstractTextConverter {
         }
 
         destDir = new File(docOptions.to_dir ?: '.',DOCFOLDER).absoluteFile
-        docDir = new File(docOptions.docdir ?: '.').absoluteFile
+        docDir = new File(node.document.attributes.docdir ?: '.').absoluteFile
 
         log.debug "Destination directory set to ${destDir}"
         log.debug "Document directory set to ${docDir}"

@@ -49,7 +49,8 @@ class LeanpubSpecification extends Specification {
         def options = [
             to_dir : outputDir.absolutePath,
             mkdirs : true,
-            backend : 'leanpub'
+            backend : 'leanpub',
+            safe : 1
         ]
         asciidoctor.convertFile(new File(resourceDir,documentFileName),options )
 
