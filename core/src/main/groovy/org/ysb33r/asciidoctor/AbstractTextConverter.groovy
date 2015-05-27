@@ -8,13 +8,16 @@ import org.asciidoctor.ast.Inline
 import org.asciidoctor.ast.ListItem
 import org.asciidoctor.ast.ListNode
 import org.asciidoctor.converter.AbstractConverter
-import org.ysb33r.asciidoctor.leanpub.CrossReference
+
+import java.util.regex.Pattern
 
 /**
  * @author Schalk W. Cronjé
  */
 @Slf4j
 abstract class AbstractTextConverter extends AbstractConverter {
+
+    //    static final Pattern CalloutExtractRxt = "(\\\\)?<()(\\d+)>(?=(?: ?\\\\?<\\d+>)*$)"
 
     AbstractTextConverter(final String backend,Map<Object, Object> opts) {
         super(backend, opts)
@@ -108,6 +111,7 @@ abstract class AbstractTextConverter extends AbstractConverter {
     File imagesDir(AbstractNode node) {
         node.document.attributes['imagesdir'] ? new File(node.document.attributes['imagesdir']) : null
     }
+
 
     /** Called before any processing on the document node starts. Use this to set up any appropriate
      * properties based upon document options and backend attributes.

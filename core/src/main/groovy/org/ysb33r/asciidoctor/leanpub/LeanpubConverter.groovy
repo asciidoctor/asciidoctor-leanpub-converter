@@ -6,8 +6,10 @@ import org.asciidoctor.ast.AbstractNode
 import org.asciidoctor.ast.Block
 import org.asciidoctor.ast.Inline
 import org.asciidoctor.ast.ListItem
+import org.asciidoctor.ast.ListNode
 import org.asciidoctor.ast.Section
 import org.ysb33r.asciidoctor.AbstractTextConverter
+import org.ysb33r.asciidoctor.internal.SourceParser
 
 import java.util.regex.Matcher
 import java.util.regex.Pattern
@@ -47,6 +49,10 @@ class LeanpubConverter extends AbstractTextConverter {
 
         setFrontCoverFromAttribute(imagesDir(node),node.document.attributes['front-cover-image'])
         node.attributes.put('nbsp','&nbsp;')
+
+        if(!node.attributes.get('leanpub-colist-style')) {
+            node.attributes.put('leanpub-colist-style','paragraph')
+        }
     }
 
     /** Writes all of the index file
@@ -134,6 +140,35 @@ class LeanpubConverter extends AbstractTextConverter {
         return "[${inline.text}](${inline.target})"
     }
 
+    @Override
+    def convertColist(AbstractNode node,Map<String, Object> opts) {
+        if(lastSrcBlock) {
+            def lookup = [:]
+            lastSrcBlock.each { calloutLine ->
+                if(calloutLine.callouts?.size()) {
+                    calloutLine.callouts.each { callout ->
+                        lookup[callout.toString()] = calloutLine.lineno
+                    }
+                }
+            }
+            lastSrcBlock = null
+            String content = ''
+            ListNode listNode = node as ListNode
+            listNode.items.eachWithIndex { ListItem item,int index ->
+                String lineno = lookup[(index+1).toString()]
+                if(lineno == null) {
+                    log.error "More items in colist than in preceding source block. Ignoring item."
+                } else {
+                    content+= formatColistLine(item,lineno)
+                }
+            }
+
+            content + LINESEP
+        } else {
+            super.convertColist(node,opts)
+        }
+    }
+
     def convertListItemTypeColist(ListItem item, Map<String, Object> opts) {
         ' '.multiply(item.level*2-2) + '1. ' + item.text + LINESEP + item.content
     }
@@ -195,14 +230,24 @@ class LeanpubConverter extends AbstractTextConverter {
     }
 
     def convertListingTypeSource(Block block,Map<String, Object> opts) {
-        List<String> annotations = [ "lang=\"${block.attributes.language}\"" ]
-        if(block.title) {
-            annotations+="title=\"${block.title}\""
+        Map annotations = [lang: "\"${block.attributes.language}\""]
+        if (block.title) {
+            annotations['title'] = "\"${block.title}\""
         }
 
-        '{' + annotations.join(', ') + '}' + LINESEP +
+        def parsedContent = SourceParser.parseSourceForCallouts(block)
+        String src
+        if (parsedContent.find ({ it.callouts != null }) != null) {
+            annotations['linenos'] = 'yes'
+            lastSrcBlock = parsedContent
+            src= parsedContent.collect { it.line }.join(LINESEP)
+        } else {
+            src=block.source()
+        }
+
+        '{' + annotations.collect{ k,v -> "${k}=${v}"}.join(', ') + '}' + LINESEP +
             '~'.multiply(8) + LINESEP +
-            block.source()  + LINESEP +
+            src  + LINESEP +
             '~'.multiply(8) + LINESEP
     }
 
@@ -225,6 +270,15 @@ class LeanpubConverter extends AbstractTextConverter {
         }
     }
 
+    private String formatColistLine(ListItem node,final String lineno) {
+        switch(node.attributes.get('leanpub-colist-style')) {
+            case 'aside':
+                return 'A> **#' + lineno +':** ' + node.text + LINESEP + node.content
+            case 'paragraph':
+            default:
+                return '**#' + lineno +':** ' + node.text.replaceAll(~/\r?\n/,' ') + LINESEP + node.content
+        }
+    }
     private void setFrontCoverFromAttribute(final File imgDir,final String frontCover) {
         frontCoverImage = null
         if(frontCover) {
@@ -251,6 +305,7 @@ class LeanpubConverter extends AbstractTextConverter {
     private File frontCoverImage
     private List<ConvertedSection> leanpubSections = []
     private Object preface
+    private Object lastSrcBlock
 
     private static final def styleMap = [
         'warning'   : 'W',
@@ -264,11 +319,3 @@ class LeanpubConverter extends AbstractTextConverter {
 
 
 }
-
-/*
-attributes:
-encoding:UTF-8, sectids:, toc-placement:auto, stylesheet:, webfonts:, prewrap:, attribute-undefined:drop-line, attribute-missing:skip, iconfont-remote:, caution-caption:Caution, important-caption:Important, note-caption:Note, tip-caption:Tip, warning-caption:Warning, appendix-caption:Appendix, example-caption:Example, figure-caption:Figure, table-caption:Table, toc-title:Table of Contents, manname-title:NAME, untitled-label:Untitled, version-label:Version, last-update-label:Last updated, docfile:simple-book.adoc, docdir:, docname:simple-book, docdate:2015-05-19, doctime:22:42:17 BST, docdatetime:2015-05-19 22:42:17 BST, asciidoctor:, asciidoctor-version:1.5.2, safe-mode-name:secure, safe-mode-secure:, safe-mode-level:20, max-include-depth:64, user-home:., backend:leanpub, linkcss:, doctype:article, doctype-article:, backend-leanpub-doctype-article:, backend-leanpub:, outfilesuffix:.html, filetype:html, filetype-html:, basebackend:leanpub, basebackend-leanpub:, basebackend-leanpub-doctype-article:, localdate:2015-05-20, localtime:10:49:26 BST, localdatetime:2015-05-20 10:49:26 BST, stylesdir:., iconsdir:./images/icons, doctitle:Title, firstname:Asciidoctor, author:Asciidoctor Team, authorinitials:AT, lastname:Team, email:foo@bar.example, authorcount:1, authors:Asciidoctor Team
-
-document.options
-[backend:leanpub, destination_dir:/Users/schalkc/Projects/asciidoctor-dev/asciidoctor-leanpub/core/./build/test/leanpub, header_footer:true, to_dir:/Users/schalkc/Projects/asciidoctor-dev/asciidoctor-leanpub/core/build/resources/test/test-documents, attributes:[docfile:/Users/schalkc/Projects/asciidoctor-dev/asciidoctor-leanpub/core/build/resources/test/test-documents/simple-book.adoc, docdir:/Users/schalkc/Projects/asciidoctor-dev/asciidoctor-leanpub/core/build/resources/test/test-documents, docname:simple-book, docdate:2015-05-19, doctime:22:42:17 BST, docdatetime:2015-05-19 22:42:17 BST]]
- */

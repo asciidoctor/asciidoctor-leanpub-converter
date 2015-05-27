@@ -54,7 +54,7 @@ void documents(Object... docs) { // <4>
     this.documents.addAll(docs as List)
 }
 
-private List<Object> documents // <5>
+private List<Object> documents // <5> <6>
 ----
 <1> Create a getter and annotate with `@InputFiles` or `@OutputFiles`. The purpose of the getter is to translate upon access
     to a `FileCollection` object.
@@ -64,3 +64,18 @@ private List<Object> documents // <5>
     very useful should another plugin author decide to extend your task type.
 <4> Use a method with the name of the property to allow for a expressive `document 'foo','bar'` style.
 <5> The property is left private as appropriate access is already provided.
+<6> This extra callout is just a test
+
+[chapter]
+== Chapter XML Source with Callouts
+
+[source,xml]
+----
+<someXml>
+  <parser/> <!--1-->
+  <tree/> <!--2--> <!--3-->
+</someXml>
+----
+<1> One XML callout
+<2> First XML callout on a line
+<3> Second XML callout on a line
