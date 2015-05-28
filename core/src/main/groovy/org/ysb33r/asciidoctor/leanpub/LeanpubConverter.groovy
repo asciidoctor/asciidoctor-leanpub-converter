@@ -10,6 +10,8 @@ import org.asciidoctor.ast.ListNode
 import org.asciidoctor.ast.Section
 import org.ysb33r.asciidoctor.AbstractTextConverter
 import org.ysb33r.asciidoctor.internal.SourceParser
+import org.ysb33r.asciidoctor.leanpub.internal.CrossReference
+import org.ysb33r.asciidoctor.leanpub.internal.QuotedTextConverter
 
 import java.util.regex.Matcher
 import java.util.regex.Pattern
@@ -52,6 +54,9 @@ class LeanpubConverter extends AbstractTextConverter {
 
         if(!node.attributes.get('leanpub-colist-style')) {
             node.attributes.put('leanpub-colist-style','paragraph')
+        }
+        if(!node.attributes.get('leanpub-colist-prefix')) {
+            node.attributes.put('leanpub-colist-prefix','Line')
         }
     }
 
@@ -153,13 +158,17 @@ class LeanpubConverter extends AbstractTextConverter {
             }
             lastSrcBlock = null
             String content = ''
+            String prefix = node.document.attributes.get('leanpub-colist-prefix') ?: ''
+            String style = node.document.attributes.get('leanpub-colist-style')
+
             ListNode listNode = node as ListNode
             listNode.items.eachWithIndex { ListItem item,int index ->
                 String lineno = lookup[(index+1).toString()]
                 if(lineno == null) {
                     log.error "More items in colist than in preceding source block. Ignoring item."
                 } else {
-                    content+= formatColistLine(item,lineno)
+
+                    content+= formatColistItemLines(style,prefix,lineno,(item.text + LINESEP + item.content + LINESEP).readLines())
                 }
             }
 
@@ -270,15 +279,57 @@ class LeanpubConverter extends AbstractTextConverter {
         }
     }
 
-    private String formatColistLine(ListItem node,final String lineno) {
-        switch(node.attributes.get('leanpub-colist-style')) {
+    /** Takes a bundle of lines from a Colist item and formats them in a way suitable to work with callouts in
+     * Leanpub.
+     *
+     * @param style Colist callout style to apply.
+     * @param prefix Prefix text for source code line.
+     * @param lineno Source code line number to which this applies
+     * @param lines All the lines from a specific item
+     * @return A Leanpub-formatted Colist item.
+     */
+    private String formatColistItemLines(final String style,final String prefix,final String lineno,final List<String> lines) {
+        switch(style) {
+            case 'discussion':
+                return wrapColistLineText(
+                    "D> **${prefix} #${lineno}:** ",
+                    'D>' + ' '.multiply(prefix.size()+3),
+                    lines
+                )
             case 'aside':
-                return 'A> **#' + lineno +':** ' + node.text + LINESEP + node.content
+                return wrapColistLineText(
+                    "A> **${prefix} #${lineno}:** ",
+                    'A>' + ' '.multiply(prefix.size()+3),
+                    lines
+                )
             case 'paragraph':
             default:
-                return '**#' + lineno +':** ' + node.text.replaceAll(~/\r?\n/,' ') + LINESEP + node.content
+                return wrapColistLineText(
+                    "**${prefix} #${lineno}:** ",
+                    '',
+                    lines
+                )
         }
     }
+
+    /** Breaks up multi-line coList lines so that it can be indented and look better aligned
+     *
+     * @param prefix A prefix to ad to each line
+     * @param text The text to be formatted.
+     * @return
+     */
+    private String wrapColistLineText( final String firstPrefix, final String otherPrefix,final List<String> lines) {
+        String formatted = ''
+        lines.eachWithIndex { String line,int idx ->
+            if(!idx) {
+                formatted+= firstPrefix + line + LINESEP
+            } else {
+                formatted+= otherPrefix + line + LINESEP
+            }
+        }
+        return formatted
+    }
+
     private void setFrontCoverFromAttribute(final File imgDir,final String frontCover) {
         frontCoverImage = null
         if(frontCover) {

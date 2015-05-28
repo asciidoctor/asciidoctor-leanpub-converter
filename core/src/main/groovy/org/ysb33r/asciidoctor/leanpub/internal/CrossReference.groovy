@@ -1,4 +1,4 @@
-package org.ysb33r.asciidoctor.leanpub
+package org.ysb33r.asciidoctor.leanpub.internal
 
 /**
  * @author Schalk W. Cronjé
