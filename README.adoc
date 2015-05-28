@@ -6,28 +6,63 @@ asciidoctorj-1.6.0 branch
 
 == Building
 
-```
+[source,bash]
+----
 git clone https://github.com/asciidoctor/asciidoctorj.git -b asciidoctorj-1.6.0
 cd asciidoctorj
 vi gradle.properties
-```
+----
 
 Change the version to `1.6.0-SNAPSHOT`. It is still set as `1.5.3-SNAPSHOT`, but let's avoid confusion with another
 `asciidoctorj` development branch. Save your change, then do
 
-```
+[source,bash]
+----
 cd asciidoctorj-core
 ../gradlew -i build publishToMavenLocal
-```
+----
 
 Now you are ready to clone and build this
 
-```
+[source,bash]
+----
 cd ../../
 git clone https://github.com/ysb33r/asciidoctor-leanpub-converter.git
 cd asciidoctor-leanpub-converter/core
 ./gradlew build install
-```
+----
+
+If you are using Asciidoctor plugin for Gradle then you should be able to do
+
+[source,groovy]
+----
+buildscript {
+    repositories {
+        mavenLocal()
+        jcenter()
+    }
+
+    dependencies {
+        classpath 'org.asciidoctor:asciidoctor-gradle-plugin:1.5.2'
+        classpath 'asciidoctor-leanpub:asciidoctor-leanpub-core:0.1-SNAPSHOT'
+    }
+}
+
+apply plugin : 'org.asciidoctor.gradle.asciidoctor'
+
+repositories {
+    jcenter()
+    mavenLocal()
+}
+
+asciidoctorj {
+   version = '1.6.0-SNAPSHOT'
+}
+
+asciidoctor {
+  backends 'leanpub'
+}
+----
 
 == Parts & Chapters
 
