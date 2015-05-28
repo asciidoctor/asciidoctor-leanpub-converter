@@ -52,7 +52,6 @@ class FileLayoutSpec extends LeanpubSpecification {
 
         when: 'Generating a simple book with four chapters'
         generateOutput('book-with-matter.adoc')
-        //def index= book1.readLines()
 
         then: 'The same number of chapter files should be created'
         manuscriptDir.listFiles(
@@ -84,6 +83,18 @@ chapter_4.txt
 '''
     }
 
+    def "If a chapter or preface is annotated with sample, then include in Sample.txt"() {
+        when: 'Generating a simple book with four chapters'
+        generateOutput('sample-book.adoc')
+
+        then: 'Sample.txt shoudl contain the preface, if annotated and the annotated chapters'
+            sample1.text == '''frontmatter.txt
+preface.txt
+mainmatter.txt
+chapter_3.txt
+'''
+
+    }
     // TODO: Deal with backmatter.txt
     // bibliography, appendix (back)
     //

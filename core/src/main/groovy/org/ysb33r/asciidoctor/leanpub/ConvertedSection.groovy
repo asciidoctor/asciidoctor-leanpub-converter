@@ -17,6 +17,7 @@ class ConvertedSection {
 
     def content
     SectionType type
+    boolean sample = false
 
     Writer write( Writer writer ) {
         if(type == SectionType.PART) {

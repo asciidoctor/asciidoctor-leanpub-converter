@@ -27,6 +27,7 @@ dependencies {
     testRuntime 'org.slf4j:slf4j-simple:1.7.5'
 }
 
+group = 'org.ysb33r.asciidoctor'
 archivesBaseName = 'asciidoctor-leanpub-core'
 
 test {

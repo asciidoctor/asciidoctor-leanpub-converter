@@ -24,6 +24,7 @@ class LeanpubConverter extends AbstractTextConverter {
 
     static final String LINESEP = "\n"
     static final String BOOK = 'Book.txt'
+    static final String SAMPLE = 'Sample.txt'
     static final String DOCFOLDER = 'manuscript'
     static final String FRONTCOVER = 'title_page.png'
     static final Pattern INLINE_IMG_PATTERN = ~/^image:(.+?)\[(.*?)\]$/
@@ -68,12 +69,16 @@ class LeanpubConverter extends AbstractTextConverter {
         imagesToDir.mkdirs()
 
         def chapterNames = []
+        def chaptersInSample = []
         leanpubSections.findAll { ConvertedSection it ->
             it.type == ConvertedSection.SectionType.CHAPTER || it.type == ConvertedSection.SectionType.PART
         }.eachWithIndex { ConvertedSection section, int index ->
             File dest = new File(destDir, (section.type == ConvertedSection.SectionType.PART ? 'part' : 'chapter') + "_${index+1}.txt" )
             dest.withWriter { w -> section.write(w) }
             chapterNames+= dest.name
+            if(section.sample) {
+                chaptersInSample+= dest.name
+            }
         }
 
         new File(destDir,BOOK).withWriter { w ->
@@ -88,9 +93,21 @@ class LeanpubConverter extends AbstractTextConverter {
             // TODO: Add backmatter file name
         }
 
+        new File(destDir,SAMPLE).withWriter { w ->
+            if(preface?.sample) {
+                w.println 'frontmatter.txt'
+                w.println 'preface.txt'
+                w.println 'mainmatter.txt'
+            }
+
+            chaptersInSample.each { w.println it }
+
+            // TODO: Add backmatter file name
+        }
+
         if(preface) {
             new File(destDir,'frontmatter.txt').text = '{frontmatter}'
-            new File(destDir,'preface.txt').text = preface.toString()
+            new File(destDir,'preface.txt').text = preface.content.toString()
             new File(destDir,'mainmatter.txt').text = '{mainmatter}'
         }
 
@@ -105,13 +122,19 @@ class LeanpubConverter extends AbstractTextConverter {
     def convertSection(AbstractNode node, Map<String, Object> opts) {
         Section section = node as Section
         int sectionIndex = -1
+        boolean  inSample = false
+
         log.debug "Transforming section: name=${section.sectname()}, level=${section.level} title=${section.title}"
+        if(section.attributes.leanpub) {
+            Set keywords = section.attributes.leanpub.split(',') as Set
+            inSample= keywords.contains('sample')
+        }
 
         if(section.level==0) {
             leanpubSections+= new ConvertedSection( content :null, type : ConvertedSection.SectionType.PART)
             sectionIndex= leanpubSections.size() - 1
         } else if(section.sectname()=='chapter') {
-            leanpubSections += new ConvertedSection(content: null, type: ConvertedSection.SectionType.CHAPTER)
+            leanpubSections += new ConvertedSection(content: null, type: ConvertedSection.SectionType.CHAPTER, sample : inSample)
             sectionIndex = leanpubSections.size() - 1
         }
 
@@ -124,7 +147,7 @@ class LeanpubConverter extends AbstractTextConverter {
         if(sectionIndex>=0) {
             leanpubSections[sectionIndex].content = content
         }  else if (section.sectname()=='preface') {
-            preface = content
+            preface = new ConvertedSection( content : content, type : ConvertedSection.SectionType.PREFACE, sample : inSample )
         }
 
         content
@@ -330,6 +353,11 @@ class LeanpubConverter extends AbstractTextConverter {
         return formatted
     }
 
+    /** Resolves the location of the front cover image.
+     *
+     * @param imgDir Directory where images are expected to be located. Can be null.
+     * @param frontCover Text from the front-cover-image attribute.
+     */
     private void setFrontCoverFromAttribute(final File imgDir,final String frontCover) {
         frontCoverImage = null
         if(frontCover) {
@@ -355,7 +383,7 @@ class LeanpubConverter extends AbstractTextConverter {
     private File destDir
     private File frontCoverImage
     private List<ConvertedSection> leanpubSections = []
-    private Object preface
+    private ConvertedSection preface
     private Object lastSrcBlock
 
     private static final def styleMap = [

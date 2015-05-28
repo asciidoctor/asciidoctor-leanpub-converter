@@ -55,6 +55,16 @@ Level 1 heading annotated with `[preface]` becomes a Leanpub preface
 == This is a preface
 ```
 
+Leanpub allows chapters to be added to a sample book. If you want chapters or a preface to be added to your sample book,
+add `leanpub='sample'` metadata to the chapter or preface block
+
+```
+[preface,leanpub='sample']
+== Preface
+
+[chapter,leanpub='sample']
+== Chapter
+```
 == Blocks
 
 Poetry blocks are supported by adding a `poem` role to a verse block
@@ -66,9 +76,26 @@ Poem goes here
 ....
 ```
 
+== Source code blocks with callouts
+
+Leanpub does not support callputs in the way Asciidoctor does. Our solution, for when callouts are detected, is to
+generate a source code listing with line numbers. THe associated *colist* block is then generated with corresponding
+line numbers instead of the original callout numbers. The callouts are also removed from the source listing.
+
+Currently it is possible to generate the *colist* block in one of three styles, which in themselves correspond to
+Leanpub blocks. They are:
+
+* *paragraph* (default)
+* *aside*
+* *discussion*
+
+The specific style is set via the `leanpub-colist-style` attribute. Each *colist* item is preceded by a prefix of `Line`.
+This can be changed by setting the `leanpub-colist-prefix` attribute.
+
 == Cover page
 
 Use `:front-cover-page: image:NameOfImage.png[]` to add a Leanpub cover. Currently no size checking is done, but a
 PNG extension is required. See https://leanpub.com/help/manual#leanpub-auto-how-to-insert-cover-images--cover-pages(Leanpub docs)
 for more detail on size requirements.
 
+\
