@@ -135,6 +135,7 @@ abstract class AbstractTextConverter extends AbstractConverter {
     abstract def convertAdmonition(AbstractNode node,Map<String, Object> opts)
     abstract def convertLiteral(AbstractNode node,Map<String, Object> opts)
     abstract def convertVerse(AbstractNode node,Map<String, Object> opts)
+    abstract def convertPass(AbstractNode node,Map<String, Object> opts)
 
 
     /** Paragraph conversion just passes the content back.

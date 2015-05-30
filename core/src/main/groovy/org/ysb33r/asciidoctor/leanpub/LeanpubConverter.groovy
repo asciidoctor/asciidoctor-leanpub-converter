@@ -301,6 +301,11 @@ class LeanpubConverter extends AbstractTextConverter {
             '~'.multiply(6)  + LINESEP
     }
 
+    def convertPass(AbstractNode node,Map<String, Object> opts) {
+        Block block = node as Block
+        block.content
+    }
+
     def convertListingTypeSource(Block block,Map<String, Object> opts) {
         Map annotations = [lang: "\"${block.attributes.language}\""]
         if (block.title) {

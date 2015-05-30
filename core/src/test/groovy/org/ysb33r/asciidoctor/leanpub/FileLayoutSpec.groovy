@@ -148,7 +148,5 @@ chapter_3.txt
 '''
 
     }
-    // TODO: Deal with backmatter.txt
-    // bibliography, appendix (back)
-    //
+
 }
