@@ -12,7 +12,7 @@ import org.ysb33r.asciidoctor.AbstractTextConverter
 import org.ysb33r.asciidoctor.internal.SourceParser
 import org.ysb33r.asciidoctor.leanpub.internal.CrossReference
 import org.ysb33r.asciidoctor.leanpub.internal.QuotedTextConverter
-
+import static org.ysb33r.asciidoctor.leanpub.ConvertedSection.SectionType.*
 import java.util.regex.Matcher
 import java.util.regex.Pattern
 
@@ -70,10 +70,32 @@ class LeanpubConverter extends AbstractTextConverter {
 
         def chapterNames = []
         def chaptersInSample = []
+        boolean hasBackmatter = false
+        boolean hasFrontmatter = preface != null
+
         leanpubSections.findAll { ConvertedSection it ->
-            it.type == ConvertedSection.SectionType.CHAPTER || it.type == ConvertedSection.SectionType.PART
+            it.type == CHAPTER || it.type == PART || it.type == BACKMATTER
         }.eachWithIndex { ConvertedSection section, int index ->
-            File dest = new File(destDir, (section.type == ConvertedSection.SectionType.PART ? 'part' : 'chapter') + "_${index+1}.txt" )
+            String prefix
+            switch(section.type) {
+                case PART:
+                    prefix= 'part'
+                    break
+                case BACKMATTER:
+                    prefix = 'backmatter'
+
+                    if (!hasBackmatter) {
+                        hasBackmatter= true
+                        chapterNames+='backmatter.txt'
+                        chaptersInSample+='backmatter.txt'
+                    }
+
+                    break
+                default:
+                    prefix = 'chapter'
+            }
+
+            File dest = new File(destDir,"${prefix}_${index+1}.txt" )
             dest.withWriter { w -> section.write(w) }
             chapterNames+= dest.name
             if(section.sample) {
@@ -82,15 +104,23 @@ class LeanpubConverter extends AbstractTextConverter {
         }
 
         new File(destDir,BOOK).withWriter { w ->
-            if(preface) {
+
+            if( hasFrontmatter) {
                 w.println 'frontmatter.txt'
+            }
+
+            if(preface) {
                 w.println 'preface.txt'
+            }
+
+            if( hasFrontmatter || hasBackmatter ) {
                 w.println 'mainmatter.txt'
             }
 
-            chapterNames.each { w.println it }
+            chapterNames.each {
+                w.println it
+            }
 
-            // TODO: Add backmatter file name
         }
 
         new File(destDir,SAMPLE).withWriter { w ->
@@ -101,17 +131,22 @@ class LeanpubConverter extends AbstractTextConverter {
             }
 
             chaptersInSample.each { w.println it }
-
-            // TODO: Add backmatter file name
         }
 
         if(preface) {
-            new File(destDir,'frontmatter.txt').text = '{frontmatter}'
             new File(destDir,'preface.txt').text = preface.content.toString()
-            new File(destDir,'mainmatter.txt').text = '{mainmatter}'
         }
 
-        // TODO: Add backmatter content
+        if(hasFrontmatter || hasBackmatter) {
+            new File(destDir, 'mainmatter.txt').text = '{mainmatter}'
+        }
+
+        if(hasFrontmatter) {
+            new File(destDir,'frontmatter.txt').text = '{frontmatter}'
+        }
+        if(hasBackmatter) {
+            new File(destDir,'backmatter.txt').text = '{backmatter}'
+        }
 
         if(frontCoverImage) {
             FileUtils.copyFile(frontCoverImage,new File(imagesToDir,FRONTCOVER))
@@ -131,10 +166,15 @@ class LeanpubConverter extends AbstractTextConverter {
         }
 
         if(section.level==0) {
-            leanpubSections+= new ConvertedSection( content :null, type : ConvertedSection.SectionType.PART)
+            leanpubSections+= new ConvertedSection( content :null, type : PART )
             sectionIndex= leanpubSections.size() - 1
+        } else if(section.sectname()=='preface') {
+            preface = new ConvertedSection(content: null, type: PREFACE, sample : inSample)
         } else if(section.sectname()=='chapter') {
-            leanpubSections += new ConvertedSection(content: null, type: ConvertedSection.SectionType.CHAPTER, sample : inSample)
+            leanpubSections += new ConvertedSection(content: null, type: CHAPTER, sample : inSample)
+            sectionIndex = leanpubSections.size() - 1
+        } else if(section.sectname() =~ /appendix|bibliography|index|glossary/ ) {
+            leanpubSections += new ConvertedSection(content: null, type: BACKMATTER, sample: inSample)
             sectionIndex = leanpubSections.size() - 1
         }
 
@@ -393,8 +433,6 @@ class LeanpubConverter extends AbstractTextConverter {
 //        'caution'   : '',
 //        'important' : ''
     ]
-
-
 
 
 }

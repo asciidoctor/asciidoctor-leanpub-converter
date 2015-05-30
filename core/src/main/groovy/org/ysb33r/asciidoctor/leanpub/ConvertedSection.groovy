@@ -12,6 +12,7 @@ class ConvertedSection {
         CHAPTER,
         PART,
         PREFACE,
+        BACKMATTER,
         OTHER
     }
 

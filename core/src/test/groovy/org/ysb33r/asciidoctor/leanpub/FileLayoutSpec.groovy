@@ -18,6 +18,7 @@
 package org.ysb33r.asciidoctor.leanpub
 
 import org.ysb33r.asciidoctor.leanpub.internal.LeanpubSpecification
+import spock.lang.Ignore
 import spock.lang.Issue
 
 
@@ -83,11 +84,63 @@ chapter_4.txt
 '''
     }
 
+    @Issue('https://leanpub.com/help/manual#leanpub-auto-front-matter-main-matter-and-back-matter')
+    def "If an appendix is found then backmatter should be generated"() {
+
+        when: 'Generating a simple book with preface, four chapters, appendix and references'
+        generateOutput('book-with-front-and-backmatter.adoc')
+
+        then: 'The same number of chapter files should be created'
+        manuscriptDir.listFiles(
+            new FilenameFilter() {
+                @Override
+                boolean accept(File dir, String name) {
+                    name.startsWith('chapter_')
+                }
+            }
+        ).size() == 4
+
+        and: 'Two backmatter files should be created'
+        manuscriptDir.listFiles(
+            new FilenameFilter() {
+                @Override
+                boolean accept(File dir, String name) {
+                    name.startsWith('backmatter_')
+                }
+            }
+        ).size() == 2
+
+        and: 'A preface should exist'
+        new File(manuscriptDir,'preface.txt').exists()
+
+        and: 'frontmatter should contain a single line'
+        new File(manuscriptDir,'frontmatter.txt').text == '''{frontmatter}'''
+
+        and: 'mainmatter should contain a single line'
+        new File(manuscriptDir,'mainmatter.txt').text == '''{mainmatter}'''
+
+        and: 'backmatter should contain a single line'
+        new File(manuscriptDir,'backmatter.txt').text == '''{backmatter}'''
+
+        and: 'Book.txt should contain chapter entries + backmatter, backmatter files'
+        book1.text == '''frontmatter.txt
+preface.txt
+mainmatter.txt
+chapter_1.txt
+chapter_2.txt
+chapter_3.txt
+chapter_4.txt
+backmatter.txt
+backmatter_5.txt
+backmatter_6.txt
+'''
+    }
+
     def "If a chapter or preface is annotated with sample, then include in Sample.txt"() {
         when: 'Generating a simple book with four chapters'
         generateOutput('sample-book.adoc')
 
-        then: 'Sample.txt shoudl contain the preface, if annotated and the annotated chapters'
+        then: 'Sample.txt should contain the preface, if annotated and the annotated chapters'
             sample1.text == '''frontmatter.txt
 preface.txt
 mainmatter.txt
