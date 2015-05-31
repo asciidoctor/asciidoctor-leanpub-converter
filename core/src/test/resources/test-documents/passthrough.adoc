@@ -6,11 +6,6 @@
 This line pass:[**must** *go* `asis`] on a single line.
 
 [chapter]
-== Passthrough block macro
-
-This line pass::[**must** *go* `asis`] on a single line.
-
-[chapter]
 == Passthrough block single line
 
 [pass]

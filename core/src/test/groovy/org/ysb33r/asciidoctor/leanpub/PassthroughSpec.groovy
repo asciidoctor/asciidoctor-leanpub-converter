@@ -25,27 +25,10 @@ This line **must** *go* `asis` on a single line.
 
     }
 
-    @Ignore
-    @Issue('https://github.com/ysb33r/asciidoctor-leanpub-converter/issues/27')
-    def "Passthrough block macro"() {
-        setup:
-        File chapter = new File(manuscriptDir,'chapter_2.txt')
-
-        when:
-        generateOutput('passthrough.adoc')
-
-        then:
-        chapter.text == '''# Passthrough inline macro
-
-This line **must** *go* `asis` on a single line.
-'''
-
-    }
-
     @Issue('https://github.com/ysb33r/asciidoctor-leanpub-converter/issues/22')
     def "Passthrough block single line"() {
         setup:
-        File chapter = new File(manuscriptDir,'chapter_3.txt')
+        File chapter = new File(manuscriptDir,'chapter_2.txt')
 
         when:
         generateOutput('passthrough.adoc')
@@ -62,7 +45,7 @@ This is an **extra** line.
     @Issue('https://github.com/ysb33r/asciidoctor-leanpub-converter/issues/22')
     def "Passthrough block multi-line"() {
         setup:
-        File chapter = new File(manuscriptDir,'chapter_4.txt')
+        File chapter = new File(manuscriptDir,'chapter_3.txt')
 
         when:
         generateOutput('passthrough.adoc')
@@ -79,7 +62,7 @@ This is an extra line.
     @Issue('https://github.com/ysb33r/asciidoctor-leanpub-converter/issues/22')
     def "Passthrough block multi-line with substitution"() {
         setup:
-        File chapter = new File(manuscriptDir,'chapter_5.txt')
+        File chapter = new File(manuscriptDir,'chapter_4.txt')
 
         when:
         generateOutput('passthrough.adoc')
