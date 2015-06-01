@@ -135,6 +135,19 @@ Leanpub blocks. They are:
 The specific style is set via the `leanpub-colist-style` attribute. Each *colist* item is preceded by a prefix of `Line`.
 This can be changed by setting the `leanpub-colist-prefix` attribute.
 
+== Images
+
+No size checks are done on images, they are just copied to the `manuscript/images` folder. Remember that Leanpub prefers
+300dpi images.  See (https://leanpub.com/help/manual#leanpub-auto-images-and-cover-pages)[Leanpub docs]. Also take note
+that floating lists around images do not work in Leanpub. This converter will not prevent this from happening. It is up
+to the author to take care of that.
+
+The `:figure-caption!:` attribute is ignored - images are not numbered.
+
+Most Asciidoctor image metadata is ignored in `image::sunset.jpg[Sunset,300,200,link="http://to/some.jpg"]`, none of the
+alternate text, size or link be be converted. However `float` will be converted.
+
+
 == Cover page
 
 Use `:front-cover-page: image:NameOfImage.png[]` to add a Leanpub cover. Currently no size checking is done, but a

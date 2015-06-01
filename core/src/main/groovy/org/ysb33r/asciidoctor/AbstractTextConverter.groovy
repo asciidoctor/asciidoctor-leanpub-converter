@@ -103,7 +103,7 @@ abstract class AbstractTextConverter extends AbstractConverter {
         }
     }
 
-    /** Try to resolve an image directory, but looking for {@code imagesdir}.
+    /** Try to resolve an image directory, by looking for {@code imagesdir}.
      *
      * @param node
      * @return Returns a File instance of resovled, otherwise null
@@ -112,6 +112,15 @@ abstract class AbstractTextConverter extends AbstractConverter {
         node.document.attributes['imagesdir'] ? new File(node.document.attributes['imagesdir']) : null
     }
 
+    /** Try to resolve an image directory, by looking for {@code imagesdir}.
+     *
+     * @param node
+     * @param docDir Document directory
+     * @return Returns a File instance of resovled, otherwise docDir
+     */
+    File imagesDir(AbstractNode node,final File docDir) {
+        node.document.attributes['imagesdir'] ? new File(node.document.attributes['imagesdir']) : docDir
+    }
 
     /** Called before any processing on the document node starts. Use this to set up any appropriate
      * properties based upon document options and backend attributes.
@@ -136,6 +145,8 @@ abstract class AbstractTextConverter extends AbstractConverter {
     abstract def convertLiteral(AbstractNode node,Map<String, Object> opts)
     abstract def convertVerse(AbstractNode node,Map<String, Object> opts)
     abstract def convertPass(AbstractNode node,Map<String, Object> opts)
+    abstract def convertImage(AbstractNode node,Map<String, Object> opts)
+    abstract def convertInlineImage(AbstractNode node,Map<String, Object> opts)
 
 
     /** Paragraph conversion just passes the content back.

@@ -152,6 +152,11 @@ class LeanpubConverter extends AbstractTextConverter {
             FileUtils.copyFile(frontCoverImage,new File(imagesToDir,FRONTCOVER))
         }
 
+        images.each { img ->
+            FileUtils.copyFile(img,new File(imagesToDir,img.name))
+        }
+
+        null // Currently return null as AsciidoctorJ has no way of calling us back to spool the object
     }
 
     def convertSection(AbstractNode node, Map<String, Object> opts) {
@@ -347,6 +352,55 @@ class LeanpubConverter extends AbstractTextConverter {
         }
     }
 
+    def convertImage(AbstractNode node,Map<String, Object> opts) {
+        Block block = node as Block
+
+        def imageAttrs = []
+        String prefix = ''
+
+        if(block.getRole()) {
+            def roles = block.getRole().split( ' ' )
+            // Find anything in roles that is in validImageFloats?, then set role to that
+            def foundFloat = roles.find { validImageFloats.contains(it) }
+
+            if(foundFloat) {
+                imageAttrs+= "float=\"${foundFloat}\""
+            }
+        } else if (block.attributes.float) {
+            if(validImageFloats.contains(block.attributes.float)) {
+                imageAttrs+= "float=\"${block.attributes.float}\""
+            } else {
+                log.error "'${block.attributes.float}' is not a valid image float string for Leanpub. Will ignore and continue."
+            }
+
+        } else if (block.attributes.align && block.attributes.align == 'center') {
+            prefix = 'C> '
+        }
+
+        if(block.attributes.leanpub) {
+            block.attributes.leanpub.split(',').each { item ->
+                def kv = item.split('=')
+
+                switch(kv[0]) {
+                    case 'width':
+                        imageAttrs+= "width=${kv[1]}"
+                        break
+                }
+            }
+        }
+
+        images.add new File(imagesDir(block,docDir),block.attributes.target)
+        (imageAttrs.size() ? "{${imageAttrs.join(',')}}${LINESEP}" : '')  +
+             "${prefix}![${block.title?:''}](images/${block.attributes.target} \"${block.attributes.alt}\")" +
+            LINESEP
+    }
+
+    def convertInlineImage(AbstractNode node,Map<String, Object> opts) {
+        Inline inline = node as Inline
+        images.add new File(imagesDir(inline,docDir),inline.target)
+        "![](images/${inline.target} \"${inline.attributes.alt}\")"
+    }
+
     /** Takes a bundle of lines from a Colist item and formats them in a way suitable to work with callouts in
      * Leanpub.
      *
@@ -430,6 +484,7 @@ class LeanpubConverter extends AbstractTextConverter {
     private List<ConvertedSection> leanpubSections = []
     private ConvertedSection preface
     private Object lastSrcBlock
+    private List<File> images = []
 
     private static final def styleMap = [
         'warning'   : 'W',
@@ -439,5 +494,5 @@ class LeanpubConverter extends AbstractTextConverter {
 //        'important' : ''
     ]
 
-
+    private static final def validImageFloats = [ 'left', 'right', 'inside', 'outside']
 }
