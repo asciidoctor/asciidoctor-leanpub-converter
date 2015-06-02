@@ -26,8 +26,7 @@ class BlocksSpec extends LeanpubSpecification {
 
     }
 
-    @Issue('https://github.com/ysb33r/asciidoctor-leanpub-converter/issues/10')
-    @Issue('https://leanpub.com/help/manual#crosslink_from_endnotes')
+    @Issue('https://github.com/ysb33r/asciidoctor-leanpub-converter/issues/10, https://leanpub.com/help/manual#crosslink_from_endnotes')
     def "Poetry"() {
         setup:
         File chapter = new File(manuscriptDir,'chapter_2.txt')

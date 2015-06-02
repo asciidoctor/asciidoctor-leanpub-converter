@@ -9,8 +9,7 @@ import spock.lang.Issue
  */
 class AdmonitionsSpec extends LeanpubSpecification {
 
-    @Issue('https://github.com/ysb33r/asciidoctor-leanpub-converter/issues/4')
-    @Issue('https://leanpub.com/help/manual#leanpub-auto-warning')
+    @Issue('https://github.com/ysb33r/asciidoctor-leanpub-converter/issues/4, https://leanpub.com/help/manual#leanpub-auto-warning')
     def "Warning"() {
         setup:
             File chapter = new File(manuscriptDir,'chapter_1.txt')

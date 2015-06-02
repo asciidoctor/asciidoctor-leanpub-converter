@@ -9,8 +9,7 @@ import spock.lang.Issue
  */
 class ImagesSpec extends LeanpubSpecification {
 
-    @Issue('https://leanpub.com/help/manual#leanpub-auto-how-to-insert-an-image')
-    @Issue('https://github.com/ysb33r/asciidoctor-leanpub-converter/issues/15')
+    @Issue('https://leanpub.com/help/manual#leanpub-auto-how-to-insert-an-image, https://github.com/ysb33r/asciidoctor-leanpub-converter/issues/15')
     def "Processing images"() {
         setup:
         File chapter1 = new File(manuscriptDir,'chapter_1.txt')
