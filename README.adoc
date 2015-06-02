@@ -145,7 +145,8 @@ to the author to take care of that.
 The `:figure-caption!:` attribute is ignored - images are not numbered.
 
 Most Asciidoctor image metadata is ignored in `image::sunset.jpg[Sunset,300,200,link="http://to/some.jpg"]`, none of the
-alternate text, size or link be be converted. However `float` will be converted.
+size or link be be converted, but alternative text will be converted for both inline and block images.
+The `float` metadata will be converted for bloc images.
 
 
 == Cover page
