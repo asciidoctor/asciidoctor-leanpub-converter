@@ -26,7 +26,6 @@ W> This is a warning admonition.
 W>   And some more text.
 
 '''
-
     }
 
     @Issue('https://leanpub.com/help/manual#leanpub-auto-warning')
@@ -46,7 +45,32 @@ W> ## Warning with title
 W> This is a warning with title
 
 '''
+    }
 
+    @Issue('https://github.com/ysb33r/asciidoctor-leanpub-converter/issues/28')
+    def "Caution and Important"() {
+        setup:
+        File chapter = new File(manuscriptDir,'chapter_3.txt')
+
+        when:
+        generateOutput('admonitions.adoc')
+
+        then:
+        chapter.text == '''# Caution and Important
+
+{icon=fire}
+G> This is a caution
+
+
+Some text in between
+
+{icon=university}
+G> ## Yip, really important
+G> This is important text
+
+
+Some text afterwards
+'''
     }
 
 }
