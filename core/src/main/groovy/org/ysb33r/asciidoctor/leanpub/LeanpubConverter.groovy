@@ -306,6 +306,14 @@ class LeanpubConverter extends AbstractTextConverter {
             '~'.multiply(6)  + LINESEP
     }
 
+    def convertSidebar(AbstractNode node,Map<String, Object> opts) {
+        Block block = node as Block
+        (block.title ? ("A> ## ${block.title}" + LINESEP) : '') +
+            block.content.readLines().collect {
+                'A> ' + it
+            }.join(LINESEP) + LINESEP
+    }
+
     def convertPass(AbstractNode node,Map<String, Object> opts) {
         Block block = node as Block
         block.content

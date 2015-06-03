@@ -63,4 +63,25 @@ A> *Fog*
 '''
     }
 
+    def "Sidebar"() {
+        setup:
+        File chapter = new File(manuscriptDir,'chapter_4.txt')
+
+        when:
+        generateOutput('blocks.adoc')
+
+        then:
+        chapter.text == '''# Two Sidebar Blocks
+
+A> ## This one has a title
+A> Foo
+A> Bar
+
+A> And this one does not
+A> 
+A> mickey
+A> minny
+'''
+    }
+
 }

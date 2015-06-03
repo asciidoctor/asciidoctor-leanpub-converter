@@ -144,6 +144,7 @@ abstract class AbstractTextConverter extends AbstractConverter {
     abstract def convertAdmonition(AbstractNode node,Map<String, Object> opts)
     abstract def convertLiteral(AbstractNode node,Map<String, Object> opts)
     abstract def convertVerse(AbstractNode node,Map<String, Object> opts)
+    abstract def convertSidebar(AbstractNode node,Map<String, Object> opts)
     abstract def convertPass(AbstractNode node,Map<String, Object> opts)
     abstract def convertImage(AbstractNode node,Map<String, Object> opts)
     abstract def convertInlineImage(AbstractNode node,Map<String, Object> opts)

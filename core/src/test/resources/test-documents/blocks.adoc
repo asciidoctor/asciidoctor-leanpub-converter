@@ -26,3 +26,21 @@ ____
 The fog comes
 on little cat feet
 ____
+
+[chapter]
+== Two Sidebar Blocks
+
+
+.This one has a title
+****
+Foo
+Bar
+****
+
+
+****
+And this one does not
+
+mickey
+minny
+****
