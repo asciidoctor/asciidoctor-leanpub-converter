@@ -148,6 +148,9 @@ Most Asciidoctor image metadata is ignored in `image::sunset.jpg[Sunset,300,200,
 size or link be be converted, but alternative text will be converted for both inline and block images.
 The `float` metadata will be converted for bloc images.
 
+== Tables
+
+Awaiting https://github.com/asciidoctor/asciidoctorj/issues/327[AsciidoctorJ #327] to be fixed.
 
 == Cover page
 
@@ -155,4 +158,3 @@ Use `:front-cover-page: image:NameOfImage.png[]` to add a Leanpub cover. Current
 PNG extension is required. See https://leanpub.com/help/manual#leanpub-auto-how-to-insert-cover-images--cover-pages(Leanpub docs)
 for more detail on size requirements.
 
-\
