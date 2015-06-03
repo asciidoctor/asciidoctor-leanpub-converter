@@ -44,3 +44,73 @@ And this one does not
 mickey
 minny
 ****
+
+[chapter]
+== Simple MD-style blockquote
+
+> First line,
+> Second line.
+
+[chapter]
+== Simple MD-style blockquote with reference
+
+> First line,
+> Second line.
+> -- Asciidoctor Team, Code of the Asciidoctors: Volume X
+
+[chapter]
+== Multi-level MD-style blockquote
+
+////
+This is straight from Asciidoctor documentation
+////
+
+> > What's new?
+>
+> I've got Markdown in my AsciiDoc!
+>
+> > Like what?
+>
+> * Blockquotes
+> * Headings
+> * Fenced code blocks
+>
+> > Is there more?
+>
+> Yep. AsciiDoc and Markdown share a lot of common syntax already.
+
+[chapter]
+== Air Quotes
+
+[,African proverb]
+""
+When you want to go fast, go alone.
+When you want to go far, go together.
+""
+
+
+""
+Simple air quotes, but not citation.
+""
+
+[chapter]
+== Quoted Paragraph
+
+"Quoted paragraph with citation."
+-- Asciidoctor Team, Code of the Asciidoctors: Volume X
+
+[chapter]
+== Quote Blocks
+
+[quote, Asciidoctor Team, Code of the Asciidoctors: Volume X]
+Quoted short block with citation.
+
+
+.Quoted short block
+[quote, Asciidoctor Team, Code of the Asciidoctors: Volume X]
+Quoted short block with citation and title
+
+[quote, Asciidoctor Team, Code of the Asciidoctors: Volume X]
+____
+Multi-line quoted block
+____

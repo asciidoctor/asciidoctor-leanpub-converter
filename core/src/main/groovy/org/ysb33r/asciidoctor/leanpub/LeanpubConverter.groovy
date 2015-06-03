@@ -314,6 +314,18 @@ class LeanpubConverter extends AbstractTextConverter {
             }.join(LINESEP) + LINESEP
     }
 
+    def convertQuote(AbstractNode node,Map<String, Object> opts) {
+        Block block = node as Block
+        String convertedBlock = (block.title ? ("> ## ${block.title}" + LINESEP) : '') +
+            block.content.readLines().collect {
+                '> ' + it
+            }.join(LINESEP) + LINESEP +
+            (block.attributes.attribution ? "> ${LINESEP}> -- **${block.attributes.attribution}**${LINESEP}" : '') +
+            (block.attributes.citetitle ? "> *${block.attributes.citetitle}*${LINESEP}" : '')
+        
+        convertedBlock.replaceAll('&#8217;',"'") /* Set quotes as is, not fancy */
+    }
+
     def convertPass(AbstractNode node,Map<String, Object> opts) {
         Block block = node as Block
         block.content
