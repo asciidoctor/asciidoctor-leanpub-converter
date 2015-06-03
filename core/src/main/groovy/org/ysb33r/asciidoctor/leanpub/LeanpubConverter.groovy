@@ -322,7 +322,7 @@ class LeanpubConverter extends AbstractTextConverter {
             }.join(LINESEP) + LINESEP +
             (block.attributes.attribution ? "> ${LINESEP}> -- **${block.attributes.attribution}**${LINESEP}" : '') +
             (block.attributes.citetitle ? "> *${block.attributes.citetitle}*${LINESEP}" : '')
-        
+
         convertedBlock.replaceAll('&#8217;',"'") /* Set quotes as is, not fancy */
     }
 
@@ -356,17 +356,20 @@ class LeanpubConverter extends AbstractTextConverter {
     def convertAdmonition(AbstractNode node,Map<String, Object> opts) {
         Block block = node as Block
 
-        String prefix = styleMap[block.attributes.name]
-        if(!prefix) {
+        def style = styleMap[block.attributes.name]
+        if(!style) {
             log.warn "${block.attributes.name} not recognised as a Leanpub admonition. Will render as normal text"
             block.attributes.style + ': ' + block.lines().join(LINESEP)
         } else {
             String content = ''
+            if(style['icon'] && style['icon'].size()) {
+                content+= "{icon=${style.icon}}${LINESEP}"
+            }
             if(block.title) {
-                content+= prefix + '> ## ' + block.title + LINESEP
+                content+= style.prefix + '> ## ' + block.title + LINESEP
             }
             block.lines().each {
-                content+= prefix + '> ' + it + LINESEP
+                content+= style.prefix + '> ' + it + LINESEP
             }
             content + LINESEP
         }
@@ -507,11 +510,11 @@ class LeanpubConverter extends AbstractTextConverter {
     private List<File> images = []
 
     private static final def styleMap = [
-        'warning'   : 'W',
-        'tip'       : 'T',
-        'note'      : 'I',
-//        'caution'   : '',
-//        'important' : ''
+        'warning'   : [ prefix : 'W' ],
+        'tip'       : [ prefix : 'T' ],
+        'note'      : [ prefix : 'I' ],
+        'caution'   : [ prefix : 'G', icon: 'fire' ],
+        'important' : [ prefix : 'G', icon: 'university' ],
     ]
 
     private static final def validImageFloats = [ 'left', 'right', 'inside', 'outside']
