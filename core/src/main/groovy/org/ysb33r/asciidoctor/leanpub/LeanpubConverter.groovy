@@ -28,6 +28,7 @@ class LeanpubConverter extends AbstractTextConverter {
     static final String DOCFOLDER = 'manuscript'
     static final String FRONTCOVER = 'title_page.png'
     static final Pattern INLINE_IMG_PATTERN = ~/^image:(.+?)\[(.*?)\]$/
+    static final Pattern LISTITEM_BIBREF_PATTERN = ~/(?s)(.+\s+)?(\{#.+?\})(.+)/
 
     String encoding = 'utf-8'
 
@@ -213,6 +214,11 @@ class LeanpubConverter extends AbstractTextConverter {
         return "[${inline.text}](${inline.target})"
     }
 
+    def convertAnchorTypeBibref(AbstractNode node, Map<String, Object> opts) {
+        Inline inline = node as Inline
+        "{#${inline.text}}${LINESEP}"
+    }
+
     @Override
     def convertColist(AbstractNode node,Map<String, Object> opts) {
         if(lastSrcBlock) {
@@ -254,8 +260,34 @@ class LeanpubConverter extends AbstractTextConverter {
         ' '.multiply(item.level*2-2) + '1. ' + item.text + LINESEP + item.content
     }
 
+    /** Create an unordered list item, but takes special care if the list item is part of bibliography
+     *
+     * @param item
+     * @param opts
+     * @return
+     */
     def convertListItemTypeUlist(ListItem item, Map<String, Object> opts) {
         return ' '.multiply(item.level*2-2) + '* ' + item.text + LINESEP + item.content
+    }
+
+
+    /** Takes special care if the list item is part of bibliography
+     *
+     * @param item
+     * @param opts
+     * @return
+     */
+    def convertListItemTypeBibreflist(ListItem item, Map<String, Object> opts) {
+        // Strip the anchor, write it on a separate line the write the rest
+        def matcher = item.text.replaceAll(LINESEP,' ') =~ LISTITEM_BIBREF_PATTERN
+        if(matcher.matches()) {
+            return matcher[0][2] + LINESEP +
+                (matcher[0][1] ?: '') +
+                matcher[0][3].trim() + LINESEP + item.content + LINESEP
+        }
+
+        item.text.trim() + LINESEP + item.content + LINESEP
+
     }
 
     def convertThematicBreak(AbstractNode node,Map<String, Object> opts) {

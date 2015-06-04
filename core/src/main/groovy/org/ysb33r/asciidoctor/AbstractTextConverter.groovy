@@ -177,12 +177,18 @@ abstract class AbstractTextConverter extends AbstractConverter {
 
     def convertListItem(AbstractNode node,Map<String, Object> opts) {
         ListItem item = node as ListItem
-        "${itemMethodName('convertListItemType',node.parent.context)}"(node,opts)
+        if(item.parent.attributes?.style == 'bibliography' || item.parent.parent.attributes?.style == 'bibliography') {
+            convertListItemTypeBibreflist(node,opts)
+        }
+        else {
+            "${itemMethodName('convertListItemType', node.parent.context)}"(node, opts)
+        }
     }
 
     abstract def convertListItemTypeColist(ListItem node, Map<String, Object> opts)
     abstract def convertListItemTypeOlist(ListItem node, Map<String, Object> opts)
     abstract def convertListItemTypeUlist(ListItem node, Map<String, Object> opts)
+    abstract def convertListItemTypeBibreflist(ListItem node, Map<String, Object> opts)
 
     /** Redirects an anchor to the appropriate anchor type converter
      *
@@ -197,6 +203,7 @@ abstract class AbstractTextConverter extends AbstractConverter {
 
     abstract def convertAnchorTypeXref(AbstractNode node, Map<String, Object> opts)
     abstract def convertAnchorTypeLink(AbstractNode node, Map<String, Object> opts)
+    abstract def convertAnchorTypeBibref(AbstractNode node, Map<String, Object> opts)
 
     def convertListing(AbstractNode node,Map<String, Object> opts) {
         Block block = node as Block

@@ -1,0 +1,39 @@
+= Bibliography
+
+////
+Re-using examples from Asciidoctor documentation
+////
+
+[chapter
+== Content
+
+_The Pragmatic Programmer_ <<prag>> should be required reading for
+all developers.
+
+[appendix]
+== Fake Appendix
+
+=== Section with References
+
+[bibliography]
+- [[[prag]]] Andy Hunt + Dave Thomas. The Pragmatic Programmer:
+  From Journeyman to Master. Addison-Wesley. 1999.
+- [[[seam]]] Dan Allen. Seam in Action. Manning Publications.
+  2008.
+
+[bibliography]
+== Chapter with References
+
+- [[[prag]]] Andy Hunt + Dave Thomas. The Pragmatic Programmer:
+  From Journeyman to Master. Addison-Wesley. 1999.
+- [[[seam]]] Dan Allen. Seam in Action. Manning Publications.
+  2008.
+
+[bibliography]
+== Chapter with Escaped Characters
+
+- [[[prag]]] Andy Hunt & Dave Thomas. The Pragmatic Programmer:
+  From Journeyman to Master. Addison-Wesley. 1999.
+- [[[seam]]] Dan Allen. Seam in Action. Manning Publications.
+  2008.
+
