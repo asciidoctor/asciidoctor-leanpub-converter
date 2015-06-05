@@ -71,8 +71,6 @@ class LeanpubConverter extends AbstractTextConverter {
 
         def chapterNames = []
         def chaptersInSample = []
-//        boolean hasBackmatter = false
-//        boolean hasFrontmatter = preface != null || dedication != null
 
         int index=1
         document.parts.each { part ->
@@ -113,36 +111,6 @@ class LeanpubConverter extends AbstractTextConverter {
             }
             ++index
         }
-
-//        mainSections.findAll { ConvertedSection it ->
-//            it.type == CHAPTER || it.type == PART || it.type == BACKMATTER
-//        }.eachWithIndex { ConvertedSection section, int index ->
-//            String prefix
-//            switch(section.type) {
-//                case PART:
-//                    prefix= 'part'
-//                    break
-//                case BACKMATTER:
-//                    prefix = 'backmatter'
-//
-//                    if (!hasBackmatter) {
-//                        hasBackmatter= true
-//                        chapterNames+='backmatter.txt'
-//                        chaptersInSample+='backmatter.txt'
-//                    }
-//
-//                    break
-//                default:
-//                    prefix = 'chapter'
-//            }
-//
-//            File dest = new File(destDir,"${prefix}_${index+1}.txt" )
-//            dest.withWriter { w -> section.write(w) }
-//            chapterNames+= dest.name
-//            if(section.sample) {
-//                chaptersInSample+= dest.name
-//            }
-//        }
 
         new File(destDir,BOOK).withWriter { w ->
 
@@ -223,8 +191,6 @@ class LeanpubConverter extends AbstractTextConverter {
             document.addPart()
             document.currentPart.title = "-# ${section.title}${LINESEP}${LINESEP}"
             return section.content
-//            mainSections+= new ConvertedSection( content : formatSection(section), type : PART )
-//            return mainSections[mainSections.size() - 1]
         } else if(section.level == 1) {
 
             switch(section.sectname()) {
@@ -236,8 +202,6 @@ class LeanpubConverter extends AbstractTextConverter {
                         log.warn "A [preface] level one section was processed previously. This one will be ignored."
                         return ''
                     }
-//                    preface = new ConvertedSection(content: formatSection(section), type: PREFACE, sample: inSample)
-//                    return preface.content.toString()
                 case 'dedication' :
                     if(document.dedication == null) {
                         document.dedication = new ConvertedSection(content: formatDedication(section), type: DEDICATION, sample: false)
@@ -246,45 +210,19 @@ class LeanpubConverter extends AbstractTextConverter {
                         log.warn "A [dedication] level one section was processed previously. This one will be ignored."
                         return ''
                     }
-//                    if(dedication == null) {
-//                        dedication = new ConvertedSection(content: formatDedication(section), type: DEDICATION, sample: false)
-//                        return dedication.content.toString()
-//                    } else {
-//                        log.warn "A [dedication] level one section was processed previously. This one will be ignored."
-//                        return ''
-//                    }
                 case 'chapter':
                     document.addChapterToPart(new ConvertedSection(content: formatSection(section), type: CHAPTER, sample: inSample))
                     return document.currentPart.chapters[-1].content
-//                    mainSections += new ConvertedSection(content: formatSection(section), type: CHAPTER, sample: inSample)
-//                    return mainSections[-1].content.toString()
                 case ~/appendix|bibliography|index|glossary/:
                     return document.addBackmatter(new ConvertedSection(
                         content: formatSection(section),
                         type: BACKMATTER,
                         sample: inSample
                     )).content
-//                    mainSections += new ConvertedSection(content: formatSection(section), type: BACKMATTER, sample: inSample)
-//                    return mainSections[-1].content.toString()
-////            sectionIndex = mainSections.size() - 1
-////            return mainSections[sectionIndex].content
             }
         }
 
         return formatSection(section)
-//        String content = (section.level==0 ? '-#' : '#'.multiply(section.level)) +
-//            ' ' +
-//            section.title +
-//            LINESEP + LINESEP +
-//            section.content
-
-//        if(sectionIndex>=0) {
-//            mainSections[sectionIndex].content = content
-//        }  else if (section.sectname()=='preface') {
-//            preface = new ConvertedSection( content : content, type : ConvertedSection.SectionType.PREFACE, sample : inSample )
-//        }
-
-//        content
     }
 
     def convertInlineQuoted(AbstractNode node, Map<String, Object> opts) {
@@ -652,9 +590,6 @@ class LeanpubConverter extends AbstractTextConverter {
     private File docDir
     private File destDir
     private File frontCoverImage
-//    private List<ConvertedSection> mainSections = []
-//    private ConvertedSection dedication
-//    private ConvertedSection preface
     private Object lastSrcBlock
     private List<File> images = []
 
