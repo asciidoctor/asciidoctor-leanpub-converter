@@ -11,9 +11,9 @@ class ConvertedSection {
     enum SectionType {
         CHAPTER,
         PART,
+        DEDICATION,
         PREFACE,
-        BACKMATTER,
-        OTHER
+        BACKMATTER
     }
 
     def content
@@ -21,16 +21,6 @@ class ConvertedSection {
     boolean sample = false
 
     Writer write( Writer writer ) {
-        if(type == SectionType.PART) {
-            for (line in content.toString().readLines())  {
-                if( line.startsWith('# ')) {
-                    break
-                }
-                writer.println line
-            }
-        } else {
-            writer << content
-        }
-        writer
+        writer << content
     }
 }

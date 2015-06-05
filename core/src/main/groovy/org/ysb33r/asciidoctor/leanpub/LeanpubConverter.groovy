@@ -71,50 +71,94 @@ class LeanpubConverter extends AbstractTextConverter {
 
         def chapterNames = []
         def chaptersInSample = []
-        boolean hasBackmatter = false
-        boolean hasFrontmatter = preface != null
+//        boolean hasBackmatter = false
+//        boolean hasFrontmatter = preface != null || dedication != null
 
-        leanpubSections.findAll { ConvertedSection it ->
-            it.type == CHAPTER || it.type == PART || it.type == BACKMATTER
-        }.eachWithIndex { ConvertedSection section, int index ->
-            String prefix
-            switch(section.type) {
-                case PART:
-                    prefix= 'part'
-                    break
-                case BACKMATTER:
-                    prefix = 'backmatter'
+        int index=1
+        document.parts.each { part ->
+            if(document.isMultiPart()) {
+                File dest = new File(destDir,"part_${index}.txt" )
+                dest.withWriter { part.write(it) }
 
-                    if (!hasBackmatter) {
-                        hasBackmatter= true
-                        chapterNames+='backmatter.txt'
-                        chaptersInSample+='backmatter.txt'
-                    }
+                chapterNames += dest.name
+                ++index
 
-                    break
-                default:
-                    prefix = 'chapter'
+                if (part.sample) {
+                    chaptersInSample += dest.name
+                }
             }
 
-            File dest = new File(destDir,"${prefix}_${index+1}.txt" )
-            dest.withWriter { w -> section.write(w) }
-            chapterNames+= dest.name
-            if(section.sample) {
-                chaptersInSample+= dest.name
+            part.chapters.each { chapter ->
+                File dest = new File(destDir,"chapter_${index}.txt" )
+                dest.withWriter { chapter.write(it) }
+                chapterNames+= dest.name
+                ++index
+                if(chapter.sample) {
+                    chaptersInSample+= dest.name
+                }
             }
         }
 
+        if (document.hasBackMatter()) {
+            chapterNames += 'backmatter.txt'
+            chaptersInSample += 'backmatter.txt'
+        }
+
+        document.backmatter.each { bm ->
+            File dest = new File(destDir,"backmatter_${index}.txt" )
+            dest.withWriter { bm.write(it) }
+            chapterNames+= dest.name
+            if(bm.sample) {
+                chaptersInSample+= dest.name
+            }
+            ++index
+        }
+
+//        mainSections.findAll { ConvertedSection it ->
+//            it.type == CHAPTER || it.type == PART || it.type == BACKMATTER
+//        }.eachWithIndex { ConvertedSection section, int index ->
+//            String prefix
+//            switch(section.type) {
+//                case PART:
+//                    prefix= 'part'
+//                    break
+//                case BACKMATTER:
+//                    prefix = 'backmatter'
+//
+//                    if (!hasBackmatter) {
+//                        hasBackmatter= true
+//                        chapterNames+='backmatter.txt'
+//                        chaptersInSample+='backmatter.txt'
+//                    }
+//
+//                    break
+//                default:
+//                    prefix = 'chapter'
+//            }
+//
+//            File dest = new File(destDir,"${prefix}_${index+1}.txt" )
+//            dest.withWriter { w -> section.write(w) }
+//            chapterNames+= dest.name
+//            if(section.sample) {
+//                chaptersInSample+= dest.name
+//            }
+//        }
+
         new File(destDir,BOOK).withWriter { w ->
 
-            if( hasFrontmatter) {
+            if( document.hasFrontMatter() ) {
                 w.println 'frontmatter.txt'
             }
 
-            if(preface) {
+            if(document.dedication) {
+                w.println 'dedication.txt'
+            }
+
+            if(document.preface) {
                 w.println 'preface.txt'
             }
 
-            if( hasFrontmatter || hasBackmatter ) {
+            if( document.hasFrontMatter() || document.hasBackMatter() ) {
                 w.println 'mainmatter.txt'
             }
 
@@ -125,7 +169,7 @@ class LeanpubConverter extends AbstractTextConverter {
         }
 
         new File(destDir,SAMPLE).withWriter { w ->
-            if(preface?.sample) {
+            if(document.preface?.sample) {
                 w.println 'frontmatter.txt'
                 w.println 'preface.txt'
                 w.println 'mainmatter.txt'
@@ -134,18 +178,22 @@ class LeanpubConverter extends AbstractTextConverter {
             chaptersInSample.each { w.println it }
         }
 
-        if(preface) {
-            new File(destDir,'preface.txt').text = preface.content.toString()
+        if(document.dedication) {
+            new File(destDir,'dedication.txt').text = document.dedication.content.toString()
         }
 
-        if(hasFrontmatter || hasBackmatter) {
+        if(document.preface) {
+            new File(destDir,'preface.txt').text = document.preface.content.toString()
+        }
+
+        if(document.hasFrontMatter() || document.hasBackMatter() ) {
             new File(destDir, 'mainmatter.txt').text = '{mainmatter}'
         }
 
-        if(hasFrontmatter) {
+        if(document.hasFrontMatter() ) {
             new File(destDir,'frontmatter.txt').text = '{frontmatter}'
         }
-        if(hasBackmatter) {
+        if(document.hasBackMatter() ) {
             new File(destDir,'backmatter.txt').text = '{backmatter}'
         }
 
@@ -172,31 +220,71 @@ class LeanpubConverter extends AbstractTextConverter {
         }
 
         if(section.level==0) {
-            leanpubSections+= new ConvertedSection( content :null, type : PART )
-            sectionIndex= leanpubSections.size() - 1
-        } else if(section.sectname()=='preface') {
-            preface = new ConvertedSection(content: null, type: PREFACE, sample : inSample)
-        } else if(section.sectname()=='chapter') {
-            leanpubSections += new ConvertedSection(content: null, type: CHAPTER, sample : inSample)
-            sectionIndex = leanpubSections.size() - 1
-        } else if(section.sectname() =~ /appendix|bibliography|index|glossary/ ) {
-            leanpubSections += new ConvertedSection(content: null, type: BACKMATTER, sample: inSample)
-            sectionIndex = leanpubSections.size() - 1
+            document.addPart()
+            document.currentPart.title = "-# ${section.title}${LINESEP}${LINESEP}"
+            return section.content
+//            mainSections+= new ConvertedSection( content : formatSection(section), type : PART )
+//            return mainSections[mainSections.size() - 1]
+        } else if(section.level == 1) {
+
+            switch(section.sectname()) {
+                case 'preface':
+                    if(document.preface == null) {
+                        document.preface = new ConvertedSection(content: formatSection(section), type: PREFACE, sample: inSample)
+                        return document.preface.content
+                    } else {
+                        log.warn "A [preface] level one section was processed previously. This one will be ignored."
+                        return ''
+                    }
+//                    preface = new ConvertedSection(content: formatSection(section), type: PREFACE, sample: inSample)
+//                    return preface.content.toString()
+                case 'dedication' :
+                    if(document.dedication == null) {
+                        document.dedication = new ConvertedSection(content: formatDedication(section), type: DEDICATION, sample: false)
+                        return document.dedication.content
+                    } else {
+                        log.warn "A [dedication] level one section was processed previously. This one will be ignored."
+                        return ''
+                    }
+//                    if(dedication == null) {
+//                        dedication = new ConvertedSection(content: formatDedication(section), type: DEDICATION, sample: false)
+//                        return dedication.content.toString()
+//                    } else {
+//                        log.warn "A [dedication] level one section was processed previously. This one will be ignored."
+//                        return ''
+//                    }
+                case 'chapter':
+                    document.addChapterToPart(new ConvertedSection(content: formatSection(section), type: CHAPTER, sample: inSample))
+                    return document.currentPart.chapters[-1].content
+//                    mainSections += new ConvertedSection(content: formatSection(section), type: CHAPTER, sample: inSample)
+//                    return mainSections[-1].content.toString()
+                case ~/appendix|bibliography|index|glossary/:
+                    return document.addBackmatter(new ConvertedSection(
+                        content: formatSection(section),
+                        type: BACKMATTER,
+                        sample: inSample
+                    )).content
+//                    mainSections += new ConvertedSection(content: formatSection(section), type: BACKMATTER, sample: inSample)
+//                    return mainSections[-1].content.toString()
+////            sectionIndex = mainSections.size() - 1
+////            return mainSections[sectionIndex].content
+            }
         }
 
-        String content = (section.level==0 ? '-#' : '#'.multiply(section.level)) +
-            ' ' +
-            section.title +
-            LINESEP + LINESEP +
-            section.content
+        return formatSection(section)
+//        String content = (section.level==0 ? '-#' : '#'.multiply(section.level)) +
+//            ' ' +
+//            section.title +
+//            LINESEP + LINESEP +
+//            section.content
 
-        if(sectionIndex>=0) {
-            leanpubSections[sectionIndex].content = content
-        }  else if (section.sectname()=='preface') {
-            preface = new ConvertedSection( content : content, type : ConvertedSection.SectionType.PREFACE, sample : inSample )
-        }
+//        if(sectionIndex>=0) {
+//            mainSections[sectionIndex].content = content
+//        }  else if (section.sectname()=='preface') {
+//            preface = new ConvertedSection( content : content, type : ConvertedSection.SectionType.PREFACE, sample : inSample )
+//        }
 
-        content
+//        content
     }
 
     def convertInlineQuoted(AbstractNode node, Map<String, Object> opts) {
@@ -456,6 +544,34 @@ class LeanpubConverter extends AbstractTextConverter {
         "![](images/${inline.target} \"${inline.attributes.alt}\")"
     }
 
+    /** Formats the content in a dedication.
+     *
+     * @param section
+     * @return Formatted content
+     */
+    private String formatDedication(Section section) {
+
+        "-#${LINESEP}" +
+            "||${LINESEP}".multiply(10) +
+            section.content.toString().readLines().collect {
+                "C> ${it}"
+            }.join(LINESEP) + LINESEP
+    }
+
+
+    /** Formats the content in a section.
+     *
+     * @param section
+     * @return Formatted content
+     */
+    private String formatSection(Section section) {
+        (section.level==0 ? '-#' : '#'.multiply(section.level)) +
+            ' ' +
+            section.title +
+            LINESEP + LINESEP +
+            section.content
+    }
+
     /** Takes a bundle of lines from a Colist item and formats them in a way suitable to work with callouts in
      * Leanpub.
      *
@@ -528,16 +644,17 @@ class LeanpubConverter extends AbstractTextConverter {
             } else {
                 log.warn "front-cover-image is not a valid pattern. Ignoring front cove"
             }
-
         }
-
     }
+
+    private LeanpubDocument document = new LeanpubDocument()
 
     private File docDir
     private File destDir
     private File frontCoverImage
-    private List<ConvertedSection> leanpubSections = []
-    private ConvertedSection preface
+//    private List<ConvertedSection> mainSections = []
+//    private ConvertedSection dedication
+//    private ConvertedSection preface
     private Object lastSrcBlock
     private List<File> images = []
 

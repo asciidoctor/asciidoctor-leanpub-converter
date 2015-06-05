@@ -2,6 +2,14 @@
 Asciidoctor Team <foo@bar.example>
 :doctype: book
 
+[dedication]
+== Dedication
+
+This file is dedicated to all those that has made the Asciidoctor chain possible.
+
+Happy hacking people!
+
+
 = Part One
 
 [chapter]
