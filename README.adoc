@@ -1,8 +1,8 @@
 = Asciidoctor Leanpub Converter
+Schalk Cronjé
 
-Very early stages to showing a converter written in Groovy using the experimental
-asciidoctorj-1.6.0 branch
-
+The very early stages of demonstrating how to create a converter written in
+Groovy using the experimental asciidoctorj-1.6.0 branch.
 
 == Building
 
@@ -10,25 +10,17 @@ asciidoctorj-1.6.0 branch
 ----
 git clone https://github.com/asciidoctor/asciidoctorj.git -b asciidoctorj-1.6.0
 cd asciidoctorj
-vi gradle.properties
-----
-
-Change the version to `1.6.0-SNAPSHOT`. It is still set as `1.5.3-SNAPSHOT`, but let's avoid confusion with another
-`asciidoctorj` development branch. Save your change, then do
-
-[source,bash]
-----
 cd asciidoctorj-core
 ../gradlew -i build publishToMavenLocal
 cd ../asciidoctorj-distribution
 ../gradlew -i build
 ----
 
-Now you are ready to clone and build this
+Now you're ready to clone and build this converter.
 
 [source,bash]
 ----
-cd ../../
+cd ../..
 git clone https://github.com/ysb33r/asciidoctor-leanpub-converter.git
 cd asciidoctor-leanpub-converter/core
 ./gradlew build install
@@ -48,11 +40,11 @@ buildscript {
 
     dependencies {
         classpath 'org.asciidoctor:asciidoctor-gradle-plugin:1.5.2'
-        classpath 'asciidoctor-leanpub:asciidoctor-leanpub-core:0.1-SNAPSHOT'
+        classpath 'org.ysb33r.asciidoctor:asciidoctor-leanpub-core:0.1-SNAPSHOT'
     }
 }
 
-apply plugin : 'org.asciidoctor.gradle.asciidoctor'
+apply plugin : 'org.asciidoctor.convert'
 
 repositories {
     jcenter()
@@ -67,6 +59,8 @@ asciidoctor {
   backends 'leanpub'
 }
 ----
+
+NOTE: Ignore the warning `Passing through unknown backend: leanpub`.
 
 If you want to try the command-line version of asciidoctorj, then you are in luck. You can run it from
  `asciidoctorj/asciidoctorj-distribution/build/install/asciidoctorj-distribution/bin/asciidoctorj`. All you have to do is
