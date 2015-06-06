@@ -55,4 +55,13 @@ Andy Hunt & Dave Thomas. The Pragmatic Programmer: From Journeyman to Master. Ad
 Dan Allen. Seam in Action. Manning Publications. 2008.'''
     }
 
+//    def "Bibliography with hyperlinks"() {
+//        setup:
+//        File chapter4 = new File(manuscriptDir, 'backmatter_4.txt')
+//        generateOutput('bibliography.adoc')
+//
+//        expect:
+//        chapter4.text == '''# Chapter with Escaped Characters
+//'''
+//    }
 }

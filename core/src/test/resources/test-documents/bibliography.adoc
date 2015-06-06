@@ -37,3 +37,8 @@ all developers.
 - [[[seam]]] Dan Allen. Seam in Action. Manning Publications.
   2008.
 
+[bibliography]
+== Chapter with Hyperlinks
+
+- [[[AsciidoctorProject]]] Asciidoctor Github Organisation. 'Asciidoctor Project'. https://github.com/asciidoctor/asciidoctor
+- [[[AsciidoctorJ]]] Asciidoctor Github Organisation. 'Asciidoctorj Project'. https://github.com/asciidoctor/asciidoctorj
