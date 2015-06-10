@@ -1,0 +1,13 @@
+= Example Project
+:author: Schalk W. Cronjé
+
+This is an example project for using the Leanpub converter with the Asciidoctor plugin for Gradle.
+
+To run it do `../gradlew asciidoctor -i`.
+
+Please note that it will not be execute from the rootproject as it is decoupled project.
+
+If you want to see the resulting Leanpub document, please visit https://leanpub.com/asciidoctortoleanpubsample.
+
+(https://github.com/ysb33r[Schalk] tries to keep it as up to date as possible, but it is currently in his Leanpub author area, so he is the
+only with access).
