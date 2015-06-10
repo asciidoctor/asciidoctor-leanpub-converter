@@ -402,7 +402,7 @@ class LeanpubConverter extends AbstractMultiOutputTextConverter {
             lastSrcBlock = parsedContent
             src= parsedContent.collect { it.line }.join(LINESEP)
         } else {
-            src=block.source()
+            src=block.source
         }
 
         '{' + annotations.collect{ k,v -> "${k}=${v}"}.join(', ') + '}' + LINESEP +

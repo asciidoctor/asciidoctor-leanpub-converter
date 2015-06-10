@@ -126,7 +126,7 @@ The `colist` layout can be controlled via controlled via two attributes:
 * `leanpub-colist-prefix` : BY default this is is *Line*, but if youw prefer something else, for instance because the
   book is another language then just override it.
 
-:leanpub_colist_style: aside
+:leanpub-colist-style: aside
 
 .Source code with aside style
 [source,groovy]
@@ -147,7 +147,7 @@ documentBinder {
 <2> Append more documents to existing list
 <3> Even closures can be used to allow for late evaluation of documents
 
-:leanpub_colist_style: discussion
+:leanpub-colist-style: discussion
 
 .Source code with discussion style
 [source,groovy]
