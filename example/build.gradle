@@ -1,0 +1,58 @@
+buildscript {
+    repositories {
+        mavenLocal()
+        jcenter()
+    }
+
+    dependencies {
+        classpath 'org.asciidoctor:asciidoctor-gradle-plugin:1.5.3-SNAPSHOT'
+        classpath 'org.ysb33r.asciidoctor:asciidoctor-leanpub-core:0.1-SNAPSHOT'
+
+    }
+}
+
+apply plugin : 'org.asciidoctor.convert'
+
+version = '0.1'
+
+ext {
+    // Only needed if you plan to push to leanpub using Dropbox
+    // Change this for your own environment
+    dropboxFolder = "${System.getProperty('user.home')}/Dropbox/Leanpub/asciidoctortoleanpubsample"
+}
+
+repositories {
+    mavenLocal()
+    jcenter()
+}
+
+asciidoctorj {
+   version = '1.6.0-SNAPSHOT'
+}
+
+
+task CopyToDropbox ( type : Copy ) {
+	from "${asciidoctor.outputDir}/leanpub/manuscript", {
+		include '**'
+	}
+
+	into "${dropboxFolder}/manuscript"
+	dependsOn asciidoctor
+}
+
+asciidoctor {
+
+    sources {
+        include 'leanpub.adoc'
+    }
+
+    resources {
+        // We don't want to copy any images as the converter will take care of that
+        from('src/docs/asciidoc/non-existing')
+    }
+
+    backends 'leanpub'
+
+    attributes revnumber: "${version}"
+}
+

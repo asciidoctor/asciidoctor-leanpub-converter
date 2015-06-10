@@ -1,0 +1,192 @@
+= Publishing to Leanpub using Asciidoctor
+:author: The Awesome Asciidoctor Team
+:doctype: book
+:front-cover-image: image:FrontPage_1950x2700_300dpi.png[]
+
+[dedication]
+== Dedication
+
+This sample book is dedicated to all those people who have contributed to making the Asciidoctor so awesome.
+
+[preface]
+== Preface
+
+Asciidoctor is a powerful authoring ecosyetm. Leanpub is a wonderful empoweringm self-publishing platform.
+We can combine the two to be even more awesome.
+
+[[QuoteInPreface]]
+[quote,Dan Allan]
+____
+What's interesting is that it opens up the door to using Leanpub purely as a publishing tool...in other words,
+a typesetting + delivery tool. The power of Leanpub becomes our power.
+____
+
+
+= Part One
+
+[partintro]
+It is easy to author a multi-part book. Introductory text can be added to parts using the `[partintro]` block.
+
+[chapter]
+== Blocks
+
+If you would have read from the beginning you would have already discovered the <<QuoteInPreface,first quote block used in the preface>>.
+At the time of writing of standard blocks are supported with the exception of the following:
+
+* `[example]`
+* `[stem]`
+
+Titles are supported on all blocks too.
+
+.A literal block
+....
+Literal text in a block
+is reproduced as is
+....
+
+.A sidebar
+****
+I do like the way sidebars are done.
+Don't you think it look's great?
+****
+
+=== Verses & Poetry
+
+References on verse supported.
+
+```
+[verse, Carl Sandburg, Fog]
+____
+The fog comes
+on little cat feet
+____
+```
+
+will lead to
+
+[verse, Carl Sandburg, Fog]
+____
+The fog comes
+on little cat feet
+____
+
+We even have special support for Leanpub's poetry block. Just use `[verse.poem]`
+
+[verse.poem]
+____
+The fog comes
+on little cat feet
+____
+
+
+=== Source Code
+
+Source code is well supported, but the `source-highligher` attribute will be ignored as syntax highligting is
+handled by Leanpub directly using `Pygments`.
+
+[source,groovy]
+----
+documentBinder {
+
+    setDocuments '/path/to/doc', new File('/path/to/other/doc')
+
+    documents '/path/to/doc', new File(' / path / to / other / doc ')
+
+    documents project.file('add/other/doc')
+
+    documents { '/even/add/from/closure' }
+}
+----
+
+Leanpub does not support callouts in source code, therefore the conversion process takes car of this by adding
+ line numbers and adding a `colist` block with line number references.
+
+.Source code with paragraph style
+[source,groovy]
+----
+documentBinder {
+
+    setDocuments '/path/to/doc', new File('/path/to/other/doc') // <1>
+
+    documents '/path/to/doc', new File(' / path / to / other / doc ') // <2>
+
+    documents project.file('add/other/doc')
+
+    documents { '/even/add/from/closure' } // <3>
+}
+----
+<1> Clear any existing document list, and replace with the given list. List can contain anything that `project.files`
+     can convert to `File` objects.
+<2> Append more documents to existing list
+<3> Even closures can be used to allow for late evaluation of documents
+
+The `colist` layout can be controlled via controlled via two attributes:
+
+* `leanpub-colist-style` : The default style is `paragraph`, but `aside` and `discussion` are valid styles too.
+* `leanpub-colist-prefix` : BY default this is is *Line*, but if youw prefer something else, for instance because the
+  book is another language then just override it.
+
+:leanpub_colist_style: aside
+
+.Source code with aside style
+[source,groovy]
+----
+documentBinder {
+
+    setDocuments '/path/to/doc', new File('/path/to/other/doc') // <1>
+
+    documents '/path/to/doc', new File(' / path / to / other / doc ') // <2>
+
+    documents project.file('add/other/doc')
+
+    documents { '/even/add/from/closure' } // <3>
+}
+----
+<1> Clear any existing document list, and replace with the given list. List can contain anything that `project.files`
+     can convert to `File` objects.
+<2> Append more documents to existing list
+<3> Even closures can be used to allow for late evaluation of documents
+
+:leanpub_colist_style: discussion
+
+.Source code with discussion style
+[source,groovy]
+----
+documentBinder {
+
+    setDocuments '/path/to/doc', new File('/path/to/other/doc') // <1>
+
+    documents '/path/to/doc', new File(' / path / to / other / doc ') // <2>
+
+    documents project.file('add/other/doc')
+
+    documents { '/even/add/from/closure' } // <3>
+}
+----
+<1> Clear any existing document list, and replace with the given list. List can contain anything that `project.files`
+     can convert to `File` objects.
+<2> Append more documents to existing list
+<3> Even closures can be used to allow for late evaluation of documents
+
+
+[chapter]
+== Admonitions
+
+All five standard admonitions will work.
+
+WARNING: This is what a warning would look like
+
+CAUTION: This is a caution
+
+IMPORTANT: This is some important text
+
+NOTE: Want to add a note? No, problem!
+
+.Tip with title
+TIP: That's right, you can have block titles on admonitions.
+
+////
+
+= Part Two
+
+////
