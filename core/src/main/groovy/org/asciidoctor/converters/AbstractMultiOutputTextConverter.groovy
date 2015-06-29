@@ -147,7 +147,7 @@ abstract class AbstractMultiOutputTextConverter extends AbstractConverter {
     abstract def convertPass(AbstractNode node,Map<String, Object> opts)
     abstract def convertImage(AbstractNode node,Map<String, Object> opts)
     abstract def convertInlineImage(AbstractNode node,Map<String, Object> opts)
-
+    abstract def convertTable(AbstractNode node,Map<String, Object> opts)
 
     /** Paragraph conversion just passes the content back.
      *

@@ -4,19 +4,67 @@
 Most of these test cases come straight from the Asciidoctor User Manual
 ////
 
+[chapter]
 == Simple Table
 
-.Simple Table
+.Simple table with single text rows and no header
 |===
 
-| Cell in column 1, row 1 | Cell in column 2, row 1
+| Cell in column 1, row 1 | Cell in column two, row 1
 
-| Cell in column 1, row 2 | Cell in column 2, row 2
+| Cell in column one, row 2 | Cell in column 2, row 2
 
-| Cell in column 1, row 3 | Cell in column 2, row 3
+| Cell in column 1, row three | Cell in column 2, row three
 
 |===
 
+.Simple table with single text rows and a header
+[options="header"]
+|===
+
+| Header 1 | Header 2
+
+| Cell in column 1, row 1 | Cell in column two, row 1
+
+| Cell in column one, row 2 | Cell in column 2, row 2
+
+| Cell in column 1, row three | Cell in column 2, row three
+
+|===
+
+.Simple table with single text rows and a footer
+[options="footer"]
+|===
+
+| Cell in column 1, row 1 | Cell in column two, row 1
+
+| Cell in column one, row 2 | Cell in column 2, row 2
+
+| Cell in column 1, row three | Cell in column 2, row three
+
+| Footer 1 | Footer 2
+
+|===
+
+.Simple table with single text rows and a header and footer
+[options="header,footer"]
+|===
+
+| Header 1 | Header 2
+
+| Cell in column 1, row 1 | Cell in column two, row 1
+
+| Cell in column one, row 2 | Cell in column 2, row 2
+
+| Cell in column 1, row three | Cell in column 2, row three
+
+| Footer 1 | Footer 2
+
+|===
+
+
+
+[chapter]
 == Columns on consecutive lines
 
 .Columns on consecutive lines
@@ -31,6 +79,7 @@ Most of these test cases come straight from the Asciidoctor User Manual
 |Cell in column 3, row 2
 |===
 
+[chapter]
 == Text centered in columns
 
 [cols="3*^"]
@@ -44,6 +93,7 @@ Most of these test cases come straight from the Asciidoctor User Manual
 |Cell in column 3, row 2
 |===
 
+[chapter]
 == Text right-aligned in columns
 
 [cols="3*>"]
@@ -57,6 +107,7 @@ Most of these test cases come straight from the Asciidoctor User Manual
 |Cell in column 3, row 2
 |===
 
+[chapter]
 == Last column right-aligned
 
 [cols="2*,>"]
@@ -70,6 +121,8 @@ Most of these test cases come straight from the Asciidoctor User Manual
 |Cell in column 3, row 2
 |===
 
+// TODO: https://github.com/asciidoctor/asciidoctor-leanpub-converter/issues/37
+[chapter]
 == Various vertical alignments
 
 [cols=".<,.^,.>"]
@@ -83,6 +136,8 @@ Most of these test cases come straight from the Asciidoctor User Manual
 |Cell in column 3, row 2
 |===
 
+// TODO: https://github.com/asciidoctor/asciidoctor-leanpub-converter/issues/38
+[chapter]
 == Setting widths
 
 [cols="1,2,6"]
@@ -96,6 +151,55 @@ Most of these test cases come straight from the Asciidoctor User Manual
 |Cell in column 3, row 2
 |===
 
+
+[chapter]
+== Columns that span
+
+|===
+
+|Cell in column 1, row 1|Cell in column 2, row 1|Cell in column 3, row 1
+
+3*|Same cell content in columns 1, 2, and 3
+
+|Cell in column 1, row 3
+|Cell in column 2, row 3
+|Cell in column 3, row 3
+
+|===
+
+[chapter]
+== Columns with vbars
+
+.This table also has a vbar
+|===
+|Cell in column 1, row 1
+|Cell in column 2, row 1
+
+|Cell in column 2, row 2
+|Cell in column 3, row 2
+
+|Cell in column 2, row 3 with {vbar} embedded
+|Cell in column 3, row 3
+|===
+
+[chapter]
+== Controlling overall column width
+
+[width="65"]
+|===
+|Name of Column 1 |Name of Column 2 |Name of Column 3
+
+|Cell in column 1, row 1
+|Cell in column 2, row 1
+|Cell in column 3, row 1
+
+|Cell in column 1, row 2
+|Cell in column 2, row 2
+|Cell in column 3, row 2
+|===
+
+////
+[chapter]
 == Column Styles
 
 [cols="3*"]
@@ -114,90 +218,20 @@ v|Cell in column 1, row 2
 
 |===
 
-== Columns that span
+// TODO:
+[chapter]
+== Rowspan and Colspan
+
+.Rowspan and colspan
+|===
+
+.2+,2*|Content in a single cell that spans rows 1 and 2 and cols 1 and 2
+|Cell in column3, row 1
+
+|Cell in colum 3, row 2
+
+|Cell in column 1, row 3|Cell in column 2, row 3|Cell in column 3, row 3
 
 |===
 
-|Cell in column 1, row 1 |Cell in column 2, row 1 |Cell in column 3, row 1
-
-3*|Same cell content in columns 1, 2, and 3
-
-|Cell in column 1, row 3
-|Cell in column 2, row 3
-|Cell in column 3, row 3
-
-|===
-
-
-== Columns with vbars
-
-|===
-
-.This table also has a vbar
-|Cell in column 1, row 1 |Cell in column 2, row 1 |Cell in column 3, row 1
-
-.2+|Content in a single cell that spans rows 2 and 3
-|Cell in column 2, row 2
-|Cell in column 3, row 2
-
-|Cell in column 2, row 3 with {vbar} embedded
-|Cell in column 3, row 3
-
-|===
-
-== Table with header row
-
-[cols="2*", options="header"]
-|===
-|Name of Column 1
-|Name of Column 2
-
-|Cell in column 1, row 1
-|Cell in column 2, row 1
-
-|Cell in column 1, row 2
-|Cell in column 2, row 2
-|===
-
-.Table with implicit header row
-|===
-|Name of Column 1 |Name of Column 2
-
-|Cell in column 1, row 1
-|Cell in column 2, row 1
-
-|Cell in column 1, row 2
-|Cell in column 2, row 2
-|===
-
-== Table with footer row
-
-[options="footer"]
-|===
-|Name of Column 1 |Name of Column 2
-
-|Cell in column 1, row 1
-|Cell in column 2, row 1
-
-|Cell in column 1, row 2
-|Cell in column 2, row 2
-
-|Footer in column 1, row 3
-|Footer in column 2, row 3
-|===
-
-== Controlling overall column width
-
-[width="65"]
-|===
-|Name of Column 1 |Name of Column 2 |Name of Column 3
-
-|Cell in column 1, row 1
-|Cell in column 2, row 1
-|Cell in column 3, row 1
-
-|Cell in column 1, row 2
-|Cell in column 2, row 2
-|Cell in column 3, row 2
-|===
-
+////

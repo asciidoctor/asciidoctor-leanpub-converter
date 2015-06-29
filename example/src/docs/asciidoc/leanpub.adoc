@@ -11,7 +11,7 @@ This sample book is dedicated to all those people who have contributed to making
 [preface]
 == Preface
 
-Asciidoctor is a powerful authoring ecosyetm. Leanpub is a wonderful empoweringm self-publishing platform.
+Asciidoctor is a powerful authoring ecosystem. Leanpub is a wonderful empoweringm self-publishing platform.
 We can combine the two to be even more awesome.
 
 [[QuoteInPreface]]
@@ -120,6 +120,8 @@ documentBinder {
 <2> Append more documents to existing list
 <3> Even closures can be used to allow for late evaluation of documents
 
+'''
+
 The `colist` layout can be controlled via controlled via two attributes:
 
 * `leanpub-colist-style` : The default style is `paragraph`, but `aside` and `discussion` are valid styles too.
@@ -185,8 +187,41 @@ NOTE: Want to add a note? No, problem!
 .Tip with title
 TIP: That's right, you can have block titles on admonitions.
 
-////
 
-= Part Two
+= Part Two - Tables
 
-////
+[chapter]
+== Basic Tables
+
+A basic Asciidoctor table
+
+include::table1.adoc[]
+
+A table can have have a header
+
+include::table2.adoc[]
+
+or a table can have a footer
+
+include::table3.adoc[]
+
+or both, of course.
+
+include::table4.adoc[]
+
+== Limitations in Tables
+
+Asciidoctor tables are far more poerful than those in Leanpub. Although we attempt to to support as much as we can there
+are some limitation which we can not work around.
+
+* Colspan:  If an Asciidoctor table has a colspan this will result in an empty column being generated.
+* Frame: Frame is ignored. Leanpub does not do vertical lines. THe use of horizontal lines is determined by
+  horizontal alignment as well as the presence of headers and footer.
+* Grid: THe same as for Frame (above).
+* Horizontal alignment: If alignment within a column is not consistent across cells, this will cause all rows to be
+  separated with a line. This is the only way to get such alignment to work with Leanpub.
+* Vertical alignment: Not currently supported. We might implement a workarond in future, if there is a community
+  requirement. See https://github.com/asciidoctor/asciidoctor-leanpub-converter/issues/37[GH issue #37].
+* Width: `narrow` table width is not supported and will produce a warning. The table will be generated with a `default`
+  width. Leanpub does not support settign separate column widths either. A future version of the converter might add
+  some formatting to compensate - see https://github.com/asciidoctor/asciidoctor-leanpub-converter/issues/38[GH issue #38].

@@ -4,13 +4,19 @@ import groovy.util.logging.Slf4j
 import org.apache.commons.io.FileUtils
 import org.asciidoctor.ast.AbstractNode
 import org.asciidoctor.ast.Block
+import org.asciidoctor.ast.Cell
 import org.asciidoctor.ast.Inline
 import org.asciidoctor.ast.ListItem
 import org.asciidoctor.ast.ListNode
+import org.asciidoctor.ast.Row
 import org.asciidoctor.ast.Section
+import org.asciidoctor.ast.Table
 import org.asciidoctor.converters.AbstractMultiOutputTextConverter
 import org.asciidoctor.converters.internal.SourceParser
 import org.asciidoctor.leanpub.internal.CrossReference
+import org.asciidoctor.leanpub.internal.LeanpubCell
+import org.asciidoctor.leanpub.internal.LeanpubTable
+import org.asciidoctor.leanpub.internal.LeanpubTableRow
 import org.asciidoctor.leanpub.internal.QuotedTextConverter
 import static org.asciidoctor.leanpub.ConvertedSection.SectionType.*
 import java.util.regex.Matcher
@@ -53,6 +59,7 @@ class LeanpubConverter extends AbstractMultiOutputTextConverter {
 
         setFrontCoverFromAttribute(imagesDir(node),node.document.attributes['front-cover-image'])
         node.attributes.put('nbsp','&nbsp;')
+        node.attributes.put('vbar','\\|')
 
         if(!node.attributes.get('leanpub-colist-style')) {
             node.attributes.put('leanpub-colist-style','paragraph')
@@ -482,6 +489,146 @@ class LeanpubConverter extends AbstractMultiOutputTextConverter {
         "![](images/${inline.target} \"${inline.attributes.alt}\")"
     }
 
+    def convertTable(AbstractNode node,Map<String, Object> opts) {
+        Table table = node as Table
+        LeanpubTable leanpubTable = new LeanpubTable(
+            table.body.size(),
+            table.columns.size(),
+            table.header.size(),
+            table.footer.size()
+        )
+        def tableAttrs = [:]
+
+        // TODO: Work out what the width is and if not set the value will be 'default'
+        tableAttrs['width'] = 'default'
+
+        if(table.title) {
+            tableAttrs['title']= table.title
+        }
+
+        table.header.eachWithIndex { Row row,int rowIndex ->
+            processOneTableRow row,leanpubTable.header[rowIndex]
+        }
+\
+        table.footer.eachWithIndex { Row row,int rowIndex ->
+            processOneTableRow row,leanpubTable.footer[rowIndex]
+        }
+
+        table.body.eachWithIndex { Row row,int rowIndex ->
+            processOneTableRow row,leanpubTable.rows[rowIndex]
+        }
+
+        leanpubTable.postProcessTables()
+
+        String renderedTable = renderLeanpubAttributes(tableAttrs)
+
+        // Leanpub Table Formattingfor width != narrow
+        if(leanpubTable.header) {
+            for( ltr in leanpubTable.header ) {
+                renderedTable+= renderOneTableRow(ltr,leanpubTable.columnWidths,leanpubTable.columnAlignment) + LINESEP
+            }
+        }
+
+        // Wee need to generate a seperatpr line is header exists or we don;t have default alignment
+        Character charAbove = (leanpubTable.header || !leanpubTable.isDefaultAlignment)? '-' : null
+
+        for( ltr in leanpubTable.rows ) {
+            renderedTable+= renderOneTableRow(ltr,leanpubTable.columnWidths,leanpubTable.columnAlignment,charAbove) + LINESEP
+            if(!leanpubTable.heterogeneousColumnAlignment) {
+                charAbove=null
+            }
+        }
+
+        if(leanpubTable.footer) {
+            charAbove='='
+            for( ltr in leanpubTable.footer ) {
+                renderedTable+= renderOneTableRow(ltr,leanpubTable.columnWidths,leanpubTable.columnAlignment,charAbove) + LINESEP
+                charAbove=null
+            }
+        }
+
+        renderedTable
+    }
+
+    private String leanpubTableAlignmentRow(Character divCharAbove,LeanpubTable.HorizontalAlignment ha) {
+
+        if(divCharAbove==null) {
+            return ''
+        }
+
+        switch(ha) {
+            case null:
+                "${divCharAbove}".multiply(5) + '|'
+                break
+            case LeanpubTable.HorizontalAlignment.LEFT:
+                ':' + "${divCharAbove}".multiply(4) + '|'
+                break
+            case LeanpubTable.HorizontalAlignment.RIGHT:
+                "${divCharAbove}".multiply(4) + ':|'
+                break
+            case LeanpubTable.HorizontalAlignment.CENTER:
+                ':' + "${divCharAbove}".multiply(3) + ':|'
+                break
+            default:
+                ''
+        }
+    }
+
+    private String renderOneTableRow(LeanpubTableRow ltr,def columnWidths,def columnAlignment,Character divCharAbove=null) {
+
+        String ret= ''
+        if(divCharAbove) {
+            ret+='|'
+            columnAlignment.eachWithIndex { LeanpubTable.HorizontalAlignment ha,int index ->
+                switch(ha) {
+                    case null:
+                    case LeanpubTable.HorizontalAlignment.LEFT:
+                    case LeanpubTable.HorizontalAlignment.RIGHT:
+                    case LeanpubTable.HorizontalAlignment.CENTER:
+                        ret+= leanpubTableAlignmentRow(divCharAbove,ha)
+                        break
+                    case LeanpubTable.HorizontalAlignment.VARIOUS:
+                        ret+= leanpubTableAlignmentRow(divCharAbove,LeanpubTable.convertAlignment(ltr.cells[index].halign))
+                }
+            }
+            ret+= LINESEP
+        }
+
+        int textRowCount = ltr.textRows
+
+        ret + (0..textRowCount-1).collect { int rowCounter ->
+            String renderedRow = '|'
+            ltr.cells.eachWithIndex { LeanpubCell cell, int index ->
+                int width = columnWidths[index]
+                if(rowCounter < cell.content.size()) {
+                    renderedRow+= cell.content[rowCounter]
+                } else {
+                    renderedRow+= ' '.multiply(5)
+                }
+                renderedRow+= '|'
+            }
+            renderedRow
+        }.join(LINESEP)
+    }
+
+    private void processOneTableRow(Row asciiRow,LeanpubTableRow lpRow) {
+        int cellIndex=0 // TODO: Maybe wel can use cell.column.columnNumber instead to work out the position
+
+        asciiRow.cells.each { Cell cell ->
+            lpRow.cells[cellIndex].content = cell.content
+            lpRow.cells[cellIndex].halign = cell.horizontalAlignment
+
+            int colspan = cell.colspan
+            while(colspan > 0 ) {
+                log.warn "Colspan > 1 is not supported at present by Leanpub. An empty cell will be generated."
+                ++cellIndex
+                --colspan
+                lpRow.cells[cellIndex].content = ' '.multiply(5)
+            }
+            ++cellIndex
+        }
+    }
+
     /** Formats the content in a dedication.
      *
      * @param section
@@ -495,7 +642,6 @@ class LeanpubConverter extends AbstractMultiOutputTextConverter {
                 "C> ${it}"
             }.join(LINESEP) + LINESEP
     }
-
 
     /** Formats the content in a section.
      *
@@ -582,6 +728,16 @@ class LeanpubConverter extends AbstractMultiOutputTextConverter {
             } else {
                 log.warn "front-cover-image is not a valid pattern. Ignoring front cove"
             }
+        }
+    }
+
+    private String renderLeanpubAttributes( Map attrs ) {
+        if(attrs?.size()) {
+            return '{' + attrs.collect { k,v ->
+                "${k}=\"${v}\""
+            }.join(',') + "}${LINESEP}"
+        } else {
+            return ''
         }
     }
 

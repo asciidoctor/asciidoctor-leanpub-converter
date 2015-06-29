@@ -1,0 +1,13 @@
+.Simple table with single text rows and a footer
+[options="footer"]
+|===
+
+| Cell in column 1, row 1 | Cell in column two, row 1
+
+| Cell in column one, row 2 | Cell in column 2, row 2
+
+| Cell in column 1, row three | Cell in column 2, row three
+
+| Footer 1 | Footer 2
+
+|===
