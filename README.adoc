@@ -115,8 +115,8 @@ Poem goes here
 
 == Source code blocks with callouts
 
-Leanpub does not support callputs in the way Asciidoctor does. Our solution, for when callouts are detected, is to
-generate a source code listing with line numbers. THe associated *colist* block is then generated with corresponding
+Leanpub does not support callouts in the way Asciidoctor does. Our solution, for when callouts are detected, is to
+generate a source code listing with line numbers. The associated *colist* block is then generated with corresponding
 line numbers instead of the original callout numbers. The callouts are also removed from the source listing.
 
 Currently it is possible to generate the *colist* block in one of three styles, which in themselves correspond to
