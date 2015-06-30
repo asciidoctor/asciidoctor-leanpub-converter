@@ -177,12 +177,14 @@ Asciidoctor tables are far more poerful than those in Leanpub. Although we attem
 are some limitation which we cannot work around.  At this point the following Asciidoctor table features are fully
 supported:
 
-* Setting table width
+* Setting table width: It can be set per usual and the keywords `full` and `default` can also be used. Just be aware that
+  the latter is not portable to other Asciidoctor backends.
 * Column horizontal alignment
-* Headers and footers
-
-Multi-line cells will cause multiple Leanpub rows to be generated. It will also cause the automatic insertion of
+* Headers and footers: Horizontal grid lines will be inserted.
+* Multi-line cells:  This will cause multiple Leanpub rows to be generated. It will also cause the automatic insertion of
 horizontal grid lines.
+* Embedded `|` characters:  Just ensure to use `{vbar}` in the Asciidoctor file.
+
 
 === Limitations in Tables
 
@@ -228,7 +230,14 @@ Use `[appendix]` on a chapter and it will be included as part of the Leanpub bac
 [appendix]
 == Table examples
 
-A basic Asciidoctor table
+A basic Asciidoctor table such as
+
+[source,asciidoc]
+----
+include::table1.adoc[]
+----
+
+will render to
 
 include::table1.adoc[]
 
@@ -244,4 +253,19 @@ or both, of course.
 
 include::table4.adoc[]
 
+Here are some more examples of tables and how the render
+
+[source,asciidoc]
+----
+include::table5.adoc[]
+----
+
+include::table5.adoc[]
+
+[source,asciidoc]
+----
+include::table6.adoc[]
+----
+
+include::table6.adoc[]
 

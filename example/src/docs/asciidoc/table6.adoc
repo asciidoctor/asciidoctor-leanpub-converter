@@ -1,0 +1,20 @@
+.Column styles will multiple rows
+[cols="3*"]
+|===
+a|Asciidoc cell
+will correctly render basic Asciidoc markup.
+e|Emphasized cell
+works as expected
+h|Header cell in non-headder row.
+will do nothing
+l|Literal cell
+will just pass markup through.
+m|Monospaced cell
+renders in monospace.
+s|Strong cell
+renders in bold.
+v|Verse cell
+has no effect.
+|This is just a normal non-styled cell.
+|This is also a normal non-styled cell.
+|===
