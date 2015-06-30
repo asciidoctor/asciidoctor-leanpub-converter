@@ -253,7 +253,7 @@ or both, of course.
 
 include::table4.adoc[]
 
-Here are some more examples of tables and how the render
+=== More examples of table rendering
 
 [source,asciidoc]
 ----
@@ -261,6 +261,8 @@ include::table5.adoc[]
 ----
 
 include::table5.adoc[]
+
+'''
 
 [source,asciidoc]
 ----

@@ -5,7 +5,7 @@ a|Asciidoc cell
 will correctly render basic Asciidoc markup.
 e|Emphasized cell
 works as expected
-h|Header cell in non-headder row.
+h|Header cell in non-header row.
 will do nothing
 l|Literal cell
 will just pass markup through.
