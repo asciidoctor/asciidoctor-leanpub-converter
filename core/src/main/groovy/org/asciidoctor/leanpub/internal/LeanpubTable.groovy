@@ -3,6 +3,7 @@ package org.asciidoctor.leanpub.internal
 import groovy.transform.CompileStatic
 import groovy.transform.TupleConstructor
 import org.asciidoctor.ast.Table
+import org.asciidoctor.leanpub.LeanpubConverter
 
 /**
  * @author Schalk W. Cronjé
@@ -46,6 +47,7 @@ class LeanpubTable {
     void postProcessTables() {
         calculateColumnWidths()
         analyseColumnAlignment()
+        checkForMultilineCells()
     }
 
     boolean getHeterogeneousColumnAlignment() {
@@ -56,11 +58,25 @@ class LeanpubTable {
         !heterogeneousColumnAlignment && columnAlignment.every { it == null || it == HorizontalAlignment.LEFT }
     }
 
+    /** Returns {@code true} if any normal cell has a multiple of lines.
+     */
+    boolean getHasMultilineCells() {
+        hasMultilineCells
+    }
+
     List<LeanpubTableRow> getAllRows() {
         List<LeanpubTableRow> tmp = rows as List
         if(header) { tmp+= header as List }
         if(footer) { tmp+= footer as List }
         tmp
+    }
+
+    private void checkForMultilineCells() {
+        hasMultilineCells = rows.find { LeanpubTableRow ltr ->
+            ltr.cells.any { LeanpubCell cell ->
+                cell.content.size() > 1 || cell.content[0].find(LeanpubConverter.LINESEP)
+            }
+        }
     }
 
     private void calculateColumnWidths() {
@@ -100,4 +116,5 @@ class LeanpubTable {
 
 
     private boolean heterogeneousColumnAlignment = false
+    private boolean hasMultilineCells = false
 }

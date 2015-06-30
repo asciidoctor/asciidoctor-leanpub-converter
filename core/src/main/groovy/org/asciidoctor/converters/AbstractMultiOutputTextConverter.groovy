@@ -94,8 +94,15 @@ abstract class AbstractMultiOutputTextConverter extends AbstractConverter {
     @Override
     Object convert(AbstractNode node, String transform, Map<Object, Object> opts) {
         if (node instanceof DocumentRuby) {
-            setupDocument(node,opts)
-            return closeDocument(node.content)
+            if(setupComplete) {
+                return node.content
+            } else {
+                setupDocument(node,opts)
+                setupComplete = true
+                def result =  closeDocument(node.content)
+                setupComplete = false
+                return result
+            }
         } else {
             return "${methodName(transform,node.nodeName)}"(node,opts)
         }
@@ -215,4 +222,5 @@ abstract class AbstractMultiOutputTextConverter extends AbstractConverter {
 //        println "***** ${block.content}"
 //    }
 
+    private boolean setupComplete = false
 }

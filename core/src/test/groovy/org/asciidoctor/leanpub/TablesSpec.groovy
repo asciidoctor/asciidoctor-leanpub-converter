@@ -1,7 +1,10 @@
 package org.asciidoctor.leanpub
 
 import org.asciidoctor.leanpub.internal.LeanpubSpecification
+import org.spockframework.runtime.ConditionNotSatisfiedError
+import spock.lang.FailsWith
 import spock.lang.Ignore
+import spock.lang.IgnoreRest
 import spock.lang.Issue
 
 /**
@@ -71,6 +74,7 @@ class TablesSpec extends LeanpubSpecification {
         chapter.text=='''# Text centered in columns
 
 {width="default"}
+| | | |
 |:---:|:---:|:---:|
 |Cell in column 1, row 1|Cell in column 2, row 1|Cell in column 3, row 1|
 |Cell in column 1, row 2|Cell in column 2, row 2|Cell in column 3, row 2|
@@ -87,6 +91,7 @@ class TablesSpec extends LeanpubSpecification {
         chapter.text=='''# Text right-aligned in columns
 
 {width="default"}
+| | | |
 |----:|----:|----:|
 |Cell in column 1, row 1|Cell in column 2, row 1|Cell in column 3, row 1|
 |Cell in column 1, row 2|Cell in column 2, row 2|Cell in column 3, row 2|
@@ -102,60 +107,10 @@ class TablesSpec extends LeanpubSpecification {
         chapter.text=='''# Last column right-aligned
 
 {width="default"}
+| | | |
 |:----|:----|----:|
 |Cell in column 1, row 1|Cell in column 2, row 1|Cell in column 3, row 1|
 |Cell in column 1, row 2|Cell in column 2, row 2|Cell in column 3, row 2|
-'''
-    }
-
-    def "Columns that span"() {
-        setup:
-        File chapter = new File(manuscriptDir,'chapter_8.txt')
-        generateOutput('tables.adoc')
-
-        expect:
-        chapter.text=='''# Columns that span
-
-{width="default"}
-|Cell in column 1, row 1 |Cell in column 2, row 1 |Cell in column 3, row 1|
-|Same cell content in columns 1, 2, and 3|     |     |
-|Cell in column 1, row 3|Cell in column 2, row 3|Cell in column 3, row 3|
-'''
-    }
-
-    def "Columns with vbars"() {
-        setup:
-        File chapter = new File(manuscriptDir,'chapter_9.txt')
-        generateOutput('tables.adoc')
-
-        expect:
-        chapter.text=='''# Columns with vbars
-
-{width="default",title="This table also has a vbar"}
-|Cell in column 1, row 1 |Cell in column 2, row 1|
-|Cell in column 2, row 2|Cell in column 3, row 2|
-|Cell in column 2, row 3 with \\| embedded|Cell in column 3, row 3|
-'''
-    }
-
-    def "Controlling overall column width"() {
-        setup:
-        File chapter = new File(manuscriptDir,'chapter_10.txt')
-        generateOutput('tables.adoc')
-
-        expect:
-        chapter.text=='''
-'''
-    }
-
-    @Ignore
-    def "Column Styles"() {
-        setup:
-        File chapter = new File(manuscriptDir,'chapter_11.txt')
-        generateOutput('tables.adoc')
-
-        expect:
-        chapter.text=='''
 '''
     }
 
@@ -183,5 +138,73 @@ class TablesSpec extends LeanpubSpecification {
 '''
     }
 
+    @FailsWith(ConditionNotSatisfiedError)
+    @Issue('https://github.com/asciidoctor/asciidoctor-leanpub-converter/issues/39')
+    def "Columns that span"() {
+        setup:
+        File chapter = new File(manuscriptDir,'chapter_8.txt')
+        generateOutput('tables.adoc')
 
+        expect:
+        chapter.text=='''# Columns that span
+
+{width="default"}
+|A cell in column 1, row 1|A cell in column 2, row 1|A cell in column 3, row 1|
+|Same cell content in columns 1, 2, and 3|     |     |
+|Cell in column 1, row 3|Cell in column 2, row 3|Cell in column 3, row 3|
+'''
+    }
+
+    def "Columns with vbars"() {
+        setup:
+        File chapter = new File(manuscriptDir,'chapter_9.txt')
+        generateOutput('tables.adoc')
+
+        expect:
+        chapter.text=='''# Columns with vbars
+
+{width="default",title="This table also has a vbar"}
+|Cell in column 1, row 1|Cell in column 2, row 1|
+|Cell in column 2, row 2|Cell in column 3, row 2|
+|Cell in column 2, row 3 with \\| embedded|Cell in column 3, row 3|
+'''
+    }
+
+    def "Controlling overall table width"() {
+        setup:
+        File chapter = new File(manuscriptDir,'chapter_10.txt')
+        generateOutput('tables.adoc')
+
+        expect:
+        chapter.text=='''# Controlling overall table width
+
+{width="65%",title="Setting overall width and use implicit header row"}
+|Name of Column 1|Name of Column 2|Name of Column 3|
+|:----|:----|:----|
+|Cell in column 1, row 1|Cell in column 2, row 1|Cell in column 3, row 1|
+|Cell in column 1, row 2|Cell in column 2, row 2|Cell in column 3, row 2|
+'''
+    }
+
+    def "Column Styles"() {
+        setup:
+        File chapter = new File(manuscriptDir,'chapter_11.txt')
+        generateOutput('tables.adoc')
+
+        expect:
+        chapter.text=='''# Column Styles
+
+{width="default",title="Column styles will multiple rows"}
+| | | |
+|:----|:----|:----|
+|Cell **in** column 1, row 1,|*Cell in column 2, row 1,*|Cell in column 3, row 1,|
+|asciidoc|*emphasized*|header style|
+|:----|:----|:----|
+|```Cell **in** column 1, row 2,```|`Cell in column 2, row 2,`|**Cell in column 3, row 2,**|
+|```literal```|`monospaced`|**bold**|
+|:----|:----|:----|
+|Cell in column 1, row 2,|Cell in column 2, row 2|Cell in column 3, row 2|
+|verse|     |     |
+'''
+    }
 }

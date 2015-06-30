@@ -1,5 +1,7 @@
 package org.asciidoctor.leanpub.internal
 
+import org.asciidoctor.leanpub.LeanpubConverter
+
 /**
  * @author Schalk W. Cronjé
  */
@@ -22,6 +24,14 @@ class QuotedTextConverter {
 
     static String monospaced(final String text) {
         "`${text}`"
+    }
+
+    static String literal(final String text) {
+        "```${text}```"
+    }
+
+    static String verse(final String text) {
+        text
     }
 }
 

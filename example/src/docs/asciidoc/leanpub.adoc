@@ -170,6 +170,36 @@ documentBinder {
 <2> Append more documents to existing list
 <3> Even closures can be used to allow for late evaluation of documents
 
+[chapter]
+== Tables
+
+Asciidoctor tables are far more poerful than those in Leanpub. Although we attempt to to support as much as we can there
+are some limitation which we cannot work around.  At this point the following Asciidoctor table features are fully
+supported:
+
+* Setting table width
+* Column horizontal alignment
+* Headers and footers
+
+Multi-line cells will cause multiple Leanpub rows to be generated. It will also cause the automatic insertion of
+horizontal grid lines.
+
+=== Limitations in Tables
+
+* Colspan:  If an Asciidoctor table has a colspan this will result in an empty column being generated, however at present
+  this results in duplicated cells. See https://github.com/asciidoctor/asciidoctor-leanpub-converter/issues/39[GH issue #39].
+* Frame: Frame is ignored. Leanpub does not do vertical lines. The use of horizontal lines is determined by
+  horizontal alignment as well as the presence of headers and footers.
+* Grid: THe same as for Frame (above).
+* Header column style: This will not do anything.
+* Horizontal alignment: If alignment within a column is not consistent across cells, this will cause all rows to be
+  separated with a line. This is the only way to get such alignment to work with Leanpub.
+* Verse column style: This will be ignored.
+* Vertical alignment: Not currently supported. We might implement a workaround in future, if there is a community
+  requirement. See https://github.com/asciidoctor/asciidoctor-leanpub-converter/issues/37[GH issue #37].
+* Width: `narrow` table width is not supported and will produce a warning. The table will be generated with a `default`
+  width. Leanpub does not support settign separate column widths either. A future version of the converter might add
+  some formatting to compensate - see https://github.com/asciidoctor/asciidoctor-leanpub-converter/issues/38[GH issue #38].
 
 [chapter]
 == Admonitions
@@ -188,10 +218,15 @@ NOTE: Want to add a note? No, problem!
 TIP: That's right, you can have block titles on admonitions.
 
 
-= Part Two - Tables
+= Reference Materials
 
-[chapter]
-== Basic Tables
+[appendix]
+== Example Backmatter Chapter
+
+Use `[appendix]` on a chapter and it will be included as part of the Leanpub backmatter
+
+[appendix]
+== Table examples
 
 A basic Asciidoctor table
 
@@ -209,19 +244,4 @@ or both, of course.
 
 include::table4.adoc[]
 
-== Limitations in Tables
 
-Asciidoctor tables are far more poerful than those in Leanpub. Although we attempt to to support as much as we can there
-are some limitation which we can not work around.
-
-* Colspan:  If an Asciidoctor table has a colspan this will result in an empty column being generated.
-* Frame: Frame is ignored. Leanpub does not do vertical lines. THe use of horizontal lines is determined by
-  horizontal alignment as well as the presence of headers and footer.
-* Grid: THe same as for Frame (above).
-* Horizontal alignment: If alignment within a column is not consistent across cells, this will cause all rows to be
-  separated with a line. This is the only way to get such alignment to work with Leanpub.
-* Vertical alignment: Not currently supported. We might implement a workarond in future, if there is a community
-  requirement. See https://github.com/asciidoctor/asciidoctor-leanpub-converter/issues/37[GH issue #37].
-* Width: `narrow` table width is not supported and will produce a warning. The table will be generated with a `default`
-  width. Leanpub does not support settign separate column widths either. A future version of the converter might add
-  some formatting to compensate - see https://github.com/asciidoctor/asciidoctor-leanpub-converter/issues/38[GH issue #38].

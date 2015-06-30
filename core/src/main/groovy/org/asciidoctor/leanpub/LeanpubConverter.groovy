@@ -43,6 +43,7 @@ class LeanpubConverter extends AbstractMultiOutputTextConverter {
     }
 
     void setupDocument(AbstractNode node,Map<Object, Object> opts) {
+
         log.debug "Document options at start: ${node.document.options}"
         log.debug "Document attributes at start: ${node.document.attributes}"
 
@@ -234,7 +235,15 @@ class LeanpubConverter extends AbstractMultiOutputTextConverter {
 
     def convertInlineQuoted(AbstractNode node, Map<String, Object> opts) {
         Inline inline = node as Inline
-        QuotedTextConverter."${inline.type}"(inline.text)
+        // In table context it needs to get split otherwise formatting in Leanpub
+        // will be messed up
+        if(inline.parent.context == 'cell' || inline.parent.context=='column') {
+            inline.text.split(LINESEP).collect {
+                QuotedTextConverter."${inline.type}"(it)
+            }.join(LINESEP)
+        } else {
+            QuotedTextConverter."${inline.type}"(inline.text)
+        }
     }
 
     def convertAnchorTypeXref(AbstractNode node, Map<String, Object> opts) {
@@ -499,42 +508,60 @@ class LeanpubConverter extends AbstractMultiOutputTextConverter {
         )
         def tableAttrs = [:]
 
-        // TODO: Work out what the width is and if not set the value will be 'default'
-        tableAttrs['width'] = 'default'
+        switch(table.attributes.width) {
+            case null:
+                tableAttrs['width'] = 'default'
+                break
+            case 'narrow':
+                log.warn "Leanpub width of 'narrow' is not currently supported. Will set table width to 'default'"
+                tableAttrs['width'] = 'default'
+                break
+            case 'default':
+            case 'full':
+                tableAttrs['width'] = table.attributes.width
+                break
+            default:
+                tableAttrs['width'] = table.attributes.width.endsWith('%') ? table.attributes.width : "${table.attributes.width}%"
+        }
 
         if(table.title) {
             tableAttrs['title']= table.title
         }
 
         table.header.eachWithIndex { Row row,int rowIndex ->
-            processOneTableRow row,leanpubTable.header[rowIndex]
+            processOneAsciidocTableRow row,leanpubTable.header[rowIndex]
         }
 \
         table.footer.eachWithIndex { Row row,int rowIndex ->
-            processOneTableRow row,leanpubTable.footer[rowIndex]
+            processOneAsciidocTableRow row,leanpubTable.footer[rowIndex]
         }
 
         table.body.eachWithIndex { Row row,int rowIndex ->
-            processOneTableRow row,leanpubTable.rows[rowIndex]
+            processOneAsciidocTableRow row,leanpubTable.rows[rowIndex]
         }
 
         leanpubTable.postProcessTables()
 
+        // Leanpub Table Formatting for width != narrow
         String renderedTable = renderLeanpubAttributes(tableAttrs)
 
-        // Leanpub Table Formattingfor width != narrow
+
         if(leanpubTable.header) {
             for( ltr in leanpubTable.header ) {
-                renderedTable+= renderOneTableRow(ltr,leanpubTable.columnWidths,leanpubTable.columnAlignment) + LINESEP
+                renderedTable+= renderOneLeanpubTableRow(ltr,leanpubTable.columnWidths,leanpubTable.columnAlignment) + LINESEP
             }
+        } else if (!leanpubTable.isDefaultAlignment || leanpubTable.hasMultilineCells) {
+            // If header does not exist, but multi-line cells or non-default alignment, we need tp create an empty header
+            renderedTable+= '|' + ' |'.multiply(leanpubTable.columnWidths.size()) + LINESEP
         }
 
-        // Wee need to generate a seperatpr line is header exists or we don;t have default alignment
-        Character charAbove = (leanpubTable.header || !leanpubTable.isDefaultAlignment)? '-' : null
+        // Wee need to generate a separator line if header exists or we don't have default alignment or we
+        // have multi-line cells.
+        Character charAbove = (leanpubTable.header || !leanpubTable.isDefaultAlignment || leanpubTable.hasMultilineCells )? '-' : null
 
         for( ltr in leanpubTable.rows ) {
-            renderedTable+= renderOneTableRow(ltr,leanpubTable.columnWidths,leanpubTable.columnAlignment,charAbove) + LINESEP
-            if(!leanpubTable.heterogeneousColumnAlignment) {
+            renderedTable+= renderOneLeanpubTableRow(ltr,leanpubTable.columnWidths,leanpubTable.columnAlignment,charAbove) + LINESEP
+            if(!leanpubTable.heterogeneousColumnAlignment && !leanpubTable.hasMultilineCells ) {
                 charAbove=null
             }
         }
@@ -542,7 +569,7 @@ class LeanpubConverter extends AbstractMultiOutputTextConverter {
         if(leanpubTable.footer) {
             charAbove='='
             for( ltr in leanpubTable.footer ) {
-                renderedTable+= renderOneTableRow(ltr,leanpubTable.columnWidths,leanpubTable.columnAlignment,charAbove) + LINESEP
+                renderedTable+= renderOneLeanpubTableRow(ltr,leanpubTable.columnWidths,leanpubTable.columnAlignment,charAbove) + LINESEP
                 charAbove=null
             }
         }
@@ -574,7 +601,35 @@ class LeanpubConverter extends AbstractMultiOutputTextConverter {
         }
     }
 
-    private String renderOneTableRow(LeanpubTableRow ltr,def columnWidths,def columnAlignment,Character divCharAbove=null) {
+    /** Processes one table rows as defined in Asciidoc syntax. Translates multiple rows found within a cell
+     * to multiple Leanpub cell rows.
+     *
+     * @param asciiRow An instance of a table row from Asciidoc
+     * @param lpRow An instance of a table tow for Leanpub
+     */
+    private void processOneAsciidocTableRow(Row asciiRow,LeanpubTableRow lpRow) {
+        int cellIndex=0 // TODO: Maybe we can use cell.column.columnNumber instead to work out the position
+
+        asciiRow.cells.each { Cell cell ->
+
+            def content = cell.content instanceof Collection ? cell.content : [cell.content]
+
+            lpRow.cells[cellIndex].content = content.collect{ it.split(LINESEP) }.flatten()
+            lpRow.cells[cellIndex].halign = cell.horizontalAlignment
+
+            int colspan = cell.colspan - 1
+            while(colspan > 0 ) {
+                log.warn "Colspan > 1 is not supported at present by Leanpub. An empty cell will be generated."
+                ++cellIndex
+                --colspan
+                lpRow.cells[cellIndex].content = [' '.multiply(5)]
+            }
+            ++cellIndex
+        }
+    }
+
+
+    private String renderOneLeanpubTableRow(LeanpubTableRow ltr,def columnWidths,def columnAlignment,Character divCharAbove=null) {
 
         String ret= ''
         if(divCharAbove) {
@@ -600,7 +655,7 @@ class LeanpubConverter extends AbstractMultiOutputTextConverter {
             String renderedRow = '|'
             ltr.cells.eachWithIndex { LeanpubCell cell, int index ->
                 int width = columnWidths[index]
-                if(rowCounter < cell.content.size()) {
+                if(rowCounter < cell.content?.size()) {
                     renderedRow+= cell.content[rowCounter]
                 } else {
                     renderedRow+= ' '.multiply(5)
@@ -609,24 +664,6 @@ class LeanpubConverter extends AbstractMultiOutputTextConverter {
             }
             renderedRow
         }.join(LINESEP)
-    }
-
-    private void processOneTableRow(Row asciiRow,LeanpubTableRow lpRow) {
-        int cellIndex=0 // TODO: Maybe wel can use cell.column.columnNumber instead to work out the position
-
-        asciiRow.cells.each { Cell cell ->
-            lpRow.cells[cellIndex].content = cell.content
-            lpRow.cells[cellIndex].halign = cell.horizontalAlignment
-
-            int colspan = cell.colspan
-            while(colspan > 0 ) {
-                log.warn "Colspan > 1 is not supported at present by Leanpub. An empty cell will be generated."
-                ++cellIndex
-                --colspan
-                lpRow.cells[cellIndex].content = ' '.multiply(5)
-            }
-            ++cellIndex
-        }
     }
 
     /** Formats the content in a dedication.
