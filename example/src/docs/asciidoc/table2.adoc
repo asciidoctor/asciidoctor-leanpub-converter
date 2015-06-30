@@ -1,0 +1,13 @@
+.Simple table with single text rows and a header
+[options="header"]
+|===
+
+| Header 1 | Header 2
+
+| Cell in column 1, row 1 | Cell in column two, row 1
+
+| Cell in column one, row 2 | Cell in column 2, row 2
+
+| Cell in column 1, row three | Cell in column 2, row three
+
+|===

@@ -144,7 +144,7 @@ The `float` metadata will be converted for bloc images.
 
 == Tables
 
-Awaiting https://github.com/asciidoctor/asciidoctorj/issues/327[AsciidoctorJ #327] to be fixed.
+See the examples project for what is supported and what is not supported.
 
 == Cover page
 
@@ -152,3 +152,6 @@ Use `:front-cover-page: image:NameOfImage.png[]` to add a Leanpub cover. Current
 PNG extension is required. See https://leanpub.com/help/manual#leanpub-auto-how-to-insert-cover-images--cover-pages(Leanpub docs)
 for more detail on size requirements.
 
+== See Asciidoctor in action
+
+Have a look on Leanpub at this https://leanpub.com/asciidoctortoleanpubsample[free sample book] which is the generated version of the example project.

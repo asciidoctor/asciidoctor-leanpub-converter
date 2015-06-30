@@ -1,0 +1,10 @@
+.This table also has a vbar and a width of 65%
+[cols="2*",width="65"]
+|===
+|Cell in column 1, row 1
+|Cell in column 2, row 1
+
+|Cell in column 1, row 2 with {vbar} embedded
+|Cell in column 2, row 2
+|===
+
