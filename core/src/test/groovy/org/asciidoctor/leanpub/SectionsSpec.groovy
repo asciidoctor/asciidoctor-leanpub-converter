@@ -97,6 +97,7 @@ More text
 ||
 ||
 ||
+
 C> This file is dedicated to all those that has made the Asciidoctor chain possible.
 C> ''' + '''
 C> Happy hacking people!

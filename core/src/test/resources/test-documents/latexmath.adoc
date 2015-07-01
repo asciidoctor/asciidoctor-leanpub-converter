@@ -1,0 +1,13 @@
+= Mathematical Equations
+:stem: latexmath
+
+[chapter]
+== Basic Latex Maths
+
+We can have an inline equation: stem:[C = \alpha + \beta Y^{\gamma} + \epsilon], or we can have a block
+
+.A latexmath block
+[latexmath]
+++++
+C = \alpha + \beta Y^{\gamma} + \epsilon
+++++

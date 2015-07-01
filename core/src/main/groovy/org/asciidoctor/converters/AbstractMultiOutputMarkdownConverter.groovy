@@ -15,9 +15,9 @@ import java.util.regex.Pattern
  * @author Schalk W. Cronjé
  */
 @Slf4j
-abstract class AbstractMultiOutputTextConverter extends AbstractConverter {
+abstract class AbstractMultiOutputMarkdownConverter extends AbstractConverter {
 
-    AbstractMultiOutputTextConverter(final String backend,Map<Object, Object> opts) {
+    AbstractMultiOutputMarkdownConverter(final String backend,Map<Object, Object> opts) {
         super(backend, opts)
     }
 
@@ -155,6 +155,7 @@ abstract class AbstractMultiOutputTextConverter extends AbstractConverter {
     abstract def convertImage(AbstractNode node,Map<String, Object> opts)
     abstract def convertInlineImage(AbstractNode node,Map<String, Object> opts)
     abstract def convertTable(AbstractNode node,Map<String, Object> opts)
+    abstract def convertStem(AbstractNode node,Map<String, Object> opts)
 
     /** Paragraph conversion just passes the content back.
      *

@@ -6,7 +6,7 @@
 [dedication]
 == Dedication
 
-This sample book is dedicated to all those people who have contributed to making the Asciidoctor so awesome.
+This sample book is dedicated to all those people who have contributed to making the Asciidoctor toolchain so awesome.
 
 [preface]
 == Preface
@@ -170,6 +170,7 @@ documentBinder {
 <2> Append more documents to existing list
 <3> Even closures can be used to allow for late evaluation of documents
 
+
 [chapter]
 == Tables
 
@@ -219,6 +220,30 @@ NOTE: Want to add a note? No, problem!
 .Tip with title
 TIP: That's right, you can have block titles on admonitions.
 
+[chapter]
+== Mathematical Equations
+
+Only `latexmath` is supported. If you are targeting Leanpub it might be better to set `:stem: latexmath` at he beginning
+or the document. Alternatively always precede the stem block with `[latexmath]` such as below.
+
+[source,asciidoc]
+----
+.A latexmath block
+[latexmath]
+++++
+C = \alpha + \beta Y^{\gamma} + \epsilon
+++++
+----
+
+The above markup will render in Leanpub as:
+
+.A latexmath block
+[latexmath]
+++++
+C = \alpha + \beta Y^{\gamma} + \epsilon
+++++
+
+NOTE: The Leanpub converter will not call MathJax to process the content. It will pass the content unmodified to Leanpub.
 
 = Reference Materials
 

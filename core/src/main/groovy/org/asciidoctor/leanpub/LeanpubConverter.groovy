@@ -11,7 +11,7 @@ import org.asciidoctor.ast.ListNode
 import org.asciidoctor.ast.Row
 import org.asciidoctor.ast.Section
 import org.asciidoctor.ast.Table
-import org.asciidoctor.converters.AbstractMultiOutputTextConverter
+import org.asciidoctor.converters.AbstractMultiOutputMarkdownConverter
 import org.asciidoctor.converters.internal.SourceParser
 import org.asciidoctor.leanpub.internal.CrossReference
 import org.asciidoctor.leanpub.internal.LeanpubCell
@@ -26,7 +26,7 @@ import java.util.regex.Pattern
  * @author Schalk W. Cronjé
  */
 @Slf4j
-class LeanpubConverter extends AbstractMultiOutputTextConverter {
+class LeanpubConverter extends AbstractMultiOutputMarkdownConverter {
 
     static final String LINESEP = "\n"
     static final String BOOK = 'Book.txt'
@@ -577,6 +577,29 @@ class LeanpubConverter extends AbstractMultiOutputTextConverter {
         renderedTable
     }
 
+    def convertStem(AbstractNode node,Map<String, Object> opts) {
+        Block stem = node as Block
+
+        switch(stem.style) {
+            case 'latexmath':
+                (stem.title ? QuotedTextConverter.latexmath("${LINESEP}\\textbf{${stem.title}}${LINESEP}") + LINESEP + LINESEP : '') +
+                    QuotedTextConverter.latexmath("${LINESEP}${stem.content}${LINESEP}") + LINESEP
+//                (stem.title ? '{$$}' + "${LINESEP}\\text{${stem.title}}${LINESEP}" + '{/$$'${LINESEP}": '') +
+//                    '{$$}' + LINESEP +
+//                    stem.content + LINESEP +
+//                    '{/$$}' +
+//                    LINESEP
+//                '{$$}' + LINESEP +
+//                    (stem.title ? "\\text{${stem.title}}${LINESEP}${LINESEP}": '') +
+//                    stem.content + LINESEP +
+//                    '{/$$}' + LINESEP
+                break
+            default:
+                log.warn "Stem block of style '${stem.style}' will be ignored, but processing will continue"
+                null
+        }
+    }
+
     private String leanpubTableAlignmentRow(Character divCharAbove,LeanpubTable.HorizontalAlignment ha) {
 
         if(divCharAbove==null) {
@@ -675,6 +698,7 @@ class LeanpubConverter extends AbstractMultiOutputTextConverter {
 
         "-#${LINESEP}" +
             "||${LINESEP}".multiply(10) +
+            LINESEP +
             section.content.toString().readLines().collect {
                 "C> ${it}"
             }.join(LINESEP) + LINESEP
