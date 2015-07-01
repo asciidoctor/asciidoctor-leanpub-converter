@@ -33,6 +33,10 @@ class QuotedTextConverter {
     static String verse(final String text) {
         text
     }
+
+    static String latexmath(final String text) {
+        '{$$}' + text + '{/$$}'
+    }
 }
 
 // subscript
