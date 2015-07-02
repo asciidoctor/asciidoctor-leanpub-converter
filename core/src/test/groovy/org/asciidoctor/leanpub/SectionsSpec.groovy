@@ -86,17 +86,19 @@ More text
         LeanpubSpecification.book1.readLines()[1] == 'dedication.txt'
 
         and: 'Dedication is generated'
-        dedication.text == '-#' + '''
-||
-||
-||
-||
-||
-||
-||
-||
-||
-||
+        dedication.text == '''-# &nbsp;
+
+{width="narrow"}
+| |
+| |
+| |
+| |
+| |
+| |
+| |
+| |
+| |
+| |
 
 C> This file is dedicated to all those that has made the Asciidoctor chain possible.
 C> ''' + '''

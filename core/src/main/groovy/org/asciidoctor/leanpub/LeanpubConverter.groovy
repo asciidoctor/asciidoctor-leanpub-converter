@@ -406,9 +406,9 @@ class LeanpubConverter extends AbstractMultiOutputMarkdownConverter {
     }
 
     def convertListingTypeSource(Block block,Map<String, Object> opts) {
-        Map annotations = [lang: "\"${block.attributes.language}\""]
+        Map annotations = [lang: "${block.attributes.language}"]
         if (block.title) {
-            annotations['title'] = "\"${block.title}\""
+            annotations['title'] = block.title
         }
 
         def parsedContent = SourceParser.parseSourceForCallouts(block)
@@ -421,7 +421,8 @@ class LeanpubConverter extends AbstractMultiOutputMarkdownConverter {
             src=block.source
         }
 
-        '{' + annotations.collect{ k,v -> "${k}=${v}"}.join(', ') + '}' + LINESEP +
+//        '{' + annotations.collect{ k,v -> "${k}=${v}"}.join(', ') + '}' + LINESEP +
+        renderLeanpubAttributes(annotations) +
             '~'.multiply(8) + LINESEP +
             src  + LINESEP +
             '~'.multiply(8) + LINESEP
@@ -433,7 +434,7 @@ class LeanpubConverter extends AbstractMultiOutputMarkdownConverter {
         def style = styleMap[block.attributes.name]
         if(!style) {
             log.warn "${block.attributes.name} not recognised as a Leanpub admonition. Will render as normal text"
-            block.attributes.style + ': ' + block.lines().join(LINESEP)
+            block.attributes.style + ': ' + block.lines.join(LINESEP)
         } else {
             String content = ''
             if(style['icon'] && style['icon'].size()) {
@@ -584,15 +585,6 @@ class LeanpubConverter extends AbstractMultiOutputMarkdownConverter {
             case 'latexmath':
                 (stem.title ? QuotedTextConverter.latexmath("${LINESEP}\\textbf{${stem.title}}${LINESEP}") + LINESEP + LINESEP : '') +
                     QuotedTextConverter.latexmath("${LINESEP}${stem.content}${LINESEP}") + LINESEP
-//                (stem.title ? '{$$}' + "${LINESEP}\\text{${stem.title}}${LINESEP}" + '{/$$'${LINESEP}": '') +
-//                    '{$$}' + LINESEP +
-//                    stem.content + LINESEP +
-//                    '{/$$}' +
-//                    LINESEP
-//                '{$$}' + LINESEP +
-//                    (stem.title ? "\\text{${stem.title}}${LINESEP}${LINESEP}": '') +
-//                    stem.content + LINESEP +
-//                    '{/$$}' + LINESEP
                 break
             default:
                 log.warn "Stem block of style '${stem.style}' will be ignored, but processing will continue"
@@ -696,8 +688,9 @@ class LeanpubConverter extends AbstractMultiOutputMarkdownConverter {
      */
     private String formatDedication(Section section) {
 
-        "-#${LINESEP}" +
-            "||${LINESEP}".multiply(10) +
+        "-# &nbsp;${LINESEP}${LINESEP}" +
+            renderLeanpubAttributes( width : 'narrow' ) +
+            "| |${LINESEP}".multiply(10) +
             LINESEP +
             section.content.toString().readLines().collect {
                 "C> ${it}"
