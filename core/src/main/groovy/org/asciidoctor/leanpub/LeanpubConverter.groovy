@@ -421,7 +421,6 @@ class LeanpubConverter extends AbstractMultiOutputMarkdownConverter {
             src=block.source
         }
 
-//        '{' + annotations.collect{ k,v -> "${k}=${v}"}.join(', ') + '}' + LINESEP +
         renderLeanpubAttributes(annotations) +
             '~'.multiply(8) + LINESEP +
             src  + LINESEP +
