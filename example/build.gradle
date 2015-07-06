@@ -6,12 +6,15 @@ buildscript {
 
     dependencies {
         classpath 'org.asciidoctor:asciidoctor-gradle-plugin:1.5.3-SNAPSHOT'
+        classpath 'org.asciidoctor:asciidoctorj-diagram:1.3.0.preview.1'
         classpath 'org.ysb33r.asciidoctor:asciidoctor-leanpub-core:0.1-SNAPSHOT'
+        classpath 'com.github.jruby-gradle:jruby-gradle-plugin:0.3.0'
 
     }
 }
 
 apply plugin : 'org.asciidoctor.convert'
+
 
 version = '0.1'
 
@@ -41,6 +44,8 @@ task CopyToDropbox ( type : Copy ) {
 }
 
 asciidoctor {
+
+    requires 'asciidoctor-diagram'
 
     sources {
         include 'leanpub.adoc'

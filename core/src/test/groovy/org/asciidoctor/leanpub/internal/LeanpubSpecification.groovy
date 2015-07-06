@@ -34,9 +34,10 @@ class LeanpubSpecification extends Specification {
     static final File book1 = new File(manuscriptDir,LeanpubConverter.BOOK)
     static final File sample1 = new File(manuscriptDir,LeanpubConverter.SAMPLE)
     static final File resourceDir = new File('./build/resources/test/test-documents')
+    static final File gemPath = new File('./build/gems')
 
     void setup() {
-        asciidoctor = Asciidoctor.Factory.create()
+        asciidoctor = Asciidoctor.Factory.create(gemPath.absolutePath)
         asciidoctor.javaConverterRegistry().register(LeanpubConverter,'leanpub')
 
         if(outputDir.exists()) {

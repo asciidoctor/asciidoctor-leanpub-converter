@@ -16,9 +16,22 @@
  */
 // ============================================================================
 
+buildscript {
+    repositories {
+        jcenter()
+    }
+
+    dependencies {
+        classpath 'com.github.jruby-gradle:jruby-gradle-plugin:0.3.0'
+    }
+}
+
 apply plugin : 'maven'
+apply plugin : 'com.github.jruby-gradle.base'
 
 dependencies {
+    gems 'rubygems:asciidoctor-diagram:1.2.1'
+
     compile 'org.codehaus.groovy:groovy-all:[2.3.4,2.3.99]'
     compile 'org.asciidoctor:asciidoctorj:1.6.0-SNAPSHOT'
     compile 'org.slf4j:slf4j-api:1.7.5'
@@ -39,4 +52,6 @@ test {
         showStandardStreams = true
         exceptionFormat "full"
     }
+
+    dependsOn jrubyPrepareGems
 }
