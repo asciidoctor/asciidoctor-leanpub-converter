@@ -12,7 +12,7 @@ class DrawingSpec extends LeanpubSpecification {
         asciidoctor.requireLibrary('asciidoctor-diagram')
     }
 
-//    @Issue('https://github.com/ysb33r/asciidoctor-leanpub-converter/issues/41')
+    @Issue('https://github.com/ysb33r/asciidoctor-leanpub-converter/issues/43')
     def "Inline and block content"() {
         setup:
             File chapter = new File(manuscriptDir,'chapter_1.txt')

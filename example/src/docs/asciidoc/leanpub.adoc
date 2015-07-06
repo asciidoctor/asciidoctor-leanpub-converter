@@ -245,6 +245,7 @@ C = \alpha + \beta Y^{\gamma} + \epsilon
 
 NOTE: The Leanpub converter will not call MathJax to process the content. It will pass the content unmodified to Leanpub.
 
+[chapter]
 == Diagramming
 
 If the asciidoctor-diagramming-extension is used, the Ditaa is supported out of the box and a diagram such as below becomes
@@ -268,7 +269,7 @@ a trivial exercise.
  +---+----+   +-------------+    \---------------/
 ....
 
-At this point in time, we have not testedt other diagramming tools yet, therefore feedback would be welcome!
+At this point in time, we have not tested other diagramming tools yet, therefore feedback would be welcome!
 
 = Reference Materials
 
