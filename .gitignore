@@ -3,3 +3,6 @@
 *.iml
 
 build
+
+example/src/docs/asciidoc/diag-*.png
+example/src/docs/asciidoc/diag-*.png.cache

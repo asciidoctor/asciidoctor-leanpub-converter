@@ -52,7 +52,7 @@ private List<Object> documents
         then:
         chapter.text == '''# Chapter Source Listing with Title
 
-{lang="groovy", title="Source code with title"}
+{lang="groovy",title="Source code with title"}
 ~~~~~~~~
 @InputFiles
 FileCollection getDocuments() {
@@ -75,7 +75,7 @@ FileCollection getDocuments() {
         then:
         chapter.text == '''# Chapter Source Listing with Callouts
 
-{lang="groovy", linenos=yes}
+{lang="groovy",linenos="yes"}
 ~~~~~~~~
 @InputFiles''' + ' '.multiply(3) + '''
 FileCollection getDocuments() {
@@ -124,7 +124,7 @@ very useful should another plugin author decide to extend your task type.
         then:
         chapter.text == '''# Chapter XML Source with Callouts
 
-{lang="xml", linenos=yes}
+{lang="xml",linenos="yes"}
 ~~~~~~~~
 <someXml>
   <parser/>
@@ -153,7 +153,7 @@ very useful should another plugin author decide to extend your task type.
         then:
         chapter.text == '''# Chapter XML Source with Aside
 
-{lang="xml", linenos=yes}
+{lang="xml",linenos="yes"}
 ~~~~~~~~
 <someXml>
   <parser/>
@@ -180,7 +180,7 @@ A>''' + ' '.multiply(7) + LeanpubConverter.LINESEP.multiply(2)
         then:
         chapter.text == '''# Chapter XML Source with Discussion
 
-{lang="xml", linenos=yes}
+{lang="xml",linenos="yes"}
 ~~~~~~~~
 <someXml>
   <parser/>
