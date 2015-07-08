@@ -86,7 +86,7 @@ More text
         LeanpubSpecification.book1.readLines()[1] == 'dedication.txt'
 
         and: 'Dedication is generated'
-        dedication.text == '''-# &nbsp;
+        dedication.text == '''##### &nbsp;
 
 {width="narrow"}
 | |

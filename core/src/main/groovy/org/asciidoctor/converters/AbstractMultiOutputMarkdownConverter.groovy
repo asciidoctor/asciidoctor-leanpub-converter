@@ -170,6 +170,7 @@ abstract class AbstractMultiOutputMarkdownConverter extends AbstractConverter {
     abstract def convertInlineImage(AbstractNode node,Map<String, Object> opts)
     abstract def convertTable(AbstractNode node,Map<String, Object> opts)
     abstract def convertStem(AbstractNode node,Map<String, Object> opts)
+    abstract def convertPreamble(AbstractNode node,Map<String, Object> opts)
 
     /** Paragraph conversion just passes the content back.
      *

@@ -18,5 +18,23 @@ class PrematterSpec extends LeanpubSpecification {
             new File(imagesDir,'title_page.png').exists()
     }
 
+    def "Preamble"() {
+        setup:
+            File chapter = new File(manuscriptDir,'preamble.txt')
+
+        when:
+            generateOutput('book-with-prematter.adoc')
+
+        then:
+            chapter.text == '''##### &nbsp;
+
+First **paragraph** of preamble
+
+Second paragrah of preamble
+
+{pagebreak}
+'''
+    }
+
 
 }

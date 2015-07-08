@@ -126,6 +126,10 @@ class LeanpubConverter extends AbstractMultiOutputMarkdownConverter {
                 w.println 'frontmatter.txt'
             }
 
+            if(document.preamble) {
+                w.println 'preamble.txt'
+            }
+
             if(document.dedication) {
                 w.println 'dedication.txt'
             }
@@ -152,6 +156,10 @@ class LeanpubConverter extends AbstractMultiOutputMarkdownConverter {
             }
 
             chaptersInSample.each { w.println it }
+        }
+
+        if(document.preamble) {
+            new File(destDir,'preamble.txt').text = document.preamble.content.toString()
         }
 
         if(document.dedication) {
@@ -591,6 +599,12 @@ class LeanpubConverter extends AbstractMultiOutputMarkdownConverter {
         }
     }
 
+    def convertPreamble(AbstractNode node,Map<String, Object> opts) {
+        Block block = node as Block
+        document.preamble = new ConvertedSection(content: formatPreamble(block), type: PREAMBLE, sample: false)
+        return document.preamble.content
+    }
+
     private String leanpubTableAlignmentRow(Character divCharAbove,LeanpubTable.HorizontalAlignment ha) {
 
         if(divCharAbove==null) {
@@ -687,13 +701,25 @@ class LeanpubConverter extends AbstractMultiOutputMarkdownConverter {
      */
     private String formatDedication(Section section) {
 
-        "-# &nbsp;${LINESEP}${LINESEP}" +
+        "##### &nbsp;${LINESEP}${LINESEP}" +
             renderLeanpubAttributes( width : 'narrow' ) +
             "| |${LINESEP}".multiply(10) +
             LINESEP +
             section.content.toString().readLines().collect {
                 "C> ${it}"
             }.join(LINESEP) + LINESEP
+    }
+
+    /** Formats the content in a prematter.
+     *
+     * @param section
+     * @return Formatted content
+     */
+    private String formatPreamble(Block block) {
+
+        "##### &nbsp;${LINESEP}${LINESEP}" +
+            block.content + LINESEP +
+            '{pagebreak}' + LINESEP
     }
 
     /** Formats the content in a section.

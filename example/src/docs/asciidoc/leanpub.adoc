@@ -3,6 +3,11 @@
 :doctype: book
 :front-cover-image: image:FrontPage_1950x2700_300dpi.png[]
 
+This example book has been created to show how Asciidoctor is capable of creating well-formatted Leanpub books.
+
+NOTE: This also shows that a `preamble` is possible. It will be published as the very first section.
+  It is formatted as for any normal block.
+
 [dedication]
 == Dedication
 
@@ -11,7 +16,7 @@ This sample book is dedicated to all those people who have contributed to making
 [preface]
 == Preface
 
-Asciidoctor is a powerful authoring ecosystem. Leanpub is a wonderful empoweringm self-publishing platform.
+Asciidoctor is a powerful authoring ecosystem. Leanpub is a wonderful and empowering self-publishing platform.
 We can combine the two to be even more awesome.
 
 [[QuoteInPreface]]
