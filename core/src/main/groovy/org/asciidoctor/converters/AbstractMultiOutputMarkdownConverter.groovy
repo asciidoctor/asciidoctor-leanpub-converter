@@ -238,16 +238,22 @@ abstract class AbstractMultiOutputMarkdownConverter extends AbstractConverter {
 //    }
 
 
-    // Implementation of  https://github.com/asciidoctor/asciidoctor-leanpub-converter/issues/48
-
+    //
+    /** Creates a message for logging which could include source tracing information
+     *
+     * @param msg Base message to log
+     * @param node Node to interrogate for source information
+     * @return The base string, with source information optionally appended.
+     *
+     * @sa {@link https://github.com/asciidoctor/asciidoctor-leanpub-converter/issues/48}
+     *
+     */
     String logMessageWithSourceTrace(final String msg,AbstractNode node) {
         String postfix = ''
-        if(node instanceof AbstractBlock) {
+        if(node.respondsTo('getSourceLocation')) {
             Cursor cursor = (node as AbstractBlock).sourceLocation
             if(cursor!=null) {
                 postfix = " (${cursor.file}:${cursor.lineNumber})."
-            } else {
-                postfix = " (Tip: Set sourcemap option to 'true' for location trace)."
             }
         }
         postfix.empty ? msg : "${msg} ${postfix}"
