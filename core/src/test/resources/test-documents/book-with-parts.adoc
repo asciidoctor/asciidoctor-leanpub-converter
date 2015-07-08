@@ -34,6 +34,9 @@ With no text
 
 = Part Two
 
+[partintro]
+We can write a paragraph to introduce a part.
+
 [chapter]
 == Chapter C
 

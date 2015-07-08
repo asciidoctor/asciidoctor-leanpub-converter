@@ -194,7 +194,6 @@ class LeanpubConverter extends AbstractMultiOutputMarkdownConverter {
 
     def convertSection(AbstractNode node, Map<String, Object> opts) {
         Section section = node as Section
-        int sectionIndex = -1
         boolean  inSample = false
 
         log.debug "Transforming section: name=${section.sectname()}, level=${section.level} title=${section.title}"
@@ -209,7 +208,7 @@ class LeanpubConverter extends AbstractMultiOutputMarkdownConverter {
             return section.content
         } else if(section.level == 1) {
 
-            switch(section.sectname()) {
+            switch(section.sectionName) {
                 case 'preface':
                     if(document.preface == null) {
                         document.preface = new ConvertedSection(content: formatSection(section), type: PREFACE, sample: inSample)
@@ -596,6 +595,31 @@ class LeanpubConverter extends AbstractMultiOutputMarkdownConverter {
             default:
                 log.warn "Stem block of style '${stem.style}' will be ignored, but processing will continue"
                 null
+        }
+    }
+
+    def convertOpen(AbstractNode node,Map<String, Object> opts) {
+        Block block = node as Block
+        if(block.style) {
+            "convert${block.style.capitalize()}"(block,opts)
+        } else {
+            log.error logMessageWithSourceTrace(
+                "Open block with no styling not yet implemented. Will not transform this node, but will try to carry on. " +
+                "Please raise an issue at https://github.com/asciidoctor/asciidoctor-leanpub-converter/issues with an example of your use case." ,
+                block
+            )
+            null
+        }
+    }
+
+    def convertPartintro(Block block,Map<String, Object> opts) {
+        if(document.currentPart) {
+            document.currentPart.partIntro = block.content + LINESEP
+        } else {
+            log.warn logMessageWithSourceTrace(
+                "Using [partintro] outside of a part is not supported for leanpub backend. This block will be ignored.",
+                block
+            )
         }
     }
 

@@ -71,6 +71,7 @@ With no text
         and: 'Part 2 is generated'
         part2.text == '''-# Part Two
 
+We can write a paragraph to introduce a part.
 '''
         and: 'Chapter C is generated after Part 2'
         chapterC.text == '''# Chapter C
