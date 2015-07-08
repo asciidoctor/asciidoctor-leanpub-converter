@@ -53,7 +53,7 @@ class LeanpubSpecification extends Specification {
             mkdirs : true,
             backend : 'leanpub',
             safe : 1,
-            sourcemap : 1
+            sourcemap : 'true'
         ]
         asciidoctor.convertFile(new File(resourceDir,documentFileName),options )
 

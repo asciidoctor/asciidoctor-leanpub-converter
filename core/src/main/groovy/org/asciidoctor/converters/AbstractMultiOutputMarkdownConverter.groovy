@@ -1,8 +1,10 @@
 package org.asciidoctor.converters
 
 import groovy.util.logging.Slf4j
+import org.asciidoctor.ast.AbstractBlock
 import org.asciidoctor.ast.AbstractNode
 import org.asciidoctor.ast.Block
+import org.asciidoctor.ast.Cursor
 import org.asciidoctor.ast.DocumentRuby
 import org.asciidoctor.ast.Inline
 import org.asciidoctor.ast.ListItem
@@ -56,16 +58,28 @@ abstract class AbstractMultiOutputMarkdownConverter extends AbstractConverter {
         if(name.startsWith('convert') && args.size() == 2 && args[0] instanceof AbstractNode) {
             if(name.startsWith('convertAnchorType')) {
                 Inline inline = args[0] as Inline
-                log.error "Anchor type '${inline.type}' is not defined. Will not transform this node, but will try to carry on."
-            } else if(name.startsWith('convertListingTyoe')) {
+                log.error logMessageWithSourceTrace(
+                    "Anchor type '${inline.type}' is not defined. Will not transform this node, but will try to carry on.",
+                    inline
+                )
+            } else if(name.startsWith('convertListingType')) {
                 Block inline = args[0] as Block
-                log.error "Listing type '${block.attributes.style}' is not defined. Will not transform this node, but will try to carry on."
+                log.error logMessageWithSourceTrace(
+                    "Listing type '${block.attributes.style}' is not defined. Will not transform this node, but will try to carry on.",
+                    inline
+                )
             } else if(name.startsWith('convertListItemType')) {
                 ListItem item = args[0] as ListItem
-                log.error "List item type '${item.parent.context}' is not defined. Will not transform this node, but will try to carry on"
+                log.error logMessageWithSourceTrace(
+                    "List item type '${item.parent.context}' is not defined. Will not transform this node, but will try to carry on",
+                    item
+                )
             } else {
                 AbstractNode node = args[0] as AbstractNode
-                log.error "${name} (node:${node.class.name}) is not defined. Will not transform this node, but will try to carry on."
+                log.error logMessageWithSourceTrace(
+                    "${name} (node:${node.class.name}) is not defined. Will not transform this node, but will try to carry on.",
+                    node
+                )
             }
             return null
         } else {
@@ -222,6 +236,22 @@ abstract class AbstractMultiOutputMarkdownConverter extends AbstractConverter {
 //        Block block = node as Block
 //        println "***** ${block.content}"
 //    }
+
+
+    // Implementation of  https://github.com/asciidoctor/asciidoctor-leanpub-converter/issues/48
+
+    String logMessageWithSourceTrace(final String msg,AbstractNode node) {
+        String postfix = ''
+        if(node instanceof AbstractBlock) {
+            Cursor cursor = (node as AbstractBlock).sourceLocation
+            if(cursor!=null) {
+                postfix = " (${cursor.file}:${cursor.lineNumber})."
+            } else {
+                postfix = " (Tip: Set sourcemap option to 'true' for location trace)."
+            }
+        }
+        postfix.empty ? msg : "${msg} ${postfix}"
+    }
 
     private boolean setupComplete = false
 }
