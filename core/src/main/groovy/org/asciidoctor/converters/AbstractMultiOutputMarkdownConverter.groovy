@@ -5,7 +5,7 @@ import org.asciidoctor.ast.AbstractBlock
 import org.asciidoctor.ast.AbstractNode
 import org.asciidoctor.ast.Block
 import org.asciidoctor.ast.Cursor
-import org.asciidoctor.ast.DocumentRuby
+import org.asciidoctor.ast.Document
 import org.asciidoctor.ast.Inline
 import org.asciidoctor.ast.ListItem
 import org.asciidoctor.ast.ListNode
@@ -107,7 +107,7 @@ abstract class AbstractMultiOutputMarkdownConverter extends AbstractConverter {
      */
     @Override
     Object convert(AbstractNode node, String transform, Map<Object, Object> opts) {
-        if (node instanceof DocumentRuby) {
+        if (node instanceof Document) {
             if(setupComplete) {
                 return node.content
             } else {
