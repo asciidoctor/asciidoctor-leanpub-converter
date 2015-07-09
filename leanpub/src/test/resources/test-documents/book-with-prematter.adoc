@@ -1,0 +1,15 @@
+= Title
+Asciidoctor Team <foo@bar.example>
+:leanpub-lang: afrikaans
+:imagesdir: ./build/resources/test/test-documents/images
+:front-cover-image: image:Simple.png[]
+
+First *paragraph* of preamble
+
+Second paragrah of preamble
+
+[chapter]
+== Chapter A
+
+:leanpub-lang: english
+Text

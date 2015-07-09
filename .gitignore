@@ -4,5 +4,5 @@
 
 build
 
-example/src/docs/asciidoc/diag-*.png
-example/src/docs/asciidoc/diag-*.png.cache
+leanpub-example-book/src/docs/asciidoc/diag-*.png
+leanpub-example-book/src/docs/asciidoc/diag-*.png.cache

@@ -1,0 +1,41 @@
+= Passthrough tests
+
+[chapter]
+== Passthrough inline macro
+
+This line pass:[**must** *go* `asis`] on a single line.
+
+[chapter]
+== Passthrough block single line
+
+[pass]
+<u>underline me</u> renders as underlined text.
+
+This is an *extra* line.
+
+[chapter]
+== Passthrough block multi-line
+
+++++
+This line **must** *go* `asis` onn a single line.
+++++
+This is an extra line.
+
+[chapter]
+== Passthrough block multi-line with substitution
+
+:mysubst: foo
+
+[subs="attributes"]
+++++
+This line **must** *go* `asis` on a {mysubst} line.
+++++
+This is an extra line.
+
+
+
+
+
+
+
+
