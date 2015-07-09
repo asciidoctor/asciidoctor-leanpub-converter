@@ -5,13 +5,14 @@ package org.asciidoctor.leanpub
  */
 class LeanpubDocument {
 
+    ConvertedSection preamble
     ConvertedSection dedication
     ConvertedSection preface
     List<ConvertedPart> parts
     List<ConvertedSection> backmatter
 
     boolean hasFrontMatter() {
-        dedication != null || preface != null
+        dedication != null || preface != null || preamble != null
     }
 
     boolean hasBackMatter() {

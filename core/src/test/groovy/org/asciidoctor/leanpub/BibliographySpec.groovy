@@ -11,8 +11,8 @@ class BibliographySpec extends LeanpubSpecification {
 
     def "Bibliography"() {
         setup:
-        File chapter1 = new File(manuscriptDir,'backmatter_1.txt')
-        File chapter2 = new File(manuscriptDir,'backmatter_2.txt')
+        File chapter1 = new File(manuscriptDir,'backmatter_2.txt')
+        File chapter2 = new File(manuscriptDir,'backmatter_3.txt')
         generateOutput('bibliography.adoc')
 
         expect:

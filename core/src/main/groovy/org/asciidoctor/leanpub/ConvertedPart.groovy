@@ -14,7 +14,6 @@ class ConvertedPart {
     Writer write(Writer writer) {
         writer << title
         if(partIntro) {
-            writer << LeanpubConverter.LINESEP
             writer << partIntro
         }
 

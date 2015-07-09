@@ -71,6 +71,7 @@ With no text
         and: 'Part 2 is generated'
         part2.text == '''-# Part Two
 
+We can write a paragraph to introduce a part.
 '''
         and: 'Chapter C is generated after Part 2'
         chapterC.text == '''# Chapter C
@@ -86,7 +87,7 @@ More text
         LeanpubSpecification.book1.readLines()[1] == 'dedication.txt'
 
         and: 'Dedication is generated'
-        dedication.text == '''-# &nbsp;
+        dedication.text == '''##### &nbsp;
 
 {width="narrow"}
 | |

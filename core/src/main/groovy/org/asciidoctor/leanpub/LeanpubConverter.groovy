@@ -126,6 +126,10 @@ class LeanpubConverter extends AbstractMultiOutputMarkdownConverter {
                 w.println 'frontmatter.txt'
             }
 
+            if(document.preamble) {
+                w.println 'preamble.txt'
+            }
+
             if(document.dedication) {
                 w.println 'dedication.txt'
             }
@@ -152,6 +156,10 @@ class LeanpubConverter extends AbstractMultiOutputMarkdownConverter {
             }
 
             chaptersInSample.each { w.println it }
+        }
+
+        if(document.preamble) {
+            new File(destDir,'preamble.txt').text = document.preamble.content.toString()
         }
 
         if(document.dedication) {
@@ -186,7 +194,6 @@ class LeanpubConverter extends AbstractMultiOutputMarkdownConverter {
 
     def convertSection(AbstractNode node, Map<String, Object> opts) {
         Section section = node as Section
-        int sectionIndex = -1
         boolean  inSample = false
 
         log.debug "Transforming section: name=${section.sectname()}, level=${section.level} title=${section.title}"
@@ -201,7 +208,7 @@ class LeanpubConverter extends AbstractMultiOutputMarkdownConverter {
             return section.content
         } else if(section.level == 1) {
 
-            switch(section.sectname()) {
+            switch(section.sectionName) {
                 case 'preface':
                     if(document.preface == null) {
                         document.preface = new ConvertedSection(content: formatSection(section), type: PREFACE, sample: inSample)
@@ -591,6 +598,37 @@ class LeanpubConverter extends AbstractMultiOutputMarkdownConverter {
         }
     }
 
+    def convertOpen(AbstractNode node,Map<String, Object> opts) {
+        Block block = node as Block
+        if(block.style) {
+            "convert${block.style.capitalize()}"(block,opts)
+        } else {
+            log.error logMessageWithSourceTrace(
+                "Open block with no styling not yet implemented. Will not transform this node, but will try to carry on. " +
+                "Please raise an issue at https://github.com/asciidoctor/asciidoctor-leanpub-converter/issues with an example of your use case." ,
+                block
+            )
+            null
+        }
+    }
+
+    def convertPartintro(Block block,Map<String, Object> opts) {
+        if(document.currentPart) {
+            document.currentPart.partIntro = block.content + LINESEP
+        } else {
+            log.warn logMessageWithSourceTrace(
+                "Using [partintro] outside of a part is not supported for leanpub backend. This block will be ignored.",
+                block
+            )
+        }
+    }
+
+    def convertPreamble(AbstractNode node,Map<String, Object> opts) {
+        Block block = node as Block
+        document.preamble = new ConvertedSection(content: formatPreamble(block), type: PREAMBLE, sample: false)
+        return document.preamble.content
+    }
+
     private String leanpubTableAlignmentRow(Character divCharAbove,LeanpubTable.HorizontalAlignment ha) {
 
         if(divCharAbove==null) {
@@ -687,13 +725,25 @@ class LeanpubConverter extends AbstractMultiOutputMarkdownConverter {
      */
     private String formatDedication(Section section) {
 
-        "-# &nbsp;${LINESEP}${LINESEP}" +
+        "##### &nbsp;${LINESEP}${LINESEP}" +
             renderLeanpubAttributes( width : 'narrow' ) +
             "| |${LINESEP}".multiply(10) +
             LINESEP +
             section.content.toString().readLines().collect {
                 "C> ${it}"
             }.join(LINESEP) + LINESEP
+    }
+
+    /** Formats the content in a prematter.
+     *
+     * @param section
+     * @return Formatted content
+     */
+    private String formatPreamble(Block block) {
+
+        "##### &nbsp;${LINESEP}${LINESEP}" +
+            block.content + LINESEP +
+            '{pagebreak}' + LINESEP
     }
 
     /** Formats the content in a section.

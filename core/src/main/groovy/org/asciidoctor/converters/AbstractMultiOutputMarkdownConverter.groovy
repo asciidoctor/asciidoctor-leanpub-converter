@@ -1,9 +1,11 @@
 package org.asciidoctor.converters
 
 import groovy.util.logging.Slf4j
+import org.asciidoctor.ast.AbstractBlock
 import org.asciidoctor.ast.AbstractNode
 import org.asciidoctor.ast.Block
-import org.asciidoctor.ast.DocumentRuby
+import org.asciidoctor.ast.Cursor
+import org.asciidoctor.ast.Document
 import org.asciidoctor.ast.Inline
 import org.asciidoctor.ast.ListItem
 import org.asciidoctor.ast.ListNode
@@ -56,16 +58,28 @@ abstract class AbstractMultiOutputMarkdownConverter extends AbstractConverter {
         if(name.startsWith('convert') && args.size() == 2 && args[0] instanceof AbstractNode) {
             if(name.startsWith('convertAnchorType')) {
                 Inline inline = args[0] as Inline
-                log.error "Anchor type '${inline.type}' is not defined. Will not transform this node, but will try to carry on."
-            } else if(name.startsWith('convertListingTyoe')) {
+                log.error logMessageWithSourceTrace(
+                    "Anchor type '${inline.type}' is not defined. Will not transform this node, but will try to carry on.",
+                    inline
+                )
+            } else if(name.startsWith('convertListingType')) {
                 Block inline = args[0] as Block
-                log.error "Listing type '${block.attributes.style}' is not defined. Will not transform this node, but will try to carry on."
+                log.error logMessageWithSourceTrace(
+                    "Listing type '${block.attributes.style}' is not defined. Will not transform this node, but will try to carry on.",
+                    inline
+                )
             } else if(name.startsWith('convertListItemType')) {
                 ListItem item = args[0] as ListItem
-                log.error "List item type '${item.parent.context}' is not defined. Will not transform this node, but will try to carry on"
+                log.error logMessageWithSourceTrace(
+                    "List item type '${item.parent.context}' is not defined. Will not transform this node, but will try to carry on",
+                    item
+                )
             } else {
                 AbstractNode node = args[0] as AbstractNode
-                log.error "${name} (node:${node.class.name}) is not defined. Will not transform this node, but will try to carry on."
+                log.error logMessageWithSourceTrace(
+                    "${name} (node:${node.class.name}) is not defined. Will not transform this node, but will try to carry on.",
+                    node
+                )
             }
             return null
         } else {
@@ -93,7 +107,7 @@ abstract class AbstractMultiOutputMarkdownConverter extends AbstractConverter {
      */
     @Override
     Object convert(AbstractNode node, String transform, Map<Object, Object> opts) {
-        if (node instanceof DocumentRuby) {
+        if (node instanceof Document) {
             if(setupComplete) {
                 return node.content
             } else {
@@ -156,6 +170,8 @@ abstract class AbstractMultiOutputMarkdownConverter extends AbstractConverter {
     abstract def convertInlineImage(AbstractNode node,Map<String, Object> opts)
     abstract def convertTable(AbstractNode node,Map<String, Object> opts)
     abstract def convertStem(AbstractNode node,Map<String, Object> opts)
+    abstract def convertOpen(AbstractNode node,Map<String, Object> opts)
+    abstract def convertPreamble(AbstractNode node,Map<String, Object> opts)
 
     /** Paragraph conversion just passes the content back.
      *
@@ -218,10 +234,25 @@ abstract class AbstractMultiOutputMarkdownConverter extends AbstractConverter {
 
     abstract def convertListingTypeSource(Block block,Map<String, Object> opts)
 
-//    def convertPreamble(AbstractNode node, Map<String, Object> opts) {
-//        Block block = node as Block
-//        println "***** ${block.content}"
-//    }
+    /** Creates a message for logging which could include source tracing information
+     *
+     * @param msg Base message to log
+     * @param node Node to interrogate for source information
+     * @return The base string, with source information optionally appended.
+     *
+     * @sa {@link https://github.com/asciidoctor/asciidoctor-leanpub-converter/issues/48}
+     *
+     */
+    String logMessageWithSourceTrace(final String msg,AbstractNode node) {
+        String postfix = ''
+        if(node.respondsTo('getSourceLocation')) {
+            Cursor cursor = (node as AbstractBlock).sourceLocation
+            if(cursor!=null) {
+                postfix = " (${cursor.file}:${cursor.lineNumber})."
+            }
+        }
+        postfix.empty ? msg : "${msg} ${postfix}"
+    }
 
     private boolean setupComplete = false
 }

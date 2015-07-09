@@ -13,6 +13,7 @@ class ConvertedSection {
         PART,
         DEDICATION,
         PREFACE,
+        PREAMBLE,
         BACKMATTER
     }
 
