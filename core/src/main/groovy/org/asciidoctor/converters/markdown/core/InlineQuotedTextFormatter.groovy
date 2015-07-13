@@ -1,9 +1,9 @@
-package org.asciidoctor.markdown.internal
+package org.asciidoctor.converters.markdown.core
 
 /**
  * @author Schalk W. Cronjé
  */
-class QuotedTextConverter {
+class InlineQuotedTextFormatter {
     static String strong(final String text) {
         "**${text}**"
     }

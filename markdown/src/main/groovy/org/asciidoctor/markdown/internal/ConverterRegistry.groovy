@@ -3,8 +3,6 @@ package org.asciidoctor.markdown.internal
 import org.asciidoctor.Asciidoctor
 import org.asciidoctor.markdown.MarkdownConverter
 
-//import org.asciidoctor.markdown.MarkdownConverter
-
 /**
  * @author Schalk W. Cronjé
  */

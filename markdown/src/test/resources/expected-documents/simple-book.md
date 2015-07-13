@@ -45,8 +45,8 @@ Non&nbsp;breaking&nbsp;spaces
 
 ## Chapter with Underlined Text
 
-__Underlined text one__
+<span style="text-decoration: underline"/>Underlined text one</span>
 
 ## Chapter with Lines
 
-'''
+- - -

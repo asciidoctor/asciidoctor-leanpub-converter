@@ -49,7 +49,7 @@ Non{nbsp}breaking{nbsp}spaces
 [chapter]
 == Chapter with Underlined Text
 
-+++____Underlined text one____+++
++++<span style="text-decoration: underline"/>Underlined text one</span>+++
 
 [chapter]
 == Chapter with Lines

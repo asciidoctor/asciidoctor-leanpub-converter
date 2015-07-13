@@ -9,7 +9,7 @@ import spock.lang.Unroll
  */
 class BasicMarkdownSpec extends MarkdownSpecification {
 
-    @Ignore
+//    @Ignore
     @Unroll
     def "Converting #adocType"() {
 

@@ -1,4 +1,4 @@
-package org.asciidoctor.converters
+package org.asciidoctor.converters.markdown.core
 
 import groovy.util.logging.Slf4j
 import org.asciidoctor.ast.*
@@ -12,7 +12,7 @@ abstract class AbstractMarkdownConverter extends AbstractConverter {
 
     static final String LINESEP = "\n"
 
-    AbstractMarkdownConverter(final String backend,Map<Object, Object> opts) {
+    AbstractMarkdownConverter(final String backend,Map<String, Object> opts) {
         super(backend, opts)
     }
 
@@ -108,6 +108,11 @@ abstract class AbstractMarkdownConverter extends AbstractConverter {
     }
 
 
+    def convertSection(AbstractNode node, Map<String, Object> opts) {
+        Section section = node as Section
+        '#'.multiply(section.level+1) + " ${section.title}${LINESEP}${LINESEP}" + section.content
+    }
+
     /** Paragraph conversion just passes the content back.
      *
      * @return Content plus an additional line separator
@@ -132,15 +137,41 @@ abstract class AbstractMarkdownConverter extends AbstractConverter {
         listNode.items.collect { ListItem item -> item.convert() }.join('')
     }
 
-//    def convertListItem(AbstractNode node,Map<String, Object> opts) {
-//        ListItem item = node as ListItem
-//        if(item.parent.attributes?.style == 'bibliography' || item.parent.parent.attributes?.style == 'bibliography') {
-//            convertListItemTypeBibreflist(node,opts)
-//        }
-//        else {
-//            "${itemMethodName('convertListItemType', node.parent.context)}"(node, opts)
-//        }
-//    }
+    def convertInlineQuoted(AbstractNode node, Map<String, Object> opts) {
+        Inline inline = node as Inline
+        InlineQuotedTextFormatter."${inline.type}"(inline.text)
+    }
+
+    def convertThematicBreak(AbstractNode node,Map<String, Object> opts) {
+        Block block = node as Block
+        '- - -' + LINESEP
+    }
+
+    /** Create an ordered list item.
+     *
+     * @param item AST from tree
+     * @param opts
+     * @return
+     */
+    def convertListItemTypeOlist(ListItem item, Map<String, Object> opts) {
+        ' '.multiply(item.level*2-2) + '1. ' + item.text + LINESEP + item.content
+    }
+
+    /** Create an unordered list item.
+     *
+     * @param item
+     * @param opts
+     * @return
+     */
+    def convertListItemTypeUlist(ListItem item, Map<String, Object> opts) {
+        return ' '.multiply(item.level*2-2) + '* ' + item.text + LINESEP + item.content
+    }
+
+    def convertListItem(AbstractNode node,Map<String, Object> opts) {
+        "${itemMethodName('convertListItemType', node.parent.context)}"(node, opts)
+    }
+
+//    abstract def convertTable(AbstractNode node,Map<String, Object> opts)
 
 //    /** Redirects an anchor to the appropriate anchor type converter
 //     *

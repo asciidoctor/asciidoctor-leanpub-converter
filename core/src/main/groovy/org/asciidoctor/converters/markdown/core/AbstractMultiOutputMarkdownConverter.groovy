@@ -1,17 +1,12 @@
-package org.asciidoctor.converters
+package org.asciidoctor.converters.markdown.core
 
 import groovy.util.logging.Slf4j
-import org.asciidoctor.ast.AbstractBlock
 import org.asciidoctor.ast.AbstractNode
 import org.asciidoctor.ast.Block
-import org.asciidoctor.ast.Cursor
 import org.asciidoctor.ast.Document
 import org.asciidoctor.ast.Inline
 import org.asciidoctor.ast.ListItem
-import org.asciidoctor.ast.ListNode
-import org.asciidoctor.converter.AbstractConverter
-
-import java.util.regex.Pattern
+import org.asciidoctor.converters.markdown.core.AbstractMarkdownConverter
 
 /**
  * @author Schalk W. Cronjé
@@ -19,7 +14,7 @@ import java.util.regex.Pattern
 @Slf4j
 abstract class AbstractMultiOutputMarkdownConverter extends AbstractMarkdownConverter {
 
-    AbstractMultiOutputMarkdownConverter(final String backend,Map<Object, Object> opts) {
+    AbstractMultiOutputMarkdownConverter(final String backend,Map<String, Object> opts) {
         super(backend, opts)
     }
 
@@ -208,8 +203,8 @@ abstract class AbstractMultiOutputMarkdownConverter extends AbstractMarkdownConv
     }
 
     abstract def convertListItemTypeColist(ListItem node, Map<String, Object> opts)
-    abstract def convertListItemTypeOlist(ListItem node, Map<String, Object> opts)
-    abstract def convertListItemTypeUlist(ListItem node, Map<String, Object> opts)
+//    abstract def convertListItemTypeOlist(ListItem node, Map<String, Object> opts)
+//    abstract def convertListItemTypeUlist(ListItem node, Map<String, Object> opts)
     abstract def convertListItemTypeBibreflist(ListItem node, Map<String, Object> opts)
 
     /** Redirects an anchor to the appropriate anchor type converter

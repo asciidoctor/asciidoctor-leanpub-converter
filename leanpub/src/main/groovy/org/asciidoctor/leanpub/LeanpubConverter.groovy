@@ -11,7 +11,7 @@ import org.asciidoctor.ast.ListNode
 import org.asciidoctor.ast.Row
 import org.asciidoctor.ast.Section
 import org.asciidoctor.ast.Table
-import org.asciidoctor.converters.AbstractMultiOutputMarkdownConverter
+import org.asciidoctor.converters.markdown.core.AbstractMultiOutputMarkdownConverter
 import org.asciidoctor.converters.internal.SourceParser
 import org.asciidoctor.leanpub.internal.CrossReference
 import org.asciidoctor.leanpub.internal.LeanpubCell
@@ -38,7 +38,7 @@ class LeanpubConverter extends AbstractMultiOutputMarkdownConverter {
 
     String encoding = 'utf-8'
 
-    LeanpubConverter(final String backend,Map<Object, Object> opts) {
+    LeanpubConverter(final String backend,Map<String, Object> opts) {
         super(backend, opts)
     }
 
@@ -305,19 +305,19 @@ class LeanpubConverter extends AbstractMultiOutputMarkdownConverter {
         ' '.multiply(item.level*2-2) + '1. ' + item.text + LINESEP + item.content
     }
 
-    def convertListItemTypeOlist(ListItem item, Map<String, Object> opts) {
-        ' '.multiply(item.level*2-2) + '1. ' + item.text + LINESEP + item.content
-    }
-
-    /** Create an unordered list item, but takes special care if the list item is part of bibliography
-     *
-     * @param item
-     * @param opts
-     * @return
-     */
-    def convertListItemTypeUlist(ListItem item, Map<String, Object> opts) {
-        return ' '.multiply(item.level*2-2) + '* ' + item.text + LINESEP + item.content
-    }
+//    def convertListItemTypeOlist(ListItem item, Map<String, Object> opts) {
+//        ' '.multiply(item.level*2-2) + '1. ' + item.text + LINESEP + item.content
+//    }
+//
+//    /** Create an unordered list item, but takes special care if the list item is part of bibliography
+//     *
+//     * @param item
+//     * @param opts
+//     * @return
+//     */
+//    def convertListItemTypeUlist(ListItem item, Map<String, Object> opts) {
+//        return ' '.multiply(item.level*2-2) + '* ' + item.text + LINESEP + item.content
+//    }
 
 
     /** Takes special care if the list item is part of bibliography
