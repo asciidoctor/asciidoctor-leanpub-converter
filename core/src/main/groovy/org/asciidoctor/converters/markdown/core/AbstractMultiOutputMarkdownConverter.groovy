@@ -101,7 +101,7 @@ abstract class AbstractMultiOutputMarkdownConverter extends AbstractMarkdownConv
      * @return the converted result
      */
     @Override
-    Object convert(AbstractNode node, String transform, Map<Object, Object> opts) {
+    String convert(AbstractNode node, String transform, Map<Object, Object> opts) {
         if (node instanceof Document) {
             if(setupComplete) {
                 return node.content
