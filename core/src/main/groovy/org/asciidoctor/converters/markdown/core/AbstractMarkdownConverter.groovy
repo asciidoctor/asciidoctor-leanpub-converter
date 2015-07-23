@@ -2,13 +2,13 @@ package org.asciidoctor.converters.markdown.core
 
 import groovy.util.logging.Slf4j
 import org.asciidoctor.ast.*
-import org.asciidoctor.converter.AbstractConverter
+import org.asciidoctor.converter.StringConverter
 
 /**
  * @author Schalk W. Cronjé
  */
 @Slf4j
-abstract class AbstractMarkdownConverter extends AbstractConverter {
+abstract class AbstractMarkdownConverter extends StringConverter {
 
     static final String LINESEP = "\n"
 
@@ -99,7 +99,7 @@ abstract class AbstractMarkdownConverter extends AbstractConverter {
      * @return the converted result
      */
     @Override
-    Object convert(AbstractNode node, String transform, Map<Object, Object> opts) {
+    String convert(AbstractNode node, String transform, Map<Object, Object> opts) {
         if (node instanceof Document) {
             return node.content
         } else {
