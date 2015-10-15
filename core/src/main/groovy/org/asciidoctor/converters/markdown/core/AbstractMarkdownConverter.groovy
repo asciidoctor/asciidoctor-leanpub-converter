@@ -173,7 +173,7 @@ abstract class AbstractMarkdownConverter extends StringConverter {
         return ' '.multiply(item.level*2-2) + '* ' + item.text + LINESEP + item.content
     }
 
-    def convertListItem(StructuralNode node,Map<String, Object> opts) {
+    def convertListItem(ContentNode node,Map<String, Object> opts) {
         "${itemMethodName('convertListItemType', node.parent.context)}"(node, opts)
     }
 

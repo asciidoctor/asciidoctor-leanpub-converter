@@ -322,11 +322,12 @@ class LeanpubConverter extends AbstractMultiOutputMarkdownConverter {
      */
     def convertListItemTypeBibreflist(ListItem item, Map<String, Object> opts) {
         // Strip the anchor, write it on a separate line the write the rest
+
         def matcher = item.text.replaceAll(LINESEP,' ') =~ LISTITEM_BIBREF_PATTERN
         if(matcher.matches()) {
             return matcher[0][2] + LINESEP +
                 (matcher[0][1] ?: '') +
-                matcher[0][3].trim() + LINESEP + item.content + LINESEP
+                matcher[0][3].trim() + LINESEP + item.content + LINESEP 
         }
 
         item.text.trim() + LINESEP + item.content + LINESEP

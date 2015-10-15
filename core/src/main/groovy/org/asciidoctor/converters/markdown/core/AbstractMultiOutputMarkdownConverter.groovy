@@ -188,8 +188,10 @@ abstract class AbstractMultiOutputMarkdownConverter extends AbstractMarkdownConv
 //        listNode.items.collect { ListItem item -> item.convert() }.join('')
 //    }
 
+    @Override
     def convertListItem(ContentNode node,Map<String, Object> opts) {
         ListItem item = node as ListItem
+
         if(item.parent.attributes?.style == 'bibliography' || item.parent.parent.attributes?.style == 'bibliography') {
             convertListItemTypeBibreflist(node,opts)
         }
