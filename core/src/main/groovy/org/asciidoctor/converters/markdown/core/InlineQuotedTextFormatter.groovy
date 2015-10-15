@@ -1,11 +1,9 @@
-package org.asciidoctor.leanpub.internal
-
-import org.asciidoctor.leanpub.LeanpubConverter
+package org.asciidoctor.converters.markdown.core
 
 /**
  * @author Schalk W. Cronjé
  */
-class QuotedTextConverter {
+class InlineQuotedTextFormatter {
     static String strong(final String text) {
         "**${text}**"
     }
@@ -32,10 +30,6 @@ class QuotedTextConverter {
 
     static String verse(final String text) {
         text
-    }
-
-    static String latexmath(final String text) {
-        '{$$}' + text + '{/$$}'
     }
 }
 

@@ -1,0 +1,12 @@
+= Subtitutions
+:leanpub-lang: afrikaans
+
+[chapter]
+== Attribute Substitutions
+
+The language is '{leanpub-lang}'.
+
+:leanpub-lang: english
+
+Now the language is '{leanpub-lang}'.
+

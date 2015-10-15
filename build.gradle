@@ -15,18 +15,72 @@
  * limitations under the License.
  */
 // ============================================================================
+buildscript {
+    repositories {
+        jcenter()
+
+    }
+
+    dependencies {
+        classpath 'com.github.jruby-gradle:jruby-gradle-plugin:0.3.0'
+    }
+}
 
 subprojects {
+
+    group = 'org.asciidoctor'
     version = '0.1-SNAPSHOT'
 
     apply plugin: 'groovy'
+    apply plugin : 'maven'
+    apply plugin : 'com.github.jruby-gradle.base'
 
     sourceCompatibility = 1.6
     targetCompatibility = 1.6
 
+    plugins.withType(JavaPlugin) {
+
+        project.tasks.withType(JavaCompile) { task ->
+            task.sourceCompatibility = project.sourceCompatibility
+            task.targetCompatibility = project.targetCompatibility
+        }
+
+        project.tasks.withType(GroovyCompile) { task ->
+            task.sourceCompatibility = project.sourceCompatibility
+            task.targetCompatibility = project.targetCompatibility
+        }
+    }
+
     repositories {
         jcenter()
+        maven {
+            name 'Asciidoctor Snapshots'
+            url 'https://oss.jfrog.org/artifactory/oss-snapshot-local'
+        }
         mavenLocal()
     }
 
+    dependencies {
+        gems 'rubygems:asciidoctor-diagram:1.2.1'
+
+        compile 'org.codehaus.groovy:groovy-all:[2.3.4,2.3.99]'
+        compile 'org.asciidoctor:asciidoctorj:1.6.0-SNAPSHOT'
+        compile 'org.slf4j:slf4j-api:1.7.5'
+        compile 'commons-io:commons-io:2.4'
+
+        testCompile('org.spockframework:spock-core:1.0-groovy-2.3') {
+            exclude(module: 'groovy-all')
+        }
+
+        testRuntime 'org.slf4j:slf4j-simple:1.7.5'
+    }
+
+    test {
+        testLogging {
+            showStandardStreams = true
+            exceptionFormat "full"
+        }
+
+        dependsOn jrubyPrepareGems
+    }
 }

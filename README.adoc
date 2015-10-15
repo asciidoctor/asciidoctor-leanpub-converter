@@ -1,4 +1,4 @@
-= Asciidoctor Leanpub Converter
+= Asciidoctor Markdown & Leanpub Converters
 Schalk Cronjé
 
 The very early stages of demonstrating how to create a converter written in
@@ -22,7 +22,7 @@ Now you're ready to clone and build this converter.
 ----
 cd ../..
 git clone https://github.com/ysb33r/asciidoctor-leanpub-converter.git
-cd asciidoctor-leanpub-converter/core
+cd asciidoctor-leanpub-converter/leanpub
 ./gradlew build install
 ----
 

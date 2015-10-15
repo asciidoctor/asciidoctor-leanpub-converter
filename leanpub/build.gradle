@@ -16,5 +16,11 @@
  */
 // ============================================================================
 
-archivesBaseName = 'asciidoctor-markdown-core'
 
+
+
+archivesBaseName = 'asciidoctor-leanpub'
+
+dependencies {
+    compile project(':core')
+}

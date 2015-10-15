@@ -16,5 +16,8 @@
  */
 // ============================================================================
 
-archivesBaseName = 'asciidoctor-markdown-core'
+archivesBaseName = 'asciidoctor-markdown'
 
+dependencies {
+    compile project(':core')
+}
