@@ -2,15 +2,8 @@ package org.asciidoctor.leanpub
 
 import groovy.util.logging.Slf4j
 import org.apache.commons.io.FileUtils
-import org.asciidoctor.ast.AbstractNode
-import org.asciidoctor.ast.Block
-import org.asciidoctor.ast.Cell
-import org.asciidoctor.ast.Inline
-import org.asciidoctor.ast.ListItem
-import org.asciidoctor.ast.ListNode
-import org.asciidoctor.ast.Row
-import org.asciidoctor.ast.Section
-import org.asciidoctor.ast.Table
+import org.asciidoctor.ast.*
+import org.asciidoctor.converter.ConverterFor
 import org.asciidoctor.converters.markdown.core.AbstractMultiOutputMarkdownConverter
 import org.asciidoctor.converters.internal.SourceParser
 import org.asciidoctor.leanpub.internal.CrossReference
@@ -26,6 +19,7 @@ import java.util.regex.Pattern
  * @author Schalk W. Cronjé
  */
 @Slf4j
+@ConverterFor("leanpub")
 class LeanpubConverter extends AbstractMultiOutputMarkdownConverter {
 
     static final String LINESEP = "\n"
@@ -42,7 +36,7 @@ class LeanpubConverter extends AbstractMultiOutputMarkdownConverter {
         super(backend, opts)
     }
 
-    void setupDocument(AbstractNode node,Map<Object, Object> opts) {
+    void setupDocument(ContentNode node,Map<Object, Object> opts) {
 
         log.debug "Document options at start: ${node.document.options}"
         log.debug "Document attributes at start: ${node.document.attributes}"
@@ -192,7 +186,7 @@ class LeanpubConverter extends AbstractMultiOutputMarkdownConverter {
         null // Currently return null as AsciidoctorJ has no way of calling us back to spool the object
     }
 
-    def convertSection(AbstractNode node, Map<String, Object> opts) {
+    def convertSection(ContentNode node, Map<String, Object> opts) {
         Section section = node as Section
         boolean  inSample = false
 
@@ -240,8 +234,8 @@ class LeanpubConverter extends AbstractMultiOutputMarkdownConverter {
         return formatSection(section)
     }
 
-    def convertInlineQuoted(AbstractNode node, Map<String, Object> opts) {
-        Inline inline = node as Inline
+    def convertInlineQuoted(ContentNode node, Map<String, Object> opts) {
+        PhraseNode inline = node as PhraseNode
         // In table context it needs to get split otherwise formatting in Leanpub
         // will be messed up
         if(inline.parent.context == 'cell' || inline.parent.context=='column') {
@@ -253,23 +247,23 @@ class LeanpubConverter extends AbstractMultiOutputMarkdownConverter {
         }
     }
 
-    def convertAnchorTypeXref(AbstractNode node, Map<String, Object> opts) {
-        Inline inline = node as Inline
+    def convertAnchorTypeXref(ContentNode node, Map<String, Object> opts) {
+        PhraseNode inline = node as PhraseNode
         "[${inline.text ?: inline.attributes.fragment}](#${CrossReference.safeId(inline.attributes.refid)})"
     }
 
-    def convertAnchorTypeLink(AbstractNode node, Map<String, Object> opts) {
-        Inline inline = node as Inline
+    def convertAnchorTypeLink(ContentNode node, Map<String, Object> opts) {
+        PhraseNode inline = node as PhraseNode
         return "[${inline.text}](${inline.target})"
     }
 
-    def convertAnchorTypeBibref(AbstractNode node, Map<String, Object> opts) {
-        Inline inline = node as Inline
+    def convertAnchorTypeBibref(ContentNode node, Map<String, Object> opts) {
+        PhraseNode inline = node as PhraseNode
         "{#${inline.text}}${LINESEP}"
     }
 
     @Override
-    def convertColist(AbstractNode node,Map<String, Object> opts) {
+    def convertColist(ContentNode node,Map<String, Object> opts) {
         if(lastSrcBlock) {
             def lookup = [:]
             lastSrcBlock.each { calloutLine ->
@@ -284,7 +278,7 @@ class LeanpubConverter extends AbstractMultiOutputMarkdownConverter {
             String prefix = node.document.attributes.get('leanpub-colist-prefix') ?: ''
             String style = node.document.attributes.get('leanpub-colist-style')
 
-            ListNode listNode = node as ListNode
+            List listNode = node as List
             listNode.items.eachWithIndex { ListItem item,int index ->
                 String lineno = lookup[(index+1).toString()]
                 if(lineno == null) {
@@ -339,12 +333,12 @@ class LeanpubConverter extends AbstractMultiOutputMarkdownConverter {
 
     }
 
-    def convertThematicBreak(AbstractNode node,Map<String, Object> opts) {
+    def convertThematicBreak(ContentNode node,Map<String, Object> opts) {
         Block block = node as Block
         '---' + LINESEP
     }
 
-    def convertLiteral(AbstractNode node,Map<String, Object> opts) {
+    def convertLiteral(ContentNode node,Map<String, Object> opts) {
         Block block = node as Block
 
         // If a method referencing the role exists use that, otherwise fall back to default
@@ -361,7 +355,7 @@ class LeanpubConverter extends AbstractMultiOutputMarkdownConverter {
             }.join(LINESEP) + LINESEP
     }
 
-    def convertVerse(AbstractNode node,Map<String, Object> opts) {
+    def convertVerse(ContentNode node,Map<String, Object> opts) {
         Block block = node as Block
 
         // If a method referencing the role exists use that, otherwise fall back to default
@@ -387,7 +381,7 @@ class LeanpubConverter extends AbstractMultiOutputMarkdownConverter {
             '~'.multiply(6)  + LINESEP
     }
 
-    def convertSidebar(AbstractNode node,Map<String, Object> opts) {
+    def convertSidebar(ContentNode node,Map<String, Object> opts) {
         Block block = node as Block
         (block.title ? ("A> ## ${block.title}" + LINESEP) : '') +
             block.content.readLines().collect {
@@ -395,7 +389,7 @@ class LeanpubConverter extends AbstractMultiOutputMarkdownConverter {
             }.join(LINESEP) + LINESEP
     }
 
-    def convertQuote(AbstractNode node,Map<String, Object> opts) {
+    def convertQuote(ContentNode node,Map<String, Object> opts) {
         Block block = node as Block
         String convertedBlock = (block.title ? ("> ## ${block.title}" + LINESEP) : '') +
             block.content.readLines().collect {
@@ -407,7 +401,7 @@ class LeanpubConverter extends AbstractMultiOutputMarkdownConverter {
         convertedBlock.replaceAll('&#8217;',"'") /* Set quotes as is, not fancy */
     }
 
-    def convertPass(AbstractNode node,Map<String, Object> opts) {
+    def convertPass(ContentNode node,Map<String, Object> opts) {
         Block block = node as Block
         block.content
     }
@@ -434,7 +428,7 @@ class LeanpubConverter extends AbstractMultiOutputMarkdownConverter {
             '~'.multiply(8) + LINESEP
     }
 
-    def convertAdmonition(AbstractNode node,Map<String, Object> opts) {
+    def convertAdmonition(ContentNode node,Map<String, Object> opts) {
         Block block = node as Block
 
         def style = styleMap[block.attributes.name]
@@ -456,7 +450,7 @@ class LeanpubConverter extends AbstractMultiOutputMarkdownConverter {
         }
     }
 
-    def convertImage(AbstractNode node,Map<String, Object> opts) {
+    def convertImage(ContentNode node,Map<String, Object> opts) {
         Block block = node as Block
 
         def imageAttrs = []
@@ -499,13 +493,13 @@ class LeanpubConverter extends AbstractMultiOutputMarkdownConverter {
             LINESEP
     }
 
-    def convertInlineImage(AbstractNode node,Map<String, Object> opts) {
-        Inline inline = node as Inline
+    def convertInlineImage(ContentNode node,Map<String, Object> opts) {
+        PhraseNode inline = node as PhraseNode
         images.add new File(imagesDir(inline,docDir),inline.target)
         "![](images/${inline.target} \"${inline.attributes.alt}\")"
     }
 
-    def convertTable(AbstractNode node,Map<String, Object> opts) {
+    def convertTable(ContentNode node,Map<String, Object> opts) {
         Table table = node as Table
         LeanpubTable leanpubTable = new LeanpubTable(
             table.body.size(),
@@ -584,7 +578,7 @@ class LeanpubConverter extends AbstractMultiOutputMarkdownConverter {
         renderedTable
     }
 
-    def convertStem(AbstractNode node,Map<String, Object> opts) {
+    def convertStem(ContentNode node,Map<String, Object> opts) {
         Block stem = node as Block
 
         switch(stem.style) {
@@ -598,7 +592,7 @@ class LeanpubConverter extends AbstractMultiOutputMarkdownConverter {
         }
     }
 
-    def convertOpen(AbstractNode node,Map<String, Object> opts) {
+    def convertOpen(ContentNode node,Map<String, Object> opts) {
         Block block = node as Block
         if(block.style) {
             "convert${block.style.capitalize()}"(block,opts)
@@ -623,7 +617,7 @@ class LeanpubConverter extends AbstractMultiOutputMarkdownConverter {
         }
     }
 
-    def convertPreamble(AbstractNode node,Map<String, Object> opts) {
+    def convertPreamble(ContentNode node,Map<String, Object> opts) {
         Block block = node as Block
         document.preamble = new ConvertedSection(content: formatPreamble(block), type: PREAMBLE, sample: false)
         return document.preamble.content
@@ -768,7 +762,7 @@ class LeanpubConverter extends AbstractMultiOutputMarkdownConverter {
      * @param lines All the lines from a specific item
      * @return A Leanpub-formatted Colist item.
      */
-    private String formatColistItemLines(final String style,final String prefix,final String lineno,final List<String> lines) {
+    private String formatColistItemLines(final String style,final String prefix,final String lineno,final java.util.List<String> lines) {
         switch(style) {
             case 'discussion':
                 return wrapColistLineText(
@@ -798,7 +792,7 @@ class LeanpubConverter extends AbstractMultiOutputMarkdownConverter {
      * @param text The text to be formatted.
      * @return
      */
-    private String wrapColistLineText( final String firstPrefix, final String otherPrefix,final List<String> lines) {
+    private String wrapColistLineText( final String firstPrefix, final String otherPrefix,final java.util.List<String> lines) {
         String formatted = ''
         lines.eachWithIndex { String line,int idx ->
             if(!idx) {
@@ -850,7 +844,7 @@ class LeanpubConverter extends AbstractMultiOutputMarkdownConverter {
     private File destDir
     private File frontCoverImage
     private Object lastSrcBlock
-    private List<File> images = []
+    private java.util.List<File> images = []
 
     private static final def styleMap = [
         'warning'   : [ prefix : 'W' ],

@@ -1,11 +1,7 @@
 package org.asciidoctor.converters.markdown.core
 
 import groovy.util.logging.Slf4j
-import org.asciidoctor.ast.AbstractNode
-import org.asciidoctor.ast.Block
-import org.asciidoctor.ast.Document
-import org.asciidoctor.ast.Inline
-import org.asciidoctor.ast.ListItem
+import org.asciidoctor.ast.*
 import org.asciidoctor.converters.markdown.core.AbstractMarkdownConverter
 
 /**
@@ -50,7 +46,7 @@ abstract class AbstractMultiOutputMarkdownConverter extends AbstractMarkdownConv
 //     */
 //    def methodMissing(String name, args) {
 //
-//        if(name.startsWith('convert') && args.size() == 2 && args[0] instanceof AbstractNode) {
+//        if(name.startsWith('convert') && args.size() == 2 && args[0] instanceof ContentNode) {
 //            if(name.startsWith('convertAnchorType')) {
 //                Inline inline = args[0] as Inline
 //                log.error logMessageWithSourceTrace(
@@ -70,7 +66,7 @@ abstract class AbstractMultiOutputMarkdownConverter extends AbstractMarkdownConv
 //                    item
 //                )
 //            } else {
-//                AbstractNode node = args[0] as AbstractNode
+//                ContentNode node = args[0] as ContentNode
 //                log.error logMessageWithSourceTrace(
 //                    "${name} (node:${node.class.name}) is not defined. Will not transform this node, but will try to carry on.",
 //                    node
@@ -83,15 +79,15 @@ abstract class AbstractMultiOutputMarkdownConverter extends AbstractMarkdownConv
 //    }
 
     /**
-     * Converts an {@link org.asciidoctor.ast.AbstractNode} using the specified transform along
+     * Converts an {@link org.asciidoctor.ast.ContentNode} using the specified transform along
      * with additional options. If a transform is not specified, implementations
-     * typically derive one from the {@link org.asciidoctor.ast.AbstractNode#getNodeName()} property.
+     * typically derive one from the {@link org.asciidoctor.ast.ContentNode#getNodeName()} property.
      *
      * <p>For a document node, setupDocument is called at the start of processing and closeDocument at
      * the end of processing. IN between all other ndoes are processed. This allow for streaming output to
      * any media.
      *
-     * @param node The concrete instance of AbstractNode to convert
+     * @param node The concrete instance of ContentNode to convert
      * @param transform An optional String transform that hints at which transformation
      *             should be applied to this node. If a transform is not specified,
      *             the transform is typically derived from the value of the
@@ -101,7 +97,7 @@ abstract class AbstractMultiOutputMarkdownConverter extends AbstractMarkdownConv
      * @return the converted result
      */
     @Override
-    String convert(AbstractNode node, String transform, Map<Object, Object> opts) {
+    String convert(ContentNode node, String transform, Map<Object, Object> opts) {
         if (node instanceof Document) {
             if(setupComplete) {
                 return node.content
@@ -122,7 +118,7 @@ abstract class AbstractMultiOutputMarkdownConverter extends AbstractMarkdownConv
      * @param node
      * @return Returns a File instance of resovled, otherwise null
      */
-    File imagesDir(AbstractNode node) {
+    File imagesDir(ContentNode node) {
         node.document.attributes['imagesdir'] ? new File(node.document.attributes['imagesdir']) : null
     }
 
@@ -132,7 +128,7 @@ abstract class AbstractMultiOutputMarkdownConverter extends AbstractMarkdownConv
      * @param docDir Document directory
      * @return Returns a File instance of resovled, otherwise docDir
      */
-    File imagesDir(AbstractNode node,final File docDir) {
+    File imagesDir(ContentNode node,final File docDir) {
         node.document.attributes['imagesdir'] ? new File(node.document.attributes['imagesdir']) : docDir
     }
 
@@ -142,7 +138,7 @@ abstract class AbstractMultiOutputMarkdownConverter extends AbstractMarkdownConv
      * @param node
      * @param opts
      */
-    abstract void setupDocument(AbstractNode node,Map<Object,Object> opts)
+    abstract void setupDocument(ContentNode node,Map<Object,Object> opts)
 
     /** Called after document node processing has been completed. The completed the content is passed from
      * final post-processing before returning the object.
@@ -152,47 +148,47 @@ abstract class AbstractMultiOutputMarkdownConverter extends AbstractMarkdownConv
      */
     abstract def closeDocument(def content)
 
-    abstract def convertSection(AbstractNode node, Map<String, Object> opts)
-    abstract def convertInlineQuoted(AbstractNode node, Map<String, Object> opts)
-    abstract def convertThematicBreak(AbstractNode node,Map<String, Object> opts)
-    abstract def convertAdmonition(AbstractNode node,Map<String, Object> opts)
-    abstract def convertLiteral(AbstractNode node,Map<String, Object> opts)
-    abstract def convertVerse(AbstractNode node,Map<String, Object> opts)
-    abstract def convertSidebar(AbstractNode node,Map<String, Object> opts)
-    abstract def convertQuote(AbstractNode node,Map<String, Object> opts)
-    abstract def convertPass(AbstractNode node,Map<String, Object> opts)
-    abstract def convertImage(AbstractNode node,Map<String, Object> opts)
-    abstract def convertInlineImage(AbstractNode node,Map<String, Object> opts)
-    abstract def convertTable(AbstractNode node,Map<String, Object> opts)
-    abstract def convertStem(AbstractNode node,Map<String, Object> opts)
-    abstract def convertOpen(AbstractNode node,Map<String, Object> opts)
-    abstract def convertPreamble(AbstractNode node,Map<String, Object> opts)
+    abstract def convertSection(ContentNode node, Map<String, Object> opts)
+    abstract def convertInlineQuoted(ContentNode node, Map<String, Object> opts)
+    abstract def convertThematicBreak(ContentNode node,Map<String, Object> opts)
+    abstract def convertAdmonition(ContentNode node,Map<String, Object> opts)
+    abstract def convertLiteral(ContentNode node,Map<String, Object> opts)
+    abstract def convertVerse(ContentNode node,Map<String, Object> opts)
+    abstract def convertSidebar(ContentNode node,Map<String, Object> opts)
+    abstract def convertQuote(ContentNode node,Map<String, Object> opts)
+    abstract def convertPass(ContentNode node,Map<String, Object> opts)
+    abstract def convertImage(ContentNode node,Map<String, Object> opts)
+    abstract def convertInlineImage(ContentNode node,Map<String, Object> opts)
+    abstract def convertTable(ContentNode node,Map<String, Object> opts)
+    abstract def convertStem(ContentNode node,Map<String, Object> opts)
+    abstract def convertOpen(ContentNode node,Map<String, Object> opts)
+    abstract def convertPreamble(ContentNode node,Map<String, Object> opts)
 
 //    /** Paragraph conversion just passes the content back.
 //     *
 //     * @return Content plus an additional line separator
 //     */
-//    def convertParagraph(AbstractNode node, Map<String, Object> opts) {
+//    def convertParagraph(ContentNode node, Map<String, Object> opts) {
 //        Block block = node as Block
 //        block.content + LINESEP
 //    }
 
-//    def convertUlist(AbstractNode node,Map<String, Object> opts) {
+//    def convertUlist(ContentNode node,Map<String, Object> opts) {
 //        ListNode listNode = node as ListNode
 //        listNode.items.collect { ListItem item -> item.convert() }.join('')
 //    }
 //
-//    def convertOlist(AbstractNode node,Map<String, Object> opts) {
+//    def convertOlist(ContentNode node,Map<String, Object> opts) {
 //        ListNode listNode = node as ListNode
 //        listNode.items.collect { ListItem item -> item.convert() }.join('')
 //    }
 //
-//    def convertColist(AbstractNode node,Map<String, Object> opts) {
+//    def convertColist(ContentNode node,Map<String, Object> opts) {
 //        ListNode listNode = node as ListNode
 //        listNode.items.collect { ListItem item -> item.convert() }.join('')
 //    }
 
-    def convertListItem(AbstractNode node,Map<String, Object> opts) {
+    def convertListItem(ContentNode node,Map<String, Object> opts) {
         ListItem item = node as ListItem
         if(item.parent.attributes?.style == 'bibliography' || item.parent.parent.attributes?.style == 'bibliography') {
             convertListItemTypeBibreflist(node,opts)
@@ -213,16 +209,16 @@ abstract class AbstractMultiOutputMarkdownConverter extends AbstractMarkdownConv
      * @param opts
      * @return
      */
-    def convertInlineAnchor(AbstractNode node, Map<String, Object> opts) {
-        Inline inline = node as Inline
+    def convertInlineAnchor(ContentNode node, Map<String, Object> opts) {
+        PhraseNode inline = node as PhraseNode
         "${itemMethodName('convertAnchorType',inline.type)}"(node,opts)
     }
 
-    abstract def convertAnchorTypeXref(AbstractNode node, Map<String, Object> opts)
-    abstract def convertAnchorTypeLink(AbstractNode node, Map<String, Object> opts)
-    abstract def convertAnchorTypeBibref(AbstractNode node, Map<String, Object> opts)
+    abstract def convertAnchorTypeXref(ContentNode node, Map<String, Object> opts)
+    abstract def convertAnchorTypeLink(ContentNode node, Map<String, Object> opts)
+    abstract def convertAnchorTypeBibref(ContentNode node, Map<String, Object> opts)
 
-    def convertListing(AbstractNode node,Map<String, Object> opts) {
+    def convertListing(ContentNode node,Map<String, Object> opts) {
         Block block = node as Block
         "${itemMethodName('convertListingType',block.attributes.style)}"(block,opts)
     }

@@ -48,9 +48,9 @@ abstract class AbstractMarkdownConverter extends StringConverter {
      */
     def methodMissing(String name, args) {
 
-        if(name.startsWith('convert') && args.size() == 2 && args[0] instanceof AbstractNode) {
+        if(name.startsWith('convert') && args.size() == 2 && args[0] instanceof StructuralNode) {
             if(name.startsWith('convertAnchorType')) {
-                Inline inline = args[0] as Inline
+                PhraseNode inline = args[0] as PhraseNode
                 log.error logMessageWithSourceTrace(
                     "Anchor type '${inline.type}' is not defined. Will not transform this node, but will try to carry on.",
                     inline
@@ -68,7 +68,7 @@ abstract class AbstractMarkdownConverter extends StringConverter {
                     item
                 )
             } else {
-                AbstractNode node = args[0] as AbstractNode
+                StructuralNode node = args[0] as StructuralNode
                 log.error logMessageWithSourceTrace(
                     "${name} (node:${node.class.name}) is not defined. Will not transform this node, but will try to carry on.",
                     node
@@ -81,15 +81,15 @@ abstract class AbstractMarkdownConverter extends StringConverter {
     }
 
     /**
-     * Converts an {@link org.asciidoctor.ast.AbstractNode} using the specified transform along
+     * Converts an {@link org.asciidoctor.ast.StructuralNode} using the specified transform along
      * with additional options. If a transform is not specified, implementations
-     * typically derive one from the {@link org.asciidoctor.ast.AbstractNode#getNodeName()} property.
+     * typically derive one from the {@link org.asciidoctor.ast.StructuralNode#getNodeName()} property.
      *
      * <p>For a document node, setupDocument is called at the start of processing and closeDocument at
      * the end of processing. IN between all other ndoes are processed. This allow for streaming output to
      * any media.
      *
-     * @param node The concrete instance of AbstractNode to convert
+     * @param node The concrete instance of StructuralNode to convert
      * @param transform An optional String transform that hints at which transformation
      *             should be applied to this node. If a transform is not specified,
      *             the transform is typically derived from the value of the
@@ -99,16 +99,22 @@ abstract class AbstractMarkdownConverter extends StringConverter {
      * @return the converted result
      */
     @Override
-    String convert(AbstractNode node, String transform, Map<Object, Object> opts) {
+    String convert(ContentNode node, String transform, Map<Object, Object> opts) {
         if (node instanceof Document) {
-            return node.content
+            if(setupComplete) {
+                return node.content
+            } else {
+                node.attributes.put('nbsp','&nbsp;')
+                setupComplete = true
+                return '# ' + node.doctitle + LINESEP + LINESEP + node.content
+            }
         } else {
             return "${methodName(transform,node.nodeName)}"(node,opts)
         }
     }
 
 
-    def convertSection(AbstractNode node, Map<String, Object> opts) {
+    def convertSection(ContentNode node, Map<String, Object> opts) {
         Section section = node as Section
         '#'.multiply(section.level+1) + " ${section.title}${LINESEP}${LINESEP}" + section.content
     }
@@ -117,32 +123,32 @@ abstract class AbstractMarkdownConverter extends StringConverter {
      *
      * @return Content plus an additional line separator
      */
-    def convertParagraph(AbstractNode node, Map<String, Object> opts) {
+    def convertParagraph(ContentNode node, Map<String, Object> opts) {
         Block block = node as Block
         block.content + LINESEP
     }
 
-    def convertUlist(AbstractNode node,Map<String, Object> opts) {
-        ListNode listNode = node as ListNode
+    def convertUlist(ContentNode node,Map<String, Object> opts) {
+        List listNode = node as List
         listNode.items.collect { ListItem item -> item.convert() }.join('')
     }
 
-    def convertOlist(AbstractNode node,Map<String, Object> opts) {
-        ListNode listNode = node as ListNode
+    def convertOlist(ContentNode node,Map<String, Object> opts) {
+        List listNode = node as List
         listNode.items.collect { ListItem item -> item.convert() }.join('')
     }
 
-    def convertColist(AbstractNode node,Map<String, Object> opts) {
-        ListNode listNode = node as ListNode
+    def convertColist(ContentNode node,Map<String, Object> opts) {
+        List listNode = node as List
         listNode.items.collect { ListItem item -> item.convert() }.join('')
     }
 
-    def convertInlineQuoted(AbstractNode node, Map<String, Object> opts) {
-        Inline inline = node as Inline
+    def convertInlineQuoted(ContentNode node, Map<String, Object> opts) {
+        PhraseNode inline = node as PhraseNode
         InlineQuotedTextFormatter."${inline.type}"(inline.text)
     }
 
-    def convertThematicBreak(AbstractNode node,Map<String, Object> opts) {
+    def convertThematicBreak(ContentNode node,Map<String, Object> opts) {
         Block block = node as Block
         '- - -' + LINESEP
     }
@@ -167,11 +173,11 @@ abstract class AbstractMarkdownConverter extends StringConverter {
         return ' '.multiply(item.level*2-2) + '* ' + item.text + LINESEP + item.content
     }
 
-    def convertListItem(AbstractNode node,Map<String, Object> opts) {
+    def convertListItem(StructuralNode node,Map<String, Object> opts) {
         "${itemMethodName('convertListItemType', node.parent.context)}"(node, opts)
     }
 
-//    abstract def convertTable(AbstractNode node,Map<String, Object> opts)
+//    abstract def convertTable(StructuralNode node,Map<String, Object> opts)
 
 //    /** Redirects an anchor to the appropriate anchor type converter
 //     *
@@ -179,12 +185,12 @@ abstract class AbstractMarkdownConverter extends StringConverter {
 //     * @param opts
 //     * @return
 //     */
-//    def convertInlineAnchor(AbstractNode node, Map<String, Object> opts) {
+//    def convertInlineAnchor(StructuralNode node, Map<String, Object> opts) {
 //        Inline inline = node as Inline
 //        "${itemMethodName('convertAnchorType',inline.type)}"(node,opts)
 //    }
 
-//    def convertListing(AbstractNode node,Map<String, Object> opts) {
+//    def convertListing(StructuralNode node,Map<String, Object> opts) {
 //        Block block = node as Block
 //        "${itemMethodName('convertListingType',block.attributes.style)}"(block,opts)
 //    }
@@ -198,14 +204,16 @@ abstract class AbstractMarkdownConverter extends StringConverter {
      * @sa {@link https://github.com/asciidoctor/asciidoctor-leanpub-converter/issues/48}
      *
      */
-    String logMessageWithSourceTrace(final String msg,AbstractNode node) {
+    String logMessageWithSourceTrace(final String msg,StructuralNode node) {
         String postfix = ''
         if(node.respondsTo('getSourceLocation')) {
-            Cursor cursor = (node as AbstractBlock).sourceLocation
+            Cursor cursor = (node as StructuralNode).sourceLocation
             if(cursor!=null) {
                 postfix = " (${cursor.file}:${cursor.lineNumber})."
             }
         }
         postfix.empty ? msg : "${msg} ${postfix}"
     }
+
+    protected setupComplete = false
 }

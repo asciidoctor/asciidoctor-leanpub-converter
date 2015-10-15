@@ -10,5 +10,6 @@ import org.asciidoctor.converters.markdown.core.AbstractMarkdownConverter
 class MarkdownConverter extends AbstractMarkdownConverter {
     MarkdownConverter(final String backend,Map<String, Object> opts) {
         super(backend, opts)
+        outfileSuffix = '.md'
     }
 }

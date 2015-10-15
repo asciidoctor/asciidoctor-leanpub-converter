@@ -18,6 +18,7 @@
 buildscript {
     repositories {
         jcenter()
+
     }
 
     dependencies {
@@ -37,8 +38,25 @@ subprojects {
     sourceCompatibility = 1.6
     targetCompatibility = 1.6
 
+    plugins.withType(JavaPlugin) {
+
+        project.tasks.withType(JavaCompile) { task ->
+            task.sourceCompatibility = project.sourceCompatibility
+            task.targetCompatibility = project.targetCompatibility
+        }
+
+        project.tasks.withType(GroovyCompile) { task ->
+            task.sourceCompatibility = project.sourceCompatibility
+            task.targetCompatibility = project.targetCompatibility
+        }
+    }
+
     repositories {
         jcenter()
+        maven {
+            name 'Asciidoctor Snapshots'
+            url 'https://oss.jfrog.org/artifactory/oss-snapshot-local'
+        }
         mavenLocal()
     }
 

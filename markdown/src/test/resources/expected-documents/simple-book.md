@@ -1,5 +1,4 @@
 # Title
-Asciidoctor Team <foo@bar.example>
 
 ## Chapter A
 
@@ -21,7 +20,7 @@ Plain text at level 5
 
 *Italic text*
 
-*_Bold italic text_*
+***Bold italic text***
 
 Super^script^ text
 
@@ -33,14 +32,14 @@ Non&nbsp;breaking&nbsp;spaces
 
 * List #1
 * List #2
-   * List #2 #1
-   * List #2 #2
+  * List #2 #1
+  * List #2 #2
 * List #3
 
 1. List #1
 1. List #2
-   1. List #2 #1
-   1. List #2 #2
+  1. List #2 #1
+  1. List #2 #2
 1. List #3
 
 ## Chapter with Underlined Text
