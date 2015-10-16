@@ -1,5 +1,4 @@
 rootProject.name = 'asciidoctor-leanpub'
-include 'core'
-include 'leanpub'
-include 'markdown'
+include 'converters'
+//include 'leanpub-example-book'
 
