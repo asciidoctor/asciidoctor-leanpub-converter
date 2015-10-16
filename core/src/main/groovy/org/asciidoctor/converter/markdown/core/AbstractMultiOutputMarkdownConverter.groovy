@@ -1,8 +1,7 @@
-package org.asciidoctor.converters.markdown.core
+package org.asciidoctor.converter.markdown.core
 
 import groovy.util.logging.Slf4j
 import org.asciidoctor.ast.*
-import org.asciidoctor.converters.markdown.core.AbstractMarkdownConverter
 
 /**
  * @author Schalk W. Cronjé

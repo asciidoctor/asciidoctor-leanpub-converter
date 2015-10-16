@@ -57,8 +57,8 @@ class MarkdownSpecification extends Specification {
         [
             expectedFile : new File(expectedDir,outputName),
             // TODO: FIx this output extension once the asciidoctorj API allows setting output file name
-//            outputFile : new File(outputDir,documentFileName.replaceAll(~/\.adoc$/,'.')),
-            outputFile : new File(outputDir,outputName),
+            outputFile : new File(outputDir,documentFileName.replaceAll(~/\.adoc$/,'.md')),
+//            outputFile : new File(outputDir,outputName),
         ]
     }
 }

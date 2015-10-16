@@ -1,8 +1,10 @@
-package org.asciidoctor.converters.markdown.core
+package org.asciidoctor.converter.markdown.core
 
 import groovy.util.logging.Slf4j
 import org.asciidoctor.ast.*
 import org.asciidoctor.converter.StringConverter
+import org.asciidoctor.markdown.internal.Constants
+import org.asciidoctor.markdown.internal.ListNodeProcessor
 
 /**
  * @author Schalk W. Cronjé
@@ -10,7 +12,7 @@ import org.asciidoctor.converter.StringConverter
 @Slf4j
 abstract class AbstractMarkdownConverter extends StringConverter {
 
-    static final String LINESEP = "\n"
+    static final String LINESEP = Constants.LINESEP
 
     AbstractMarkdownConverter(final String backend,Map<String, Object> opts) {
         super(backend, opts)
@@ -129,18 +131,15 @@ abstract class AbstractMarkdownConverter extends StringConverter {
     }
 
     def convertUlist(ContentNode node,Map<String, Object> opts) {
-        List listNode = node as List
-        listNode.items.collect { ListItem item -> item.convert() }.join('')
+        ListNodeProcessor.processListItems(node as List)
     }
 
     def convertOlist(ContentNode node,Map<String, Object> opts) {
-        List listNode = node as List
-        listNode.items.collect { ListItem item -> item.convert() }.join('')
+        ListNodeProcessor.processListItems(node as List)
     }
 
     def convertColist(ContentNode node,Map<String, Object> opts) {
-        List listNode = node as List
-        listNode.items.collect { ListItem item -> item.convert() }.join('')
+        ListNodeProcessor.processListItems(node as List)
     }
 
     def convertInlineQuoted(ContentNode node, Map<String, Object> opts) {
@@ -216,4 +215,5 @@ abstract class AbstractMarkdownConverter extends StringConverter {
     }
 
     protected setupComplete = false
+
 }

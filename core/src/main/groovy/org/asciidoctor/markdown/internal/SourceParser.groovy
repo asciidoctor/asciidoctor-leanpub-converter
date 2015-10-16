@@ -1,4 +1,4 @@
-package org.asciidoctor.converters.internal
+package org.asciidoctor.markdown.internal
 
 import org.asciidoctor.ast.Block
 

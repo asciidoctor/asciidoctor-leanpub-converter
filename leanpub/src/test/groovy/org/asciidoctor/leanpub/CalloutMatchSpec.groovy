@@ -1,6 +1,6 @@
 package org.asciidoctor.leanpub
 
-import org.asciidoctor.converters.internal.SourceParser
+import org.asciidoctor.markdown.internal.SourceParser
 import spock.lang.Specification
 import spock.lang.Unroll
 

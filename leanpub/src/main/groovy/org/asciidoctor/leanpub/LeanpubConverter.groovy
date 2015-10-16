@@ -4,8 +4,8 @@ import groovy.util.logging.Slf4j
 import org.apache.commons.io.FileUtils
 import org.asciidoctor.ast.*
 import org.asciidoctor.converter.ConverterFor
-import org.asciidoctor.converters.markdown.core.AbstractMultiOutputMarkdownConverter
-import org.asciidoctor.converters.internal.SourceParser
+import org.asciidoctor.converter.markdown.core.AbstractMultiOutputMarkdownConverter
+import org.asciidoctor.markdown.internal.SourceParser
 import org.asciidoctor.leanpub.internal.CrossReference
 import org.asciidoctor.leanpub.internal.LeanpubCell
 import org.asciidoctor.leanpub.internal.LeanpubTable
@@ -19,7 +19,7 @@ import java.util.regex.Pattern
  * @author Schalk W. Cronjé
  */
 @Slf4j
-@ConverterFor("leanpub")
+@ConverterFor(format="leanpub",suffix="txt")
 class LeanpubConverter extends AbstractMultiOutputMarkdownConverter {
 
     static final String LINESEP = "\n"
@@ -327,7 +327,7 @@ class LeanpubConverter extends AbstractMultiOutputMarkdownConverter {
         if(matcher.matches()) {
             return matcher[0][2] + LINESEP +
                 (matcher[0][1] ?: '') +
-                matcher[0][3].trim() + LINESEP + item.content + LINESEP 
+                matcher[0][3].trim() + LINESEP + item.content + LINESEP
         }
 
         item.text.trim() + LINESEP + item.content + LINESEP
