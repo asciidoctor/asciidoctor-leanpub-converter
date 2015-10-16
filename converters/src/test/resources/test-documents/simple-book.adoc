@@ -40,6 +40,7 @@ Non{nbsp}breaking{nbsp}spaces
 ** List #2 #2
 * List #3
 
+// force list break: http://asciidoctor.org/docs/user-manual/#separating-lists
 . List #1
 . List #2
 .. List #2 #1
@@ -49,7 +50,12 @@ Non{nbsp}breaking{nbsp}spaces
 [chapter]
 == Chapter with Underlined Text
 
+ifdef::backend-leanpub[]
 +++____Underlined text one____+++
+endif::backend-leanpub[]
+ifdef::backend-markdown[]
++++<span style="text-decoration: underline"/>Underlined text one</span>+++
+endif::backend-markdown[]
 
 [chapter]
 == Chapter with Lines

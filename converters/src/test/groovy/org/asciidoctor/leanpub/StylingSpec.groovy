@@ -45,7 +45,6 @@ Non&nbsp;breaking&nbsp;spaces
     }
 
     @Issue('https://leanpub.com/help/manual#leanpub-auto-numberedordered-lists, https://github.com/ysb33r/asciidoctor-leanpub-converter/issues/1')
-    @FailsWith(org.spockframework.runtime.ConditionNotSatisfiedError)
     def "Basic ordered and unordered lists"() {
         setup:
         File chapter = new File(LeanpubSpecification.manuscriptDir,'chapter_3.txt')

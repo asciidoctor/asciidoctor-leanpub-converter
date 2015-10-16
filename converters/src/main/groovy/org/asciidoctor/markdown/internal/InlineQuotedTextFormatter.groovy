@@ -12,9 +12,9 @@ class InlineQuotedTextFormatter {
         "*${text}*"
     }
 
-    static String underline(final String text) {
-        "___${text}___"
-    }
+//    static String underline(final String text) {
+//        "___${text}___"
+//    }
 
     static String superscript(final String text) {
         "^${text}^"

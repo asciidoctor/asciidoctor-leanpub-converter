@@ -16,8 +16,7 @@ class ListNodeProcessor {
      * @return
      */
     static def processListItems(List listNode) {
-        listNode.items.collect { ListItem item -> item.convert() }.join('')  +
-            (listNode.parent.nodeName.endsWith('list') ? '' : LINESEP)
+        listNode.items.collect { ListItem item -> item.convert() }.join('')
     }
 
 }

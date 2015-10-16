@@ -128,7 +128,6 @@ A> minny
 > * Headings
 > * Fenced code blocks
 > '''+'''
-> '''+'''
 > > Is there more?
 > '''+'''
 > Yep. AsciiDoc and Markdown share a lot of common syntax already.

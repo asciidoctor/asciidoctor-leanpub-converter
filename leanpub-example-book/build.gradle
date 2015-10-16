@@ -7,7 +7,7 @@ buildscript {
     dependencies {
         classpath 'org.asciidoctor:asciidoctor-gradle-plugin:1.5.3-SNAPSHOT'
         classpath 'org.asciidoctor:asciidoctorj-diagram:1.3.0.preview.1'
-        classpath 'org.ysb33r.asciidoctor:asciidoctor-leanpub-core:0.1-SNAPSHOT'
+        classpath 'org.asciidoctor:asciidoctor-leanpub-markdown:0.1-SNAPSHOT'
         classpath 'com.github.jruby-gradle:jruby-gradle-plugin:0.3.0'
 
     }

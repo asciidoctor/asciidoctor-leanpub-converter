@@ -24,7 +24,6 @@ Andy Hunt + Dave Thomas. The Pragmatic Programmer: From Journeyman to Master. Ad
 {#seam}
 Dan Allen. Seam in Action. Manning Publications. 2008.
 
-
 '''
         backmatter2.text == '''# Fake Appendix
 
@@ -35,7 +34,6 @@ Andy Hunt + Dave Thomas. The Pragmatic Programmer: From Journeyman to Master. Ad
 
 {#seam}
 Dan Allen. Seam in Action. Manning Publications. 2008.
-
 
 '''
     }
