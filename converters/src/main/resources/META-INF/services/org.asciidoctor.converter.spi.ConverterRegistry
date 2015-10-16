@@ -1,0 +1,2 @@
+org.asciidoctor.converter.MarkdownConverterRegistry
+org.asciidoctor.converter.LeanpubConverterRegistry

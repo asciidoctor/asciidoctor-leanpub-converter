@@ -1,0 +1,151 @@
+// ============================================================================
+/*
+ * Copyright 2013-2014 the original author or authors.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+// ============================================================================
+buildscript {
+    repositories {
+        jcenter()
+
+        maven {
+            url "https://plugins.gradle.org/m2/"
+
+        }
+    }
+
+    dependencies {
+        classpath 'com.github.jruby-gradle:jruby-gradle-plugin:1.1.4'
+        classpath "org.jfrog.buildinfo:build-info-extractor-gradle:3.1.1"
+    }
+}
+
+repositories {
+    jcenter()
+    if(!project.properties.RELEASE) {
+        maven {
+            name 'Asciidoctor Snapshots'
+            url 'https://oss.jfrog.org/artifactory/oss-snapshot-local'
+        }
+        mavenLocal()
+    }
+}
+
+apply plugin : 'groovy'
+apply plugin : 'com.github.jruby-gradle.base'
+apply plugin : 'com.jfrog.artifactory'
+apply plugin : 'maven'  // TODO: Goto maven-publish
+
+archivesBaseName = 'asciidoctor-leanpub-markdown'
+group = 'org.asciidoctor'
+version = '0.1'
+
+ext {
+    asciidoctorjVersion = '1.6.0-SNAPSHOT'
+}
+
+if(!project.properties.RELEASE) {
+    version = "${version}-SNAPSHOT"
+}
+
+sourceCompatibility = 1.6
+targetCompatibility = 1.6
+
+plugins.withType(JavaPlugin) {
+
+    project.tasks.withType(JavaCompile) { task ->
+        task.sourceCompatibility = project.sourceCompatibility
+        task.targetCompatibility = project.targetCompatibility
+    }
+
+    project.tasks.withType(GroovyCompile) { task ->
+        task.sourceCompatibility = project.sourceCompatibility
+        task.targetCompatibility = project.targetCompatibility
+    }
+}
+
+dependencies {
+    gems 'rubygems:asciidoctor-diagram:1.2.1'
+
+    compile 'org.codehaus.groovy:groovy-all:[2.3.4,2.3.99]'
+    compile "org.asciidoctor:asciidoctorj:${asciidoctorjVersion}"
+    compile 'org.slf4j:slf4j-api:1.7.5'
+    compile 'commons-io:commons-io:2.4'
+
+    testCompile('org.spockframework:spock-core:1.0-groovy-2.3') {
+        exclude(module: 'groovy-all')
+    }
+
+    testRuntime 'org.slf4j:slf4j-simple:1.7.5'
+}
+
+test {
+    testLogging {
+        showStandardStreams = true
+        exceptionFormat "full"
+    }
+
+    dependsOn jrubyPrepare
+}
+
+task sourcesJar(type: Jar, dependsOn: classes, group: 'Release') {
+    description 'Assembles a jar archive containing the main source code.'
+    from sourceSets.main.allSource
+    classifier 'sources'
+}
+
+task javadocJar(type: Jar, dependsOn: javadoc, group: 'Release') {
+    description 'Assembles a jar archive containing the Javadoc API documentation for the main source code.'
+    from javadoc.destinationDir
+    classifier 'javadoc'
+}
+
+artifacts {
+    archives sourcesJar, javadocJar
+}
+
+artifactory {
+    contextUrl = 'https://oss.jfrog.org/artifactory'   //The base Artifactory URL if not overridden by the publisher/resolver
+    publish {
+        repository {
+            repoKey = 'oss-snapshot-local'
+            username = System.env['BINTRAY_USER'] ?: (project.hasProperty('bintrayUsername') ? project.bintrayUsername : '')
+            password = System.env['BINTRAY_KEY'] ?: (project.hasProperty('bintrayApiKey') ? project.bintrayApiKey : '')
+            maven = true
+        }
+        defaults {
+
+//            if (project.name.endsWith('-distribution')) {
+//                // NOTE ignore warning that install task does not exist; the plugin is looking for the wrong task!!
+//                publishConfigs('archives')
+//            }
+//            else {
+//                publications('mavenNebula')
+//            }
+
+            def dryRun = project.hasProperty('dryRun') && project.dryRun.toBoolean()
+            publishBuildInfo = !dryRun  //Publish build-info to Artifactory (true by default)
+            publishArtifacts = !dryRun   //Publish artifacts to Artifactory (true by default)
+            publishPom = !dryRun && !project.name.endsWith('-distribution')  //Publish generated POM files to Artifactory (true by default).
+            publishIvy = false   //Publish generated Ivy descriptor files to Artifactory (true by default).
+
+        }
+    }
+
+}
+
+artifactoryPublish{
+    onlyIf { version.endsWith('-SNAPSHOT') }
+//    dependsOn preparePublish
+}
