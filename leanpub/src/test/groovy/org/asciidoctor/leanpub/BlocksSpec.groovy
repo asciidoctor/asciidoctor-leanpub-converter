@@ -1,5 +1,6 @@
 package org.asciidoctor.leanpub
 
+import org.asciidoctor.converter.LeanpubConverter
 import org.asciidoctor.leanpub.internal.LeanpubSpecification
 import spock.lang.Issue
 

@@ -1,10 +1,12 @@
-package org.asciidoctor.leanpub
+package org.asciidoctor.converter
 
 import groovy.util.logging.Slf4j
 import org.apache.commons.io.FileUtils
 import org.asciidoctor.ast.*
 import org.asciidoctor.converter.ConverterFor
-import org.asciidoctor.converter.markdown.core.AbstractMultiOutputMarkdownConverter
+import org.asciidoctor.converter.markdown.AbstractMultiOutputMarkdownConverter
+import org.asciidoctor.leanpub.ConvertedSection
+import org.asciidoctor.leanpub.LeanpubDocument
 import org.asciidoctor.markdown.internal.SourceParser
 import org.asciidoctor.leanpub.internal.CrossReference
 import org.asciidoctor.leanpub.internal.LeanpubCell

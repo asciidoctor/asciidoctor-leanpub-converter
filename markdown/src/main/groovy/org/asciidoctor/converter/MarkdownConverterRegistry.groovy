@@ -1,12 +1,12 @@
-package org.asciidoctor.markdown.internal
+package org.asciidoctor.converter
 
 import org.asciidoctor.Asciidoctor
-import org.asciidoctor.markdown.MarkdownConverter
+import org.asciidoctor.converter.MarkdownConverter
 
 /**
  * @author Schalk W. Cronjé
  */
-class ConverterRegistry implements org.asciidoctor.converter.spi.ConverterRegistry {
+class MarkdownConverterRegistry implements org.asciidoctor.converter.spi.ConverterRegistry {
     @Override
     void register(Asciidoctor asciidoctor) {
         asciidoctor.javaConverterRegistry().register(MarkdownConverter,'markdown')

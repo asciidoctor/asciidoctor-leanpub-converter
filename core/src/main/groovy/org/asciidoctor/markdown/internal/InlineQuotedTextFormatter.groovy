@@ -1,4 +1,4 @@
-package org.asciidoctor.converter.markdown.core
+package org.asciidoctor.markdown.internal
 
 /**
  * @author Schalk W. Cronjé

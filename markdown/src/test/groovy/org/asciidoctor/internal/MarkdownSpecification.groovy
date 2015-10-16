@@ -18,7 +18,7 @@
 package org.asciidoctor.internal
 
 import org.asciidoctor.Asciidoctor
-import org.asciidoctor.markdown.MarkdownConverter
+import org.asciidoctor.converter.MarkdownConverter
 import spock.lang.Specification
 
 /**

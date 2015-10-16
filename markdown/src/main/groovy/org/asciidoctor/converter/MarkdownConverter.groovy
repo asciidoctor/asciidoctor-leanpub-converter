@@ -1,7 +1,7 @@
-package org.asciidoctor.markdown
+package org.asciidoctor.converter
 
 import org.asciidoctor.converter.ConverterFor
-import org.asciidoctor.converter.markdown.core.AbstractMarkdownConverter
+import org.asciidoctor.converter.markdown.AbstractMarkdownConverter
 
 /** A converter for going from Asciidoctor to classic Markdown (as defined by {@link http://daringfireball.net/projects/markdown/syntax}.
  *

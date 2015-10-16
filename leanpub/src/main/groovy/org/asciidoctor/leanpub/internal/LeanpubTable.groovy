@@ -1,9 +1,8 @@
 package org.asciidoctor.leanpub.internal
 
 import groovy.transform.CompileStatic
-import groovy.transform.TupleConstructor
 import org.asciidoctor.ast.Table
-import org.asciidoctor.leanpub.LeanpubConverter
+import org.asciidoctor.converter.LeanpubConverter
 
 /**
  * @author Schalk W. Cronjé

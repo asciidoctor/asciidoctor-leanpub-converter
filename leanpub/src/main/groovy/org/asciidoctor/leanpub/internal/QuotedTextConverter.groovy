@@ -1,6 +1,6 @@
 package org.asciidoctor.leanpub.internal
 
-import org.asciidoctor.converter.markdown.core.InlineQuotedTextFormatter
+import org.asciidoctor.markdown.internal.InlineQuotedTextFormatter
 
 /**
  * @author Schalk W. Cronjé

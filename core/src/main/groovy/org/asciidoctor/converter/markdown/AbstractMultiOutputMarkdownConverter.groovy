@@ -1,4 +1,4 @@
-package org.asciidoctor.converter.markdown.core
+package org.asciidoctor.converter.markdown
 
 import groovy.util.logging.Slf4j
 import org.asciidoctor.ast.*

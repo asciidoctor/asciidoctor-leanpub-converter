@@ -1,9 +1,10 @@
-package org.asciidoctor.converter.markdown.core
+package org.asciidoctor.converter.markdown
 
 import groovy.util.logging.Slf4j
 import org.asciidoctor.ast.*
 import org.asciidoctor.converter.StringConverter
 import org.asciidoctor.markdown.internal.Constants
+import org.asciidoctor.markdown.internal.InlineQuotedTextFormatter
 import org.asciidoctor.markdown.internal.ListNodeProcessor
 
 /**

@@ -18,7 +18,7 @@
 package org.asciidoctor.leanpub.internal
 
 import org.asciidoctor.Asciidoctor
-import org.asciidoctor.leanpub.LeanpubConverter
+import org.asciidoctor.converter.LeanpubConverter
 import spock.lang.Specification
 
 
