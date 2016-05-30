@@ -7,6 +7,7 @@ import org.asciidoctor.converter.ConverterFor
 import org.asciidoctor.converter.markdown.AbstractMultiOutputMarkdownConverter
 import org.asciidoctor.leanpub.ConvertedSection
 import org.asciidoctor.leanpub.LeanpubDocument
+import org.asciidoctor.markdown.internal.ListNodeProcessor
 import org.asciidoctor.markdown.internal.SourceParser
 import org.asciidoctor.leanpub.internal.CrossReference
 import org.asciidoctor.leanpub.internal.LeanpubCell
@@ -236,6 +237,16 @@ class LeanpubConverter extends AbstractMultiOutputMarkdownConverter {
         return formatSection(section)
     }
 
+    /** Converts a page break
+     *
+     * @param node The block node (ignored)
+     * @param opts OPtions (ignored)
+     * @return
+     */
+    def convertPageBreak(ContentNode node, Map<String, Object> opts) {
+        '{pagebreak}' + LINESEP
+    }
+
     def convertInlineQuoted(ContentNode node, Map<String, Object> opts) {
         PhraseNode inline = node as PhraseNode
         // In table context it needs to get split otherwise formatting in Leanpub
@@ -297,23 +308,25 @@ class LeanpubConverter extends AbstractMultiOutputMarkdownConverter {
         }
     }
 
+    def convertDlist(ContentNode node, Map<String, Object> opts) {
+//        ListNodeProcessor.processListItems(node as List)
+        def list = node as List
+        println "***** ${list.items}"
+//        list.items.each { ListItem item ->
+//            println "**** ${item.marker}"
+//            println "++++ ${item.text}"
+//        }
+    }
+
     def convertListItemTypeColist(ListItem item, Map<String, Object> opts) {
         ' '.multiply(item.level*2-2) + '1. ' + item.text + LINESEP + item.content
     }
 
-//    def convertListItemTypeOlist(ListItem item, Map<String, Object> opts) {
-//        ' '.multiply(item.level*2-2) + '1. ' + item.text + LINESEP + item.content
-//    }
-//
-//    /** Create an unordered list item, but takes special care if the list item is part of bibliography
-//     *
-//     * @param item
-//     * @param opts
-//     * @return
-//     */
-//    def convertListItemTypeUlist(ListItem item, Map<String, Object> opts) {
-//        return ' '.multiply(item.level*2-2) + '* ' + item.text + LINESEP + item.content
-//    }
+
+    def convertListItemTypeDlist(ListItem item, Map<String, Object> opts) {
+        println "**** ${item.marker}"
+        null
+    }
 
 
     /** Takes special care if the list item is part of bibliography
@@ -490,7 +503,13 @@ class LeanpubConverter extends AbstractMultiOutputMarkdownConverter {
             }
         }
 
-        images.add new File(imagesDir(block,docDir),block.attributes.target)
+        File imageFile = new File(imagesDir(block,docDir),block.attributes.target)
+        if(imageFile.exists()) {
+            log.debug "Found image at '${imageFile}'"
+            images.add imageFile
+        } else {
+            log.warn "Source image '${imageFile}' is missing"
+        }
         (imageAttrs.size() ? "{${imageAttrs.join(',')}}${LINESEP}" : '')  +
              "${prefix}![${block.title?:''}](images/${block.attributes.target} \"${block.attributes.alt}\")" +
             LINESEP
@@ -823,6 +842,7 @@ class LeanpubConverter extends AbstractMultiOutputMarkdownConverter {
                 } else if(!tmpImage.exists()) {
                     log.warn "Front cover image '${tmpImage}' not found. Ignoring front cover."
                 } else {
+                    log.debug "Front cover image is set to '${tmpImage}'."
                     frontCoverImage = tmpImage
                 }
             } else {
