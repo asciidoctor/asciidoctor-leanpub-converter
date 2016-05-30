@@ -42,5 +42,20 @@ With reference to the [Spock Framework](http://docs.spockframework.org/en/latest
 
     }
 
+    def "Embedded anchors with []"() {
+        setup:
+        File chapter = new File(LeanpubSpecification.manuscriptDir,'chapter_3.txt')
+
+        when:
+        generateOutput('anchors-and-references.adoc')
+
+        then:
+        chapter.text == '''# Chapter C
+{#embeddedAnchor}
+
+This chapter has an embedded anchor.
+'''
+
+    }
 
 }

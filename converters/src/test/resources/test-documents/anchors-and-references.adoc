@@ -11,3 +11,9 @@ This is a <<RefText2,reference with text>>.
 == Chapter B
 
 With reference to the http://docs.spockframework.org/en/latest[Spock Framework] used in testing.
+
+[chapter]
+== Chapter C
+[[embeddedAnchor]]
+
+This chapter has an embedded anchor.
