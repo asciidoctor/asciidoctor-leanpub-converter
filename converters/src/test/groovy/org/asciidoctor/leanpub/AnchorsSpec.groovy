@@ -19,7 +19,7 @@ class AnchorsSpec extends LeanpubSpecification {
         then:
             chapter.text == '''# Chapter A
 
-This is a reference to [Asciidoctor Project](#Asciidoctor-Project).
+This is a cross-reference to [[Asciidoctor Project]](#Asciidoctor-Project).
 
 This is a [reference with text](#RefText2).
 '''

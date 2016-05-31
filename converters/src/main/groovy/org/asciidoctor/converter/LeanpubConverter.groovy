@@ -263,7 +263,7 @@ class LeanpubConverter extends AbstractMultiOutputMarkdownConverter {
 
     def convertAnchorTypeXref(ContentNode node, Map<String, Object> opts) {
         PhraseNode inline = node as PhraseNode
-        "[${inline.text ?: inline.attributes.fragment}](#${CrossReference.safeId(inline.attributes.refid)})"
+        "[${inline.text ?: ('['+inline.attributes.fragment+']')}](#${CrossReference.safeId(inline.attributes.refid)})"
     }
 
     def convertAnchorTypeLink(ContentNode node, Map<String, Object> opts) {

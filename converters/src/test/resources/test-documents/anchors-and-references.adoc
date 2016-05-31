@@ -3,7 +3,7 @@
 [chapter]
 == Chapter A
 
-This is a reference to <<Asciidoctor Project>>.
+This is a cross-reference to <<Asciidoctor Project>>.
 
 This is a <<RefText2,reference with text>>.
 
