@@ -1,5 +1,7 @@
 package org.asciidoctor.converter.markdown
 
+import groovy.transform.CompileDynamic
+import groovy.transform.CompileStatic
 import groovy.util.logging.Slf4j
 import org.asciidoctor.ast.*
 import org.asciidoctor.converter.StringConverter
@@ -11,6 +13,7 @@ import org.asciidoctor.markdown.internal.ListNodeProcessor
  * @author Schalk W. Cronjé
  */
 @Slf4j
+@CompileStatic
 abstract class AbstractMarkdownConverter extends StringConverter {
 
     static final String LINESEP = Constants.LINESEP
@@ -25,6 +28,7 @@ abstract class AbstractMarkdownConverter extends StringConverter {
      * @param type The name to be adjusted.
      * @return Method name
      */
+    @CompileDynamic
     static String itemMethodName(final String prefix,final String type) {
         String name = type.capitalize().replaceAll( ~/_\p{Alnum}/ ) {
             it[1..-1].capitalize()
@@ -49,6 +53,7 @@ abstract class AbstractMarkdownConverter extends StringConverter {
      * @param args
      * @return
      */
+    @CompileDynamic
     def methodMissing(String name, args) {
 
         if(name.startsWith('convert') && args.size() == 2 && args[0] instanceof StructuralNode) {
@@ -173,6 +178,12 @@ abstract class AbstractMarkdownConverter extends StringConverter {
         return ' '.multiply(item.level*2-2) + '* ' + item.text + LINESEP + item.content
     }
 
+    /** Dispatcher method to create a list item.
+     *
+     * @param item
+     * @param opts
+     * @return
+     */
     def convertListItem(ContentNode node,Map<String, Object> opts) {
         "${itemMethodName('convertListItemType', node.parent.context)}"(node, opts)
     }
