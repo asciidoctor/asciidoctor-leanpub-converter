@@ -162,6 +162,7 @@ abstract class AbstractMultiOutputMarkdownConverter extends AbstractMarkdownConv
     abstract def convertStem(ContentNode node,Map<String, Object> opts)
     abstract def convertOpen(ContentNode node,Map<String, Object> opts)
     abstract def convertPreamble(ContentNode node,Map<String, Object> opts)
+    abstract def convertAnchorTypeRef(ContentNode node,Map<String, Object> opts)
 
 //    /** Paragraph conversion just passes the content back.
 //     *

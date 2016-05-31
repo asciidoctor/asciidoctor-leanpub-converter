@@ -19,10 +19,10 @@ class BibliographySpec extends LeanpubSpecification {
         backmatter3.text == '''# Chapter with References
 
 {#prag}
-Andy Hunt + Dave Thomas. The Pragmatic Programmer: From Journeyman to Master. Addison-Wesley. 1999.
+[**prag**] Andy Hunt + Dave Thomas. The Pragmatic Programmer: From Journeyman to Master. Addison-Wesley. 1999.
 
 {#seam}
-Dan Allen. Seam in Action. Manning Publications. 2008.
+[**seam**] Dan Allen. Seam in Action. Manning Publications. 2008.
 
 '''
         backmatter2.text == '''# Fake Appendix
@@ -30,10 +30,10 @@ Dan Allen. Seam in Action. Manning Publications. 2008.
 ## Section with References
 
 {#prag}
-Andy Hunt + Dave Thomas. The Pragmatic Programmer: From Journeyman to Master. Addison-Wesley. 1999.
+[**prag**] Andy Hunt + Dave Thomas. The Pragmatic Programmer: From Journeyman to Master. Addison-Wesley. 1999.
 
 {#seam}
-Dan Allen. Seam in Action. Manning Publications. 2008.
+[**seam**] Dan Allen. Seam in Action. Manning Publications. 2008.
 
 '''
     }
@@ -49,10 +49,10 @@ Dan Allen. Seam in Action. Manning Publications. 2008.
         chapter3.text == '''# Chapter with Escaped Characters
 
 {#prag}
-Andy Hunt & Dave Thomas. The Pragmatic Programmer: From Journeyman to Master. Addison-Wesley. 1999.
+[**prag**] Andy Hunt & Dave Thomas. The Pragmatic Programmer: From Journeyman to Master. Addison-Wesley. 1999.
 
 {#seam}
-Dan Allen. Seam in Action. Manning Publications. 2008.'''
+[**seam**] Dan Allen. Seam in Action. Manning Publications. 2008.'''
     }
 
 //    def "Bibliography with hyperlinks"() {

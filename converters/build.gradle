@@ -77,7 +77,7 @@ plugins.withType(JavaPlugin) {
 
 dependencies {
 
-    compile 'org.codehaus.groovy:groovy-all:[2.3.4,2.3.99]'
+    compile 'org.codehaus.groovy:groovy-all:2.3.4'
     compile "org.asciidoctor:asciidoctorj:${asciidoctorjVersion}"
     compile 'org.slf4j:slf4j-api:1.7.5'
     compile 'commons-io:commons-io:2.4'

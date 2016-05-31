@@ -51,8 +51,8 @@ With reference to the [Spock Framework](http://docs.spockframework.org/en/latest
 
         then:
         chapter.text == '''# Chapter C
-{#embeddedAnchor}
 
+{#embeddedAnchor}
 This chapter has an embedded anchor.
 '''
 

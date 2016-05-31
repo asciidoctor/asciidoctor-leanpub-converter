@@ -7,6 +7,7 @@ import org.asciidoctor.converter.ConverterFor
 import org.asciidoctor.converter.markdown.AbstractMultiOutputMarkdownConverter
 import org.asciidoctor.leanpub.ConvertedSection
 import org.asciidoctor.leanpub.LeanpubDocument
+import org.asciidoctor.markdown.internal.InlineQuotedTextFormatter
 import org.asciidoctor.markdown.internal.ListNodeProcessor
 import org.asciidoctor.markdown.internal.SourceParser
 import org.asciidoctor.leanpub.internal.CrossReference
@@ -275,6 +276,11 @@ class LeanpubConverter extends AbstractMultiOutputMarkdownConverter {
         "{#${inline.text}}${LINESEP}"
     }
 
+    def convertAnchorTypeRef(ContentNode node,Map<String, Object> opts) {
+        PhraseNode inline = node as PhraseNode
+        "{#${inline.text[1..-2]}}${LINESEP}"
+    }
+
     @Override
     def convertColist(ContentNode node,Map<String, Object> opts) {
         if(lastSrcBlock) {
@@ -341,6 +347,7 @@ class LeanpubConverter extends AbstractMultiOutputMarkdownConverter {
         def matcher = item.text.replaceAll(LINESEP,' ') =~ LISTITEM_BIBREF_PATTERN
         if(matcher.matches()) {
             return matcher[0][2] + LINESEP +
+                '[' + InlineQuotedTextFormatter.strong(matcher[0][2][2..-2]) + '] ' +
                 (matcher[0][1] ?: '') +
                 matcher[0][3].trim() + LINESEP + item.content + LINESEP
         }
@@ -366,7 +373,7 @@ class LeanpubConverter extends AbstractMultiOutputMarkdownConverter {
         }
 
         '{linenos=off}' + LINESEP +
-            block.lines().collect {
+            block.lines.collect {
                 ' '.multiply(4) + it
             }.join(LINESEP) + LINESEP
     }

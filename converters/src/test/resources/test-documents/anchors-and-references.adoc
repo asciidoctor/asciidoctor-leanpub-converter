@@ -14,6 +14,5 @@ With reference to the http://docs.spockframework.org/en/latest[Spock Framework] 
 
 [chapter]
 == Chapter C
-[[embeddedAnchor]]
 
-This chapter has an embedded anchor.
+[[embeddedAnchor]]This chapter has an embedded anchor.
