@@ -315,10 +315,9 @@ class LeanpubConverter extends AbstractMultiOutputMarkdownConverter {
     }
 
     def convertDlist(ContentNode node, Map<String, Object> opts) {
-//        ListNodeProcessor.processListItems(node as List)
-        def list = node as List
-        println "***** ${list.items}"
-//        list.items.each { ListItem item ->
+        ListNodeProcessor.processListItems(node as List)
+//        (node as List).items.each { StructuralNode it ->
+//            ListItem item = it as ListItem
 //            println "**** ${item.marker}"
 //            println "++++ ${item.text}"
 //        }

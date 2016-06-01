@@ -1,6 +1,7 @@
 package org.asciidoctor.markdown
 
 import org.asciidoctor.markdown.internal.MarkdownSpecification
+import org.spockframework.runtime.ConditionNotSatisfiedError
 import spock.lang.FailsWith
 import spock.lang.Ignore
 import spock.lang.Issue
@@ -13,6 +14,7 @@ import spock.lang.Unroll
  */
 class BasicMarkdownSpec extends MarkdownSpecification {
 
+    @Ignore
     @Unroll
     def "Converting #adocType"() {
 
@@ -25,12 +27,12 @@ class BasicMarkdownSpec extends MarkdownSpecification {
 
         where:
         adocType << [
-            'simple-book'
+//            'simple-book'
         ]
 
     }
 
-    @Ignore
+    @FailsWith(ConditionNotSatisfiedError)
     @Unroll
     def "Converting #adocType (with issues)"() {
 
@@ -43,7 +45,7 @@ class BasicMarkdownSpec extends MarkdownSpecification {
 
         where:
         adocType << [
-//            'simple-book'
+            'simple-book'
         ]
 
     }

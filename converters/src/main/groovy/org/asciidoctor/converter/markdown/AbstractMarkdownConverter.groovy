@@ -107,6 +107,7 @@ abstract class AbstractMarkdownConverter extends StringConverter {
      * @return the converted result
      */
     @Override
+    @CompileDynamic
     String convert(ContentNode node, String transform, Map<Object, Object> opts) {
         if (node instanceof Document) {
             if(setupComplete) {
@@ -131,6 +132,7 @@ abstract class AbstractMarkdownConverter extends StringConverter {
      *
      * @return Content plus an additional line separator
      */
+    @CompileDynamic
     def convertParagraph(ContentNode node, Map<String, Object> opts) {
         Block block = node as Block
         block.content + LINESEP
@@ -148,6 +150,7 @@ abstract class AbstractMarkdownConverter extends StringConverter {
         ListNodeProcessor.processListItems(node as List)
     }
 
+    @CompileDynamic
     def convertInlineQuoted(ContentNode node, Map<String, Object> opts) {
         PhraseNode inline = node as PhraseNode
         InlineQuotedTextFormatter."${inline.type}"(inline.text)
@@ -184,6 +187,7 @@ abstract class AbstractMarkdownConverter extends StringConverter {
      * @param opts
      * @return
      */
+    @CompileDynamic
     def convertListItem(ContentNode node,Map<String, Object> opts) {
         "${itemMethodName('convertListItemType', node.parent.context)}"(node, opts)
     }

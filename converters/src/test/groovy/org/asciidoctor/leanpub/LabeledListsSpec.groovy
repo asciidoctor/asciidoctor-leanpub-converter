@@ -10,7 +10,7 @@ import spock.lang.Issue
  */
 class LabeledListsSpec extends LeanpubSpecification {
 
-    @FailsWith(Exception)
+    @FailsWith(org.asciidoctor.internal.AsciidoctorCoreException)
     @Issue('https://github.com/asciidoctor/asciidoctorj/issues/404')
     def "Labeled lists should process examples form Asciidoctor user guide"() {
         setup:
