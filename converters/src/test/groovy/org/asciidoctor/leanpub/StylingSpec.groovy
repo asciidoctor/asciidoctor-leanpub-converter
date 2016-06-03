@@ -1,7 +1,10 @@
 package org.asciidoctor.leanpub
 
 import org.asciidoctor.leanpub.internal.LeanpubSpecification
+import org.spockframework.runtime.ConditionNotSatisfiedError
+import org.spockframework.runtime.SpockComparisonFailure
 import spock.lang.FailsWith
+import spock.lang.Ignore
 import spock.lang.Issue
 
 /**
@@ -44,8 +47,10 @@ Non&nbsp;breaking&nbsp;spaces
 
     }
 
-    @Issue('https://leanpub.com/help/manual#leanpub-auto-numberedordered-lists, https://github.com/ysb33r/asciidoctor-leanpub-converter/issues/1')
-    @FailsWith(org.spockframework.runtime.ConditionNotSatisfiedError)
+    @FailsWith(ConditionNotSatisfiedError)
+    @Issue(['https://leanpub.com/help/manual#leanpub-auto-numberedordered-lists',
+        'https://github.com/asciidoctor/asciidoctor-leanpub-converter/issues/1',
+        'https://github.com/asciidoctor/asciidoctor-leanpub-converter/issues/53'])
     def "Basic ordered and unordered lists"() {
         setup:
         File chapter = new File(LeanpubSpecification.manuscriptDir,'chapter_3.txt')

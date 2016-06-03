@@ -31,6 +31,7 @@ class LeanpubSpecification extends Specification {
     static final File outputDir = new File('./build/test/leanpub')
     static final File manuscriptDir = new File(outputDir,'manuscript')
     static final File imagesDir = new File(manuscriptDir,'images')
+    static final File imagesOutDir = new File(outputDir,'generated-images')
     static final File book1 = new File(manuscriptDir,LeanpubConverter.BOOK)
     static final File sample1 = new File(manuscriptDir,LeanpubConverter.SAMPLE)
     static final File resourceDir = new File('./build/resources/test/test-documents')
@@ -53,7 +54,8 @@ class LeanpubSpecification extends Specification {
             mkdirs : true,
             backend : 'leanpub',
             sourcemap : true,
-            safe : 1
+            safe : 1,
+            attributes : [ 'imagesoutdir' : imagesOutDir.absolutePath ]
         ]
         asciidoctor.convertFile(new File(resourceDir,documentFileName),options )
 

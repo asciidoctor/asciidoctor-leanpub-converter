@@ -19,7 +19,7 @@ class AnchorsSpec extends LeanpubSpecification {
         then:
             chapter.text == '''# Chapter A
 
-This is a reference to [Asciidoctor Project](#Asciidoctor-Project).
+This is a cross-reference to [[Asciidoctor Project]](#Asciidoctor-Project).
 
 This is a [reference with text](#RefText2).
 '''
@@ -42,5 +42,20 @@ With reference to the [Spock Framework](http://docs.spockframework.org/en/latest
 
     }
 
+    def "Embedded anchors with []"() {
+        setup:
+        File chapter = new File(LeanpubSpecification.manuscriptDir,'chapter_3.txt')
+
+        when:
+        generateOutput('anchors-and-references.adoc')
+
+        then:
+        chapter.text == '''# Chapter C
+
+{#embeddedAnchor}
+This chapter has an embedded anchor.
+'''
+
+    }
 
 }

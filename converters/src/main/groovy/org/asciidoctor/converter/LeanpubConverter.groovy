@@ -7,6 +7,8 @@ import org.asciidoctor.converter.ConverterFor
 import org.asciidoctor.converter.markdown.AbstractMultiOutputMarkdownConverter
 import org.asciidoctor.leanpub.ConvertedSection
 import org.asciidoctor.leanpub.LeanpubDocument
+import org.asciidoctor.markdown.internal.InlineQuotedTextFormatter
+import org.asciidoctor.markdown.internal.ListNodeProcessor
 import org.asciidoctor.markdown.internal.SourceParser
 import org.asciidoctor.leanpub.internal.CrossReference
 import org.asciidoctor.leanpub.internal.LeanpubCell
@@ -236,6 +238,16 @@ class LeanpubConverter extends AbstractMultiOutputMarkdownConverter {
         return formatSection(section)
     }
 
+    /** Converts a page break
+     *
+     * @param node The block node (ignored)
+     * @param opts OPtions (ignored)
+     * @return
+     */
+    def convertPageBreak(ContentNode node, Map<String, Object> opts) {
+        '{pagebreak}' + LINESEP
+    }
+
     def convertInlineQuoted(ContentNode node, Map<String, Object> opts) {
         PhraseNode inline = node as PhraseNode
         // In table context it needs to get split otherwise formatting in Leanpub
@@ -251,7 +263,7 @@ class LeanpubConverter extends AbstractMultiOutputMarkdownConverter {
 
     def convertAnchorTypeXref(ContentNode node, Map<String, Object> opts) {
         PhraseNode inline = node as PhraseNode
-        "[${inline.text ?: inline.attributes.fragment}](#${CrossReference.safeId(inline.attributes.refid)})"
+        "[${inline.text ?: ('['+inline.attributes.fragment+']')}](#${CrossReference.safeId(inline.attributes.refid)})"
     }
 
     def convertAnchorTypeLink(ContentNode node, Map<String, Object> opts) {
@@ -262,6 +274,11 @@ class LeanpubConverter extends AbstractMultiOutputMarkdownConverter {
     def convertAnchorTypeBibref(ContentNode node, Map<String, Object> opts) {
         PhraseNode inline = node as PhraseNode
         "{#${inline.text}}${LINESEP}"
+    }
+
+    def convertAnchorTypeRef(ContentNode node,Map<String, Object> opts) {
+        PhraseNode inline = node as PhraseNode
+        "{#${inline.text[1..-2]}}${LINESEP}"
     }
 
     @Override
@@ -297,22 +314,35 @@ class LeanpubConverter extends AbstractMultiOutputMarkdownConverter {
         }
     }
 
+    def convertDlist(ContentNode node, Map<String, Object> opts) {
+        DescriptionList list = node as DescriptionList
+
+        final String prefix = list.attributes?.style == 'qanda' ? '> ' : ''
+        final String title = list.attributes?.title ? "**${list.attributes.title}**": ''
+        final String linebreak = LINESEP + prefix + LINESEP
+
+        String content = ''
+
+        if(!title.empty) {
+            content+= prefix + title + linebreak
+        }
+
+        list.items?.each { DescriptionListEntry item ->
+            content+= prefix + item?.terms?.collect { ListItem term -> term.text }.join(', ') + linebreak
+            content+= prefix + ': ' + item.description.text + linebreak
+        }
+
+        content
+    }
+
     def convertListItemTypeColist(ListItem item, Map<String, Object> opts) {
         ' '.multiply(item.level*2-2) + '1. ' + item.text + LINESEP + item.content
     }
 
-//    def convertListItemTypeOlist(ListItem item, Map<String, Object> opts) {
-//        ' '.multiply(item.level*2-2) + '1. ' + item.text + LINESEP + item.content
-//    }
-//
-//    /** Create an unordered list item, but takes special care if the list item is part of bibliography
-//     *
-//     * @param item
-//     * @param opts
-//     * @return
-//     */
-//    def convertListItemTypeUlist(ListItem item, Map<String, Object> opts) {
-//        return ' '.multiply(item.level*2-2) + '* ' + item.text + LINESEP + item.content
+
+//    def convertListItemTypeDlist(ListItem item, Map<String, Object> opts) {
+//        println "**** ${item.marker}"
+//        null
 //    }
 
 
@@ -328,6 +358,7 @@ class LeanpubConverter extends AbstractMultiOutputMarkdownConverter {
         def matcher = item.text.replaceAll(LINESEP,' ') =~ LISTITEM_BIBREF_PATTERN
         if(matcher.matches()) {
             return matcher[0][2] + LINESEP +
+                '[' + InlineQuotedTextFormatter.strong(matcher[0][2][2..-2]) + '] ' +
                 (matcher[0][1] ?: '') +
                 matcher[0][3].trim() + LINESEP + item.content + LINESEP
         }
@@ -353,7 +384,7 @@ class LeanpubConverter extends AbstractMultiOutputMarkdownConverter {
         }
 
         '{linenos=off}' + LINESEP +
-            block.lines().collect {
+            block.lines.collect {
                 ' '.multiply(4) + it
             }.join(LINESEP) + LINESEP
     }
@@ -490,7 +521,13 @@ class LeanpubConverter extends AbstractMultiOutputMarkdownConverter {
             }
         }
 
-        images.add new File(imagesDir(block,docDir),block.attributes.target)
+        File imageFile = new File(imagesDir(block,docDir),block.attributes.target)
+        if(imageFile.exists()) {
+            log.debug "Found image at '${imageFile}'"
+            images.add imageFile
+        } else {
+            log.warn "Source image '${imageFile}' is missing"
+        }
         (imageAttrs.size() ? "{${imageAttrs.join(',')}}${LINESEP}" : '')  +
              "${prefix}![${block.title?:''}](images/${block.attributes.target} \"${block.attributes.alt}\")" +
             LINESEP
@@ -823,6 +860,7 @@ class LeanpubConverter extends AbstractMultiOutputMarkdownConverter {
                 } else if(!tmpImage.exists()) {
                     log.warn "Front cover image '${tmpImage}' not found. Ignoring front cover."
                 } else {
+                    log.debug "Front cover image is set to '${tmpImage}'."
                     frontCoverImage = tmpImage
                 }
             } else {

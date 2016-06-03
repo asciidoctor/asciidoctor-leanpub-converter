@@ -162,6 +162,7 @@ abstract class AbstractMultiOutputMarkdownConverter extends AbstractMarkdownConv
     abstract def convertStem(ContentNode node,Map<String, Object> opts)
     abstract def convertOpen(ContentNode node,Map<String, Object> opts)
     abstract def convertPreamble(ContentNode node,Map<String, Object> opts)
+    abstract def convertAnchorTypeRef(ContentNode node,Map<String, Object> opts)
 
 //    /** Paragraph conversion just passes the content back.
 //     *
@@ -200,8 +201,6 @@ abstract class AbstractMultiOutputMarkdownConverter extends AbstractMarkdownConv
     }
 
     abstract def convertListItemTypeColist(ListItem node, Map<String, Object> opts)
-//    abstract def convertListItemTypeOlist(ListItem node, Map<String, Object> opts)
-//    abstract def convertListItemTypeUlist(ListItem node, Map<String, Object> opts)
     abstract def convertListItemTypeBibreflist(ListItem node, Map<String, Object> opts)
 
     /** Redirects an anchor to the appropriate anchor type converter

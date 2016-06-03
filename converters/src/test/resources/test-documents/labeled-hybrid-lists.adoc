@@ -1,0 +1,24 @@
+= Labeled Hybrid Lists
+Asciidoctor Team <foo@bar.example>
+
+[chapter]
+== Hybrid
+
+Operating Systems::
+  Linux:::
+    . Fedora
+      * Desktop
+    . Ubuntu
+      * Desktop
+      * Server
+  BSD:::
+    . FreeBSD
+    . NetBSD
+//
+//Cloud Providers::
+//  PaaS:::
+//    . OpenShift
+//    . CloudBees
+//  IaaS:::
+//    . Amazon EC2
+//    . Rackspace
