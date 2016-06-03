@@ -315,12 +315,24 @@ class LeanpubConverter extends AbstractMultiOutputMarkdownConverter {
     }
 
     def convertDlist(ContentNode node, Map<String, Object> opts) {
-        ListNodeProcessor.processListItems(node as List)
-//        (node as List).items.each { StructuralNode it ->
-//            ListItem item = it as ListItem
-//            println "**** ${item.marker}"
-//            println "++++ ${item.text}"
-//        }
+        DescriptionList list = node as DescriptionList
+
+        final String prefix = list.attributes?.style == 'qanda' ? '> ' : ''
+        final String title = list.attributes?.title ? "**${list.attributes.title}**": ''
+        final String linebreak = LINESEP + prefix + LINESEP
+
+        String content = ''
+
+        if(!title.empty) {
+            content+= prefix + title + linebreak
+        }
+
+        list.items?.each { DescriptionListEntry item ->
+            content+= prefix + item?.terms?.collect { ListItem term -> term.text }.join(', ') + linebreak
+            content+= prefix + ': ' + item.description.text + linebreak
+        }
+
+        content
     }
 
     def convertListItemTypeColist(ListItem item, Map<String, Object> opts) {
@@ -328,10 +340,10 @@ class LeanpubConverter extends AbstractMultiOutputMarkdownConverter {
     }
 
 
-    def convertListItemTypeDlist(ListItem item, Map<String, Object> opts) {
-        println "**** ${item.marker}"
-        null
-    }
+//    def convertListItemTypeDlist(ListItem item, Map<String, Object> opts) {
+//        println "**** ${item.marker}"
+//        null
+//    }
 
 
     /** Takes special care if the list item is part of bibliography

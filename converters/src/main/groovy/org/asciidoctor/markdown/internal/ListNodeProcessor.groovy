@@ -1,6 +1,8 @@
 package org.asciidoctor.markdown.internal
 
 import groovy.transform.CompileStatic
+import org.asciidoctor.ast.DescriptionList
+import org.asciidoctor.ast.DescriptionListEntry
 import org.asciidoctor.ast.List
 import org.asciidoctor.ast.ListItem
 import org.asciidoctor.ast.StructuralNode
@@ -22,5 +24,4 @@ class ListNodeProcessor {
     static def processListItems(List listNode) {
         listNode.items.collect { StructuralNode item -> item.convert() }.join('')
     }
-
 }

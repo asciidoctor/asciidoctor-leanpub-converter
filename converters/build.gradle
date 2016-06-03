@@ -38,7 +38,7 @@ repositories {
             name 'Asciidoctor Snapshots'
             url 'https://oss.jfrog.org/artifactory/oss-snapshot-local'
         }
-        mavenLocal()
+//        mavenLocal()
     }
 }
 

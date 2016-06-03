@@ -202,7 +202,6 @@ abstract class AbstractMultiOutputMarkdownConverter extends AbstractMarkdownConv
 
     abstract def convertListItemTypeColist(ListItem node, Map<String, Object> opts)
     abstract def convertListItemTypeBibreflist(ListItem node, Map<String, Object> opts)
-    abstract def convertListItemTypeDlist(ListItem node, Map<String, Object> opts)
 
     /** Redirects an anchor to the appropriate anchor type converter
      *

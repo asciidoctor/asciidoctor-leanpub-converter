@@ -5,7 +5,8 @@ Asciidoctor Team <foo@bar.example>
 == Single line
 
 first term:: definition of first term
-section term:: definition of second term
+
+second term:: definition of second term
 
 [chapter]
 == Multi-line
@@ -13,36 +14,23 @@ section term:: definition of second term
 first term::
 definition of first term
 on two lines
-section term::
+
+second term::
 definition of second term
 can be on multiple lines
 
 [chapter]
 == Q & A
 
+.Q & A block
 [qanda]
 What is Asciidoctor?::
   An implementation of the AsciiDoc processor in Ruby.
+
 What is the answer to the Ultimate Question?:: 42
 
 [chapter]
-== Mixed
+== Definition list with no blank lines
 
-Operating Systems::
-  Linux:::
-    . Fedora
-      * Desktop
-    . Ubuntu
-      * Desktop
-      * Server
-  BSD:::
-    . FreeBSD
-    . NetBSD
-
-Cloud Providers::
-  PaaS:::
-    . OpenShift
-    . CloudBees
-  IaaS:::
-    . Amazon EC2
-    . Rackspace
+first term:: definition of first term
+second term:: definition of second term
