@@ -16,5 +16,41 @@
  */
 // ============================================================================
 
+buildscript {
+    repositories {
+//        mavenLocal()
+        jcenter()
+    }
+
+    dependencies {
+//        classpath 'org.asciidoctor:asciidoctor-gradle-plugin:1.5.3-SNAPSHOT'
+        classpath 'org.asciidoctor:asciidoctorj-diagram:1.5.4'
+//        classpath 'org.asciidoctor:asciidoctor-leanpub-markdown:0.1-SNAPSHOT'
+//        classpath 'com.github.jruby-gradle:jruby-gradle-plugin:0.3.0'
+
+    }
+}
+
+//buildscript {
+//    repositories {
+//        jcenter()
+//
+//        maven {
+//            url "https://plugins.gradle.org/m2/"
+//
+//        }
+//    }
+//
+//    dependencies {
+////        classpath 'com.github.jruby-gradle:jruby-gradle-plugin:1.1.4'
+//        classpath "org.jfrog.buildinfo:build-info-extractor-gradle:3.1.1"
+//    }
+//}
+
+plugins {
+    id 'com.jfrog.artifactory' version '4.4.17' apply false
+    id 'org.asciidoctor.convert' version '1.5.3' apply false
+}
+
 subprojects {
 }
