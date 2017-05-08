@@ -220,6 +220,10 @@ abstract class AbstractMultiOutputMarkdownConverter extends AbstractMarkdownConv
 
     def convertListing(ContentNode node,Map<String, Object> opts) {
         Block block = node as Block
+        if(block.attributes.style == null) {
+            log.warn "Attributes for ${block.nodeName} has no  associated style. Skipping conversion."
+            return null
+        }
         "${itemMethodName('convertListingType',block.attributes.style)}"(block,opts)
     }
 

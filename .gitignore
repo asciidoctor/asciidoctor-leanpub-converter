@@ -6,3 +6,4 @@ build
 
 leanpub-example-book/src/docs/asciidoc/diag-*.png
 leanpub-example-book/src/docs/asciidoc/diag-*.png.cache
+converters/src/test/resources/test-documents/.asciidoctor

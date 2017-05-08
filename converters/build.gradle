@@ -60,7 +60,7 @@ dependencies {
     testImplementation('org.spockframework:spock-core:1.0-groovy-2.4') {
         exclude(module: 'groovy-all')
     }
-    
+
     testRuntimeOnly 'org.asciidoctor:asciidoctorj-diagram:1.5.4'
     testRuntimeOnly 'org.slf4j:slf4j-simple:1.7.5'
 }
