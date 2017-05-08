@@ -17,6 +17,7 @@
 // ============================================================================
 package org.asciidoctor.leanpub.internal
 
+import org.apache.commons.io.FileUtils
 import org.asciidoctor.Asciidoctor
 import org.asciidoctor.converter.LeanpubConverter
 import spock.lang.Specification
@@ -29,6 +30,7 @@ class LeanpubSpecification extends Specification {
 
     Asciidoctor asciidoctor
     static final File outputDir = new File('./build/test/leanpub')
+    static final File sourceDir = new File( outputDir, 'src')
     static final File manuscriptDir = new File(outputDir,'manuscript')
     static final File imagesDir = new File(manuscriptDir,'images')
     static final File imagesOutDir = new File(outputDir,'generated-images')
@@ -48,16 +50,18 @@ class LeanpubSpecification extends Specification {
 
     }
 
-    void generateOutput(final String documentFileName) {
+    void generateOutput(final String documentFileName,boolean safeMode=true) {
+        File targetFile = new File(sourceDir,documentFileName)
+        FileUtils.copyFile(new File(resourceDir,documentFileName),targetFile)
         def options = [
             to_dir : outputDir.absolutePath,
             mkdirs : true,
             backend : 'leanpub',
             sourcemap : true,
-            safe : 1,
+            safe : safeMode ? 1 : 0,
             attributes : [ 'imagesoutdir' : imagesOutDir.absolutePath ]
         ]
-        asciidoctor.convertFile(new File(resourceDir,documentFileName),options )
+        asciidoctor.convertFile(targetFile,options )
 
     }
 }
