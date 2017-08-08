@@ -1,13 +1,16 @@
 language: java
 sudo: true
 jdk:
-  - oraclejdk8
+- oraclejdk8
 install: true
 script: ./gradlew -S -Pskip.signing build artifactoryPublish bintrayUpload
 notifications:
   email: false
   irc:
     channels:
-      - "irc.freenode.org#asciidoctor"
+    - irc.freenode.org#asciidoctor
 env:
-  - secure: "WYU2AptOM6CIiIykVUCj2Ca4umapAl2Qxv8sQDDTNuv9gVHk1rtU42kD6oqS/YoID0QoPy8g6Ggyvy1MF0wMpL4Vvu8pLnbLiYoJtmecpLHB0UZ1UixsgWL7bHExrh+ciCjjqliN9C0rUnmiDHj9Ald2VSWH6Vvcl2YG67Pbl+c="
+  matrix:
+  - secure: WYU2AptOM6CIiIykVUCj2Ca4umapAl2Qxv8sQDDTNuv9gVHk1rtU42kD6oqS/YoID0QoPy8g6Ggyvy1MF0wMpL4Vvu8pLnbLiYoJtmecpLHB0UZ1UixsgWL7bHExrh+ciCjjqliN9C0rUnmiDHj9Ald2VSWH6Vvcl2YG67Pbl+c=
+  global:
+    secure: mzzFL4MztHazp5dy/CnfSZWpXbawtxqSQOv6e8JQRvtiJr4AfivI49HAMes+RyI9ouKph/NwSx2gAa775zObPTjIV4wUgGD3KCRpjqu2lIiP+hsvtSE95wkHrwIeHrCkwbr6VH0u+UbcnCXR6tcp26JLZQdJhMu9A8OVmG5sEUhMg4zMGixyX/rcZY6g3c4mb1eKEm+OGF14UcOUErjothgRkKemxOj0FnDGplMa6Ew+H7X+mXuVNQeWNnqsOYtUxcBYdPuuhmFxsx2aZCvtkMEcNfkDjIje6/V25DnE+TxYz4W7vpFhN9YHXt9pRl3IX4CqGONK4sV6mW4YbTa2GYkKr/728SMMagqLaeQIhvkaFpZrevtfrO6nwfYfN4tHxU1KAKy/I7RLsGHxRv0nvKexe6ErMrEJtlEHSOGLWFgGJmZARK5ngJSX3WOb/xsQusDFjWj3YIIkS3DjR/UDMkHyC6mdPxkddRquWQTZNNZGEdRHhB1N2dysEtuZuCZplMWRkf5E74XV4OBDsNlUBN7YpLnhOaHITw/yfF97V+oky23hh4ARqj8OzXZY6ZXQorFEk3GPUo+Nz6DGLZGViN5tl2PZQ7SP6sdcu5blUQLeqrczzp5I0P12dsVOdhClCiCCdzLZb+eN934CrP/MfxqTMjQB+x0smI4Lv3lrW6Q=
