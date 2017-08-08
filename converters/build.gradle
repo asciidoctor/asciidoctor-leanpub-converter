@@ -34,6 +34,7 @@ version = '0.1.alpha.1'
 apply plugin : 'groovy'
 apply plugin : 'java-library'
 apply plugin : 'com.jfrog.artifactory'
+apply plugin : 'com.jfrog.bintray'
 
 // NOTE replace deficient built-in publishing plugin with nebula-publishing,
 // which does a better job generating the POM and properly aggregates signature files for upload to Bintray
@@ -158,6 +159,44 @@ artifactory {
 
 }
 
+bintray {
+    user = System.env['BINTRAY_USER'] ?: (project.hasProperty('bintrayUsername') ? project.bintrayUsername : '')
+    key = System.env['BINTRAY_KEY'] ?: (project.hasProperty('bintrayApiKey') ? project.bintrayApiKey : '')
+
+    publications = ['jars']
+
+//    if ( !project.hasProperty('skip.signing') ) {
+//        // Copy the signed pom to bintrayDestination
+//        filesSpec {
+//            from signPom
+//            into signPom.bintrayDestination
+//        }
+//        bintrayUpload.dependsOn signPom
+//    }
+
+    dryRun = project.hasProperty('dryRun') && project.dryRun.toBoolean()
+    publish = !version.endsWith('-SNAPSHOT')
+
+    pkg {
+        repo = System.env['BINTRAY_REPO'] ?: (project.hasProperty('bintrayRepo') ? project.bintrayRepo : 'maven')
+        userOrg = 'asciidoctor'
+        name = project.name
+        desc = project.description
+
+        licenses = ['Apache-2.0']
+        labels = ['asciidoctor', 'asciidoctorj', 'asciidoc']
+        websiteUrl = 'http://asciidoctor.org/docs/asciidoctorj'
+        issueTrackerUrl = 'https://github.com/asciidoctor/asciidoctor-leanpub-converter/issues'
+        vcsUrl = 'https://github.com/asciidoctor/asciidoctor-leanpub-converter'
+        publicDownloadNumbers = true
+
+        version {
+            name = project.version
+            vcsTag = "${rootProject.name}-${rootProject.version}"
+        }
+    }
+}
+
 
 publishing.publications {
     jars(MavenPublication) {
@@ -209,12 +248,17 @@ jar {
 }
 
 artifactoryPublish{
-    onlyIf { !version.endsWith('-SNAPSHOT') }
+    onlyIf { version.endsWith('-SNAPSHOT') }
     dependsOn build
 }
 
 publish {
-    onlyIf { version.endsWith('-SNAPSHOT') }
+    onlyIf { !version.endsWith('-SNAPSHOT') }
+    dependsOn build
+}
+
+bintrayUpload {
+    onlyIf { !version.endsWith('-SNAPSHOT') }
     dependsOn build
 }
 
@@ -235,11 +279,10 @@ travisci {
         }
     }
 
-    artifactoryPublish.dependsOn travisParams
-    publish.dependsOn travisParams
-
-    artifactoryPublish.enabled = travisPublishStatus
-    publish.enabled = travisPublishStatus
-
+    [ 'artifactoryPublish', 'publish', 'bintrayUpload'].each {
+        Task t = tasks.getByName(it)
+        t.dependsOn travisParams
+        t.enabled = travisPublishStatus
+    }
 }
 
