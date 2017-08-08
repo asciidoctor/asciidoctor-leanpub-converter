@@ -160,6 +160,7 @@ artifactory {
 
 artifactoryPublish{
     onlyIf { version.endsWith('-SNAPSHOT') }
+    dependsOn build
 }
 
 publishing.publications {
@@ -210,3 +211,11 @@ jar {
             'Implementation-Vendor': 'asciidoctor.org'
     }
 }
+
+travisci {
+    artifactoryPublish.enabled = ( System.getenv('TRAVIS_BRANCH') == 'master' &&
+        System.getenv('TRAVIS_REPO_SLUG') == 'asciidoctor/asciidoctor-leanpub-backend' &&
+        System.getenv('TRAVIS_PULL_REQUEST') == 'false' &&
+        System.getenv('TRAVIS_JDK_VERSION') == 'oraclejdk8' )
+}
+
