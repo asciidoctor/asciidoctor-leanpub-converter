@@ -159,7 +159,7 @@ artifactory {
 }
 
 artifactoryPublish{
-    onlyIf { version.endsWith('-SNAPSHOT') }
+    onlyIf { !version.endsWith('-SNAPSHOT') }
     dependsOn build
 }
 
