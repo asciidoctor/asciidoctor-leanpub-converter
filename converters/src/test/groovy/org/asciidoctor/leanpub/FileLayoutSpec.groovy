@@ -26,6 +26,8 @@ import spock.lang.Issue
  */
 class FileLayoutSpec extends LeanpubSpecification {
 
+    static final boolean IS_WINDOWS = System.getProperty('os.name').toLowerCase().contains('windows')
+
     def "Each chapter should be written to a separate file and Book.txt updated"() {
 
         when: 'Generating a simple book with three chapters'
@@ -73,14 +75,14 @@ class FileLayoutSpec extends LeanpubSpecification {
             new File(LeanpubSpecification.manuscriptDir,'mainmatter.txt').text == '''{mainmatter}'''
 
         and: 'Book.txt should contain preface, chapter entries + frontmatter, mainmatter files'
-            LeanpubSpecification.book1.text == '''frontmatter.txt
+            LeanpubSpecification.book1.text == layoutText('''frontmatter.txt
 preface.txt
 mainmatter.txt
 chapter_1.txt
 chapter_2.txt
 chapter_3.txt
 chapter_4.txt
-'''
+''')
     }
 
     @Issue('https://leanpub.com/help/manual#leanpub-auto-front-matter-main-matter-and-back-matter')
@@ -122,7 +124,7 @@ chapter_4.txt
         new File(LeanpubSpecification.manuscriptDir,'backmatter.txt').text == '''{backmatter}'''
 
         and: 'Book.txt should contain chapter entries + backmatter, backmatter files'
-        LeanpubSpecification.book1.text == '''frontmatter.txt
+        LeanpubSpecification.book1.text == layoutText('''frontmatter.txt
 preface.txt
 mainmatter.txt
 chapter_1.txt
@@ -132,7 +134,7 @@ chapter_4.txt
 backmatter.txt
 backmatter_5.txt
 backmatter_6.txt
-'''
+''')
     }
 
     def "If a chapter or preface is annotated with sample, then include in Sample.txt"() {
@@ -140,12 +142,19 @@ backmatter_6.txt
         generateOutput('sample-book.adoc')
 
         then: 'Sample.txt should contain the preface, if annotated and the annotated chapters'
-            LeanpubSpecification.sample1.text == '''frontmatter.txt
+            LeanpubSpecification.sample1.text == layoutText('''frontmatter.txt
 preface.txt
 mainmatter.txt
 chapter_3.txt
-'''
+''')
 
     }
 
+    private String layoutText(final String text) {
+        if(IS_WINDOWS) {
+            text.replaceAll(~/\n/,"\r\n")
+        } else {
+            text
+        }
+    }
 }
