@@ -1,0 +1,15 @@
+language: java
+jdk:
+  - oraclejdk8
+  - oraclejdk7
+  - openjdk7
+install: ./gradlew -S -Pskip.signing assemble
+script: ./gradlew -S -Pskip.signing check
+after_success: if [ "${TRAVIS_BRANCH}" = "release" -a "${TRAVIS_PULL_REQUEST}" = "false" -a "${TRAVIS_JDK_VERSION}" = "oraclejdk8" ]; then ./gradlew clean build artifactoryPublish -x test ; fi
+notifications:
+  email: false
+  irc:
+    channels:
+      - "irc.freenode.org#asciidoctor"
+env:
+  - secure: "WYU2AptOM6CIiIykVUCj2Ca4umapAl2Qxv8sQDDTNuv9gVHk1rtU42kD6oqS/YoID0QoPy8g6Ggyvy1MF0wMpL4Vvu8pLnbLiYoJtmecpLHB0UZ1UixsgWL7bHExrh+ciCjjqliN9C0rUnmiDHj9Ald2VSWH6Vvcl2YG67Pbl+c="
