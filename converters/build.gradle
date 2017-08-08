@@ -43,7 +43,7 @@ apply plugin : 'com.jfrog.artifactory'
 archivesBaseName = 'asciidoctor-leanpub-markdown'
 
 ext {
-    asciidoctorjVersion = '1.6.0-alpha.3'
+    asciidoctorjVersion = '1.6.0-alpha.4'
 }
 
 
