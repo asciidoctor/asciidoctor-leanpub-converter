@@ -3,7 +3,7 @@ sudo: true
 jdk:
   - oraclejdk8
 install: true
-script: ./gradlew -S -Pskip.signing build artifactoryPublish
+script: ./gradlew -S -Pskip.signing build artifactoryPublish publish
 notifications:
   email: false
   irc:
