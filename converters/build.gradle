@@ -158,10 +158,6 @@ artifactory {
 
 }
 
-artifactoryPublish{
-    onlyIf { !version.endsWith('-SNAPSHOT') }
-    dependsOn build
-}
 
 publishing.publications {
     jars(MavenPublication) {
@@ -212,7 +208,24 @@ jar {
     }
 }
 
+artifactoryPublish{
+    onlyIf { !version.endsWith('-SNAPSHOT') }
+    dependsOn build
+}
+
+publish {
+    onlyIf { version.endsWith('-SNAPSHOT') }
+    dependsOn build
+}
+
 travisci {
+
+    ext {
+        travisPublishStatus = ( System.getenv('TRAVIS_BRANCH') == 'master' &&
+            System.getenv('TRAVIS_REPO_SLUG') == 'asciidoctor/asciidoctor-leanpub-converter' &&
+            System.getenv('TRAVIS_PULL_REQUEST') == 'false' &&
+            System.getenv('TRAVIS_JDK_VERSION') == 'oraclejdk8' )
+    }
 
     task travisParams {
         doLast {
@@ -221,11 +234,12 @@ travisci {
             }
         }
     }
-    artifactoryPublish.dependsOn travisParams
 
-    artifactoryPublish.enabled = ( System.getenv('TRAVIS_BRANCH') == 'master' &&
-        System.getenv('TRAVIS_REPO_SLUG') == 'asciidoctor/asciidoctor-leanpub-converter' &&
-        System.getenv('TRAVIS_PULL_REQUEST') == 'false' &&
-        System.getenv('TRAVIS_JDK_VERSION') == 'oraclejdk8' )
+    artifactoryPublish.dependsOn travisParams
+    publish.dependsOn travisParams
+
+    artifactoryPublish.enabled = travisPublishStatus
+    publish.enabled = travisPublishStatus
+
 }
 
