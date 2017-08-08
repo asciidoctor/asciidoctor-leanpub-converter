@@ -31,10 +31,6 @@ repositories {
 group = 'org.asciidoctor'
 version = '0.1.alpha.1'
 
-if(!project.properties.RELEASE) {
-    version = "${version}-SNAPSHOT"
-}
-
 apply plugin : 'groovy'
 apply plugin : 'java-library'
 apply plugin : 'com.jfrog.artifactory'
