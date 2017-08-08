@@ -29,6 +29,7 @@ buildscript {
 plugins {
     id 'com.jfrog.artifactory' version '4.4.17' apply false
     id 'org.asciidoctor.convert' version '1.5.3' apply false
+    id 'org.ysb33r.cloudci' version '1.0'
 }
 
 subprojects {
