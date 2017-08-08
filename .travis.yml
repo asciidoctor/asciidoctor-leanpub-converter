@@ -1,8 +1,7 @@
 language: java
+sudo: true
 jdk:
   - oraclejdk8
-  - oraclejdk7
-  - openjdk7
 install: ./gradlew -S -Pskip.signing assemble
 script: ./gradlew -S -Pskip.signing check
 after_success: if [ "${TRAVIS_BRANCH}" = "release" -a "${TRAVIS_REPO_SLUG}" = "asciidoctor/asciidoctor-leanpub-backend" -a "${TRAVIS_PULL_REQUEST}" = "false" -a "${TRAVIS_JDK_VERSION}" = "oraclejdk8" ]; then ./gradlew clean build artifactoryPublish -x test ; fi
