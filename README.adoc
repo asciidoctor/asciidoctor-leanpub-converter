@@ -6,6 +6,7 @@ Groovy using the experimental asciidoctorj-1.6.0 branch.
 
 == Building
 
+////
 [source,bash]
 ----
 git clone https://github.com/asciidoctor/asciidoctorj.git -b asciidoctorj-1.6.0
@@ -17,6 +18,7 @@ cd ../asciidoctorj-distribution
 ----
 
 Now you're ready to clone and build this converter.
+////
 
 [source,bash]
 ----
@@ -52,13 +54,14 @@ repositories {
 }
 
 asciidoctorj {
-   version = '1.6.0-SNAPSHOT'
+   version = '1.6.0-alpha.4' // <1>
 }
 
 asciidoctor {
   backends 'leanpub'
 }
 ----
+<1> You need to use one of the 1.6.0 Alpha versions.
 
 NOTE: Ignore the warning `Passing through unknown backend: leanpub`.
 
