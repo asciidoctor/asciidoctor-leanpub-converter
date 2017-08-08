@@ -29,21 +29,66 @@ repositories {
 }
 
 group = 'org.asciidoctor'
-version = '0.1'
+version = '0.1.alpha.1'
 
-if(!project.properties.RELEASE) {
-    version = "${version}-SNAPSHOT"
-}
-
-apply plugin : 'maven-publish'
 apply plugin : 'groovy'
 apply plugin : 'java-library'
 apply plugin : 'com.jfrog.artifactory'
 
+// NOTE replace deficient built-in publishing plugin with nebula-publishing,
+// which does a better job generating the POM and properly aggregates signature files for upload to Bintray
+apply plugin : 'maven-publish'
+
 archivesBaseName = 'asciidoctor-leanpub-markdown'
 
 ext {
-    asciidoctorjVersion = '1.6.0-alpha.3'
+    asciidoctorjVersion = '1.6.0-alpha.4'
+
+    buildDateTime = new Date()
+    (buildDateOnly, buildTimeOnly) = new java.text.SimpleDateFormat('yyyy-MM-dd HH:mm:ss.SSSZ').format(buildDateTime).split(' ')
+
+    projectMeta = {
+        resolveStrategy = groovy.lang.Closure.DELEGATE_FIRST
+        name project.name
+        description project.description
+        url 'https://github.com/asciidoctor/asciidoctor-leanpub-converter'
+        inceptionYear '2015'
+        licenses {
+            license {
+                name 'The Apache Software License, Version 2.0'
+                url 'http://www.apache.org/licenses/LICENSE-2.0.txt'
+                distribution 'repo'
+            }
+        }
+        issueManagement {
+            system 'github'
+            url 'https://github.com/asciidoctor/asciidoctor-leanpub-converter/issues'
+        }
+        scm {
+            url 'https://github.com/asciidoctor/asciidoctor-leanpub-converter'
+        }
+        developers {
+            developer {
+                id 'ysb33r'
+                name 'Schalk W. Cronjé'
+                email 'ysb33r@gmail.com'
+                timezone '1'
+                roles {
+                    role 'Project Lead'
+                }
+            }
+            developer {
+                id 'robertpanzer'
+                name 'Robert Panzer'
+                email 'robert.panzer.pb@gmail.com'
+                timezone '1'
+                roles {
+                    role 'Contributor'
+                }
+            }
+        }
+    }
+
 }
 
 
@@ -125,5 +170,43 @@ publishing.publications {
         artifact javadocJar
 
         from components.java
+
+        pom.withXml {
+            asNode().children().last() + projectMeta
+        }
+    }
+}
+
+//if ( !project.hasProperty('skip.signing') ) {
+//    task addSignaturesToPublication(dependsOn: signArchives) {
+//        group "publishing"
+//        description "add all signatures to the publication"
+//
+//        doLast {
+//            publishing.publications {
+//                jars(MavenPublication) {
+//                    configurations.signatures.getArtifacts().each { sig ->
+//                        logger.debug "adding signature to jars publication: $sig"
+//                        artifact(sig) {
+//                            extension "jar.asc"
+//                        }
+//                    }
+//                }
+//            }
+//        }
+//    }
+//
+//    tasks["signPom"].finalizedBy addSignaturesToPublication
+//}
+
+jar {
+    manifest {
+        attributes \
+      'Built-By': System.properties['user.name'],
+            'Created-By': "${System.properties['java.version']} (${System.properties['java.vendor']} ${System.properties['java.vm.version']})".toString(),
+            'Build-Date': buildDateOnly,
+            'Implementation-Title': project.name,
+            'Implementation-Version': project.version,
+            'Implementation-Vendor': 'asciidoctor.org'
     }
 }
