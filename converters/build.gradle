@@ -264,10 +264,11 @@ bintrayUpload {
 travisci {
     ext {
         travisPublishableRepo = System.getenv('TRAVIS_REPO_SLUG') == 'asciidoctor/asciidoctor-leanpub-converter' &&
-            System.getenv('TRAVIS_JDK_VERSION') == 'oraclejdk8'
+            System.getenv('TRAVIS_JDK_VERSION') == 'oraclejdk8' &&
+            System.getenv('TRAVIS_PULL_REQUEST') == 'false'
 
-        travisAllowPublish = travisPublishableRepo && System.getenv('TRAVIS_PULL_REQUEST') == 'false' && System.getenv('TRAVIS_BRANCH') == 'master'
-        travisAllowDryRun = travisPublishableRepo && (System.getenv('TRAVIS_BRANCH') != 'master' || System.getenv('TRAVIS_PULL_REQUEST') != 'false' && System.getenv('TRAVIS_BRANCH') == 'master')
+        travisAllowPublish = travisPublishableRepo && System.getenv('TRAVIS_BRANCH') == 'master'
+        travisAllowDryRun = travisPublishableRepo && System.getenv('TRAVIS_BRANCH') != 'master' 
     }
 
     task travisParams {
