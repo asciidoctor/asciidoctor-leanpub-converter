@@ -45,6 +45,7 @@ archivesBaseName = 'asciidoctor-leanpub-markdown'
 ext {
     asciidoctorjVersion = '1.6.0-alpha.4'
 
+    dryRunPublications = project.hasProperty('dryRun') && project.dryRun.toBoolean()
     buildDateTime = new Date()
     (buildDateOnly, buildTimeOnly) = new java.text.SimpleDateFormat('yyyy-MM-dd HH:mm:ss.SSSZ').format(buildDateTime).split(' ')
 
@@ -148,10 +149,9 @@ artifactory {
             publications('jars')
             publicConfigs('archives')
 
-            def dryRun = project.hasProperty('dryRun') && project.dryRun.toBoolean()
-            publishBuildInfo = !dryRun  //Publish build-info to Artifactory (true by default)
-            publishArtifacts = !dryRun   //Publish artifacts to Artifactory (true by default)
-            publishPom = !dryRun && !project.name.endsWith('-distribution')  //Publish generated POM files to Artifactory (true by default).
+            publishBuildInfo = !dryRunPublications  //Publish build-info to Artifactory (true by default)
+            publishArtifacts = !dryRunPublications   //Publish artifacts to Artifactory (true by default)
+            publishPom = !dryRunPublications  //Publish generated POM files to Artifactory (true by default).
             publishIvy = false   //Publish generated Ivy descriptor files to Artifactory (true by default).
 
         }
@@ -160,8 +160,8 @@ artifactory {
 }
 
 bintray {
-    user = System.env['BINTRAY_USER'] ?: (project.hasProperty('bintrayUsername') ? project.bintrayUsername : '')
-    key = System.env['BINTRAY_KEY'] ?: (project.hasProperty('bintrayApiKey') ? project.bintrayApiKey : '')
+    user = System.getenv('BINTRAY_USER') ?: (project.hasProperty('bintrayUsername') ? project.bintrayUsername : '')
+    key = System.getenv('BINTRAY_KEY') ?: (project.hasProperty('bintrayApiKey') ? project.bintrayApiKey : '')
 
     publications = ['jars']
 
@@ -180,7 +180,7 @@ bintray {
     pkg {
         repo = System.env['BINTRAY_REPO'] ?: (project.hasProperty('bintrayRepo') ? project.bintrayRepo : 'maven')
         userOrg = 'asciidoctor'
-        name = project.name
+        name = 'asciidoctor-leanpub-backend'
         desc = project.description
 
         licenses = ['Apache-2.0']
@@ -263,12 +263,12 @@ bintrayUpload {
 }
 
 travisci {
-
     ext {
-        travisPublishStatus = ( System.getenv('TRAVIS_BRANCH') == 'master' &&
-            System.getenv('TRAVIS_REPO_SLUG') == 'asciidoctor/asciidoctor-leanpub-converter' &&
-            System.getenv('TRAVIS_PULL_REQUEST') == 'false' &&
-            System.getenv('TRAVIS_JDK_VERSION') == 'oraclejdk8' )
+        travisPublishableRepo = System.getenv('TRAVIS_REPO_SLUG') == 'asciidoctor/asciidoctor-leanpub-converter' &&
+            System.getenv('TRAVIS_JDK_VERSION') == 'oraclejdk8'
+
+        travisAllowPublish = travisPublishableRepo && System.getenv('TRAVIS_PULL_REQUEST') == 'false' && System.getenv('TRAVIS_BRANCH') == 'master'
+        travisAllowDryRun = travisPublishableRepo && (System.getenv('TRAVIS_BRANCH') != 'master' || System.getenv('TRAVIS_PULL_REQUEST') != 'false' && System.getenv('TRAVIS_BRANCH') == 'master')
     }
 
     task travisParams {
@@ -276,13 +276,29 @@ travisci {
             ['TRAVIS_BRANCH','TRAVIS_REPO_SLUG','TRAVIS_PULL_REQUEST','TRAVIS_JDK_VERSION'].each {
                 println "${it}: ${System.getenv(it)}"
             }
+            println "Allow publish: ${travisAllowPublish}"
+            println "Allow dry run: ${travisAllowDryRun}"
         }
     }
 
-    [ 'artifactoryPublish', 'publish', 'bintrayUpload'].each {
+    [ 'artifactoryPublish', 'bintrayUpload'].each {
         Task t = tasks.getByName(it)
         t.dependsOn travisParams
-        t.enabled = travisPublishStatus
+        t.enabled = travisAllowPublish || travisAllowDryRun
+    }
+
+    bintray {
+        dryRun = travisAllowDryRun
+    }
+
+    artifactory {
+        publish {
+            defaults {
+                publishBuildInfo = travisAllowDryRun
+                publishArtifacts = travisAllowDryRun
+                publishPom       = travisAllowDryRun
+            }
+        }
     }
 }
 

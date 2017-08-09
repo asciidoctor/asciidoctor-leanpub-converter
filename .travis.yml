@@ -3,14 +3,14 @@ sudo: true
 jdk:
 - oraclejdk8
 install: true
-script: ./gradlew -S -Pskip.signing build artifactoryPublish bintrayUpload
-notifications:
-  email: false
-  irc:
-    channels:
-    - irc.freenode.org#asciidoctor
+script: ./gradlew -S -Pskip.signing build artifactoryPublish bintrayUpload -PbintrayUsername=$BINTRAY_USER
+  -PbintrayApiKey=$BINTRAY_KEY
+before_cache:
+- rm -f $HOME/.gradle/caches/modules-2/modules-2.lock
+cache:
+  directories:
+  - $HOME/.gradle/caches/
+  - $HOME/.gradle/wrapper/
 env:
-  matrix:
-  - secure: WYU2AptOM6CIiIykVUCj2Ca4umapAl2Qxv8sQDDTNuv9gVHk1rtU42kD6oqS/YoID0QoPy8g6Ggyvy1MF0wMpL4Vvu8pLnbLiYoJtmecpLHB0UZ1UixsgWL7bHExrh+ciCjjqliN9C0rUnmiDHj9Ald2VSWH6Vvcl2YG67Pbl+c=
   global:
-    secure: mzzFL4MztHazp5dy/CnfSZWpXbawtxqSQOv6e8JQRvtiJr4AfivI49HAMes+RyI9ouKph/NwSx2gAa775zObPTjIV4wUgGD3KCRpjqu2lIiP+hsvtSE95wkHrwIeHrCkwbr6VH0u+UbcnCXR6tcp26JLZQdJhMu9A8OVmG5sEUhMg4zMGixyX/rcZY6g3c4mb1eKEm+OGF14UcOUErjothgRkKemxOj0FnDGplMa6Ew+H7X+mXuVNQeWNnqsOYtUxcBYdPuuhmFxsx2aZCvtkMEcNfkDjIje6/V25DnE+TxYz4W7vpFhN9YHXt9pRl3IX4CqGONK4sV6mW4YbTa2GYkKr/728SMMagqLaeQIhvkaFpZrevtfrO6nwfYfN4tHxU1KAKy/I7RLsGHxRv0nvKexe6ErMrEJtlEHSOGLWFgGJmZARK5ngJSX3WOb/xsQusDFjWj3YIIkS3DjR/UDMkHyC6mdPxkddRquWQTZNNZGEdRHhB1N2dysEtuZuCZplMWRkf5E74XV4OBDsNlUBN7YpLnhOaHITw/yfF97V+oky23hh4ARqj8OzXZY6ZXQorFEk3GPUo+Nz6DGLZGViN5tl2PZQ7SP6sdcu5blUQLeqrczzp5I0P12dsVOdhClCiCCdzLZb+eN934CrP/MfxqTMjQB+x0smI4Lv3lrW6Q=
+    secure: EMTweiQ6YiTqsEfUcYIYdnMW/NMBmOcIKH5w06JPu0gf5kXV+IoLkjjD1M9ygD1LG17pOA34mx6uK4LaoXpD3f5608gNKzYg5vSZF9A2U2hATHZUIsz0fw/gU8m29M5pPSdxAMs3Pu3QXRvooszNWPkAVCOduOZVe9rA1hJkyOB4cHGB4sJfyQLe6nN5VVczyz/fX+OkjqVRuq3h32vF2DoNWsVw85XSsnOSSwZqWvweF+YOevTmSmFd24kfCGEhoWUu9Fl+TU63J3gyyVQIC3tn8bJ/+g0PbdARXH7UUx38M9P4GQ6KDPwBHkQoG1SdHUUbJA1YJ9ydm6VIpqCX++uGJ7rTuEMuFy7pD9KKTdwUBNc9TObCygb4v+ddb8YnMMYoE8PEasTvt2rUOkc4mLRbFj3rcYKlgJKgLlJnB/y4IGsxaKka692JHHdp4Ch05p2yFBVxSYtmRbZikh2U1pgR5Y6OUQOHSuIEbCVyMdCM1p07rtyUuL5qUlGYy95TXYlE5D3dr7vwelQFDePsrTyi7l7BxWh7USKSBisjhkL3njFulbK8wvFQ+NIBsBP751BAy+V/yDg+sJv/EcbUogb0Oe1E5tR6JJ6o5N6QwecsizBmg/2gvLaGHezVXsPb3wAL3d9od/4/xJFHXHEcAvotwKrKCWn/mTw/j8tIO60=
