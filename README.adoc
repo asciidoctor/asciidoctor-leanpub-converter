@@ -42,7 +42,7 @@ buildscript {
 
     dependencies {
         classpath 'org.asciidoctor:asciidoctor-gradle-plugin:1.5.2'
-        classpath 'org.ysb33r.asciidoctor:asciidoctor-leanpub-core:0.1-alpha.2'
+        classpath 'org.ysb33r.asciidoctor:asciidoctor-leanpub-markdown:0.1-alpha.2'
     }
 }
 
