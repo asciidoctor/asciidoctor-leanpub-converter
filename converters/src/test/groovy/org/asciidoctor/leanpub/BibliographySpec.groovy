@@ -11,8 +11,8 @@ class BibliographySpec extends LeanpubSpecification {
 
     def "Bibliography"() {
         setup:
-        File backmatter2 = new File(manuscriptDir,'backmatter_2.txt')
-        File backmatter3 = new File(manuscriptDir,'backmatter_3.txt')
+        File backmatter2 = new File(MANUSCRIPT_DIR,'backmatter_2.txt')
+        File backmatter3 = new File(MANUSCRIPT_DIR,'backmatter_3.txt')
         generateOutput('bibliography.adoc')
 
         expect:
@@ -42,7 +42,7 @@ class BibliographySpec extends LeanpubSpecification {
     @Issue('https://github.com/ysb33r/asciidoctor-leanpub-converter/issues/31')
     def "Bibliography with ampersand"() {
         setup:
-        File chapter3 = new File(manuscriptDir,'backmatter_3.txt')
+        File chapter3 = new File(MANUSCRIPT_DIR,'backmatter_3.txt')
         generateOutput('bibliography.adoc')
 
         expect:
@@ -57,7 +57,7 @@ class BibliographySpec extends LeanpubSpecification {
 
 //    def "Bibliography with hyperlinks"() {
 //        setup:
-//        File chapter4 = new File(manuscriptDir, 'backmatter_4.txt')
+//        File chapter4 = new File(MANUSCRIPT_DIR, 'backmatter_4.txt')
 //        generateOutput('bibliography.adoc')
 //
 //        expect:

@@ -4,7 +4,6 @@ import org.asciidoctor.leanpub.internal.LeanpubSpecification
 import org.spockframework.runtime.ConditionNotSatisfiedError
 import spock.lang.FailsWith
 import spock.lang.Ignore
-import spock.lang.IgnoreRest
 import spock.lang.Issue
 
 /**
@@ -14,7 +13,7 @@ class TablesSpec extends LeanpubSpecification {
 
     def "Simple Table"() {
         setup:
-        File chapter = new File(manuscriptDir,'chapter_1.txt')
+        File chapter = new File(MANUSCRIPT_DIR,'chapter_1.txt')
         generateOutput('tables.adoc')
 
         expect:
@@ -52,7 +51,7 @@ class TablesSpec extends LeanpubSpecification {
 
     def "Columns on consecutive lines"() {
         setup:
-        File chapter = new File(manuscriptDir,'chapter_2.txt')
+        File chapter = new File(MANUSCRIPT_DIR,'chapter_2.txt')
         generateOutput('tables.adoc')
 
         expect:
@@ -67,7 +66,7 @@ class TablesSpec extends LeanpubSpecification {
 
     def "Text centered in columns"() {
         setup:
-        File chapter = new File(manuscriptDir,'chapter_3.txt')
+        File chapter = new File(MANUSCRIPT_DIR,'chapter_3.txt')
         generateOutput('tables.adoc')
 
         expect:
@@ -84,7 +83,7 @@ class TablesSpec extends LeanpubSpecification {
 
     def "Text right-aligned in columns"() {
         setup:
-        File chapter = new File(manuscriptDir,'chapter_4.txt')
+        File chapter = new File(MANUSCRIPT_DIR,'chapter_4.txt')
         generateOutput('tables.adoc')
 
         expect:
@@ -100,7 +99,7 @@ class TablesSpec extends LeanpubSpecification {
 
     def "Last column right-aligned"() {
         setup:
-        File chapter = new File(manuscriptDir,'chapter_5.txt')
+        File chapter = new File(MANUSCRIPT_DIR,'chapter_5.txt')
         generateOutput('tables.adoc')
 
         expect:
@@ -118,7 +117,7 @@ class TablesSpec extends LeanpubSpecification {
     @Ignore
     def "Various vertical alignments"() {
         setup:
-        File chapter = new File(manuscriptDir,'chapter_6.txt')
+        File chapter = new File(MANUSCRIPT_DIR,'chapter_6.txt')
         generateOutput('tables.adoc')
 
         expect:
@@ -130,7 +129,7 @@ class TablesSpec extends LeanpubSpecification {
     @Ignore
     def "Setting widths"() {
         setup:
-        File chapter = new File(manuscriptDir,'chapter_7.txt')
+        File chapter = new File(MANUSCRIPT_DIR,'chapter_7.txt')
         generateOutput('tables.adoc')
 
         expect:
@@ -142,7 +141,7 @@ class TablesSpec extends LeanpubSpecification {
     @Issue('https://github.com/asciidoctor/asciidoctor-leanpub-converter/issues/39')
     def "Columns that span"() {
         setup:
-        File chapter = new File(manuscriptDir,'chapter_8.txt')
+        File chapter = new File(MANUSCRIPT_DIR,'chapter_8.txt')
         generateOutput('tables.adoc')
 
         expect:
@@ -157,7 +156,7 @@ class TablesSpec extends LeanpubSpecification {
 
     def "Columns with vbars"() {
         setup:
-        File chapter = new File(manuscriptDir,'chapter_9.txt')
+        File chapter = new File(MANUSCRIPT_DIR,'chapter_9.txt')
         generateOutput('tables.adoc')
 
         expect:
@@ -172,7 +171,7 @@ class TablesSpec extends LeanpubSpecification {
 
     def "Controlling overall table width"() {
         setup:
-        File chapter = new File(manuscriptDir,'chapter_10.txt')
+        File chapter = new File(MANUSCRIPT_DIR,'chapter_10.txt')
         generateOutput('tables.adoc')
 
         expect:
@@ -188,7 +187,7 @@ class TablesSpec extends LeanpubSpecification {
 
     def "Column Styles"() {
         setup:
-        File chapter = new File(manuscriptDir,'chapter_11.txt')
+        File chapter = new File(MANUSCRIPT_DIR,'chapter_11.txt')
         generateOutput('tables.adoc')
 
         expect:

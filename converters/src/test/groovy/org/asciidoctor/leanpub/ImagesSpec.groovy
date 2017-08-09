@@ -11,7 +11,7 @@ class ImagesSpec extends LeanpubSpecification {
     @Issue('https://leanpub.com/help/manual#leanpub-auto-how-to-insert-an-image, https://github.com/ysb33r/asciidoctor-leanpub-converter/issues/15')
     def "Processing images"() {
         setup:
-        File chapter1 = new File(LeanpubSpecification.manuscriptDir,'chapter_1.txt')
+        File chapter1 = new File(LeanpubSpecification.MANUSCRIPT_DIR,'chapter_1.txt')
 
         when:
         generateOutput('images.adoc')
@@ -53,8 +53,8 @@ C> ![Image One Center](images/Image1.png "Image1")
 ![Image One Everything](images/Image1.png "This is my alternative text")
 '''
         and:
-        new File(LeanpubSpecification.imagesDir,'Image1.png').exists()
-        new File(LeanpubSpecification.imagesDir,'Image2.png').exists()
+        new File(LeanpubSpecification.IMAGES_DIR,'Image1.png').exists()
+        new File(LeanpubSpecification.IMAGES_DIR,'Image2.png').exists()
 
     }
 

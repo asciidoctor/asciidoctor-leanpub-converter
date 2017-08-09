@@ -9,7 +9,7 @@ class SectionsSpec extends LeanpubSpecification {
 
     def "Levels should translate to one less level"() {
         setup:
-            File chapter = new File(LeanpubSpecification.manuscriptDir,'chapter_1.txt')
+            File chapter = new File(LeanpubSpecification.MANUSCRIPT_DIR,'chapter_1.txt')
 
         when:
             generateOutput('simple-book.adoc')
@@ -33,13 +33,13 @@ Plain text at level 5
 
     def "Parts are generated on their own in between chapters"() {
         setup:
-        File dedication = new File(LeanpubSpecification.manuscriptDir,'dedication.txt')
-        File part1 = new File(LeanpubSpecification.manuscriptDir,'part_1.txt')
-        File chapterA = new File(LeanpubSpecification.manuscriptDir,'chapter_2.txt')
-        File chapterB = new File(LeanpubSpecification.manuscriptDir,'chapter_3.txt')
-        File part2 = new File(LeanpubSpecification.manuscriptDir,'part_4.txt')
-        File chapterC = new File(LeanpubSpecification.manuscriptDir,'chapter_5.txt')
-        File chapterD = new File(LeanpubSpecification.manuscriptDir,'chapter_6.txt')
+        File dedication = new File(LeanpubSpecification.MANUSCRIPT_DIR,'dedication.txt')
+        File part1 = new File(LeanpubSpecification.MANUSCRIPT_DIR,'part_1.txt')
+        File chapterA = new File(LeanpubSpecification.MANUSCRIPT_DIR,'chapter_2.txt')
+        File chapterB = new File(LeanpubSpecification.MANUSCRIPT_DIR,'chapter_3.txt')
+        File part2 = new File(LeanpubSpecification.MANUSCRIPT_DIR,'part_4.txt')
+        File chapterC = new File(LeanpubSpecification.MANUSCRIPT_DIR,'chapter_5.txt')
+        File chapterD = new File(LeanpubSpecification.MANUSCRIPT_DIR,'chapter_6.txt')
 
         when:
         generateOutput('book-with-parts.adoc')
@@ -84,7 +84,7 @@ Text
 More text
 '''
         and: 'Dedication is in Book.txt file'
-        LeanpubSpecification.book1.readLines()[1] == 'dedication.txt'
+        LeanpubSpecification.BOOK_1.readLines()[1] == 'dedication.txt'
 
         and: 'Dedication is generated'
         dedication.text == '''##### &nbsp;

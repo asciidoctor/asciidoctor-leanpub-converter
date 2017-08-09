@@ -53,7 +53,7 @@ class SourceParser {
      */
     static def parseSourceForCallouts(Block block) {
         def parsedContent = []
-        block.lines.eachWithIndex { line,index ->
+        block.content.readLines().eachWithIndex { line,index ->
             def parsedLine = parseSourceLineForCallouts(line)
             parsedContent.add ([ lineno : index+1, line : parsedLine.line, callouts : (parsedLine.callouts.empty ? null : parsedLine.callouts) ])
         }

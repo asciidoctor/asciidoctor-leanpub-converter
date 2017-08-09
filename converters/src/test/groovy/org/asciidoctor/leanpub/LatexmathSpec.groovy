@@ -11,7 +11,7 @@ class LatexmathSpec extends LeanpubSpecification {
     @Issue('https://github.com/ysb33r/asciidoctor-leanpub-converter/issues/41')
     def "Inline and block content"() {
         setup:
-            File chapter = new File(manuscriptDir,'chapter_1.txt')
+            File chapter = new File(MANUSCRIPT_DIR,'chapter_1.txt')
 
         when:
             generateOutput('latexmath.adoc')

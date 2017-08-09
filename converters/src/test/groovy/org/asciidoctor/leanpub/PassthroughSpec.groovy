@@ -11,7 +11,7 @@ class PassthroughSpec extends LeanpubSpecification {
     @Issue('https://github.com/ysb33r/asciidoctor-leanpub-converter/issues/22')
     def "Passthrough inline macro"() {
         setup:
-            File chapter = new File(LeanpubSpecification.manuscriptDir,'chapter_1.txt')
+            File chapter = new File(LeanpubSpecification.MANUSCRIPT_DIR,'chapter_1.txt')
 
         when:
             generateOutput('passthrough.adoc')
@@ -27,7 +27,7 @@ This line **must** *go* `asis` on a single line.
     @Issue('https://github.com/ysb33r/asciidoctor-leanpub-converter/issues/22')
     def "Passthrough block single line"() {
         setup:
-        File chapter = new File(LeanpubSpecification.manuscriptDir,'chapter_2.txt')
+        File chapter = new File(LeanpubSpecification.MANUSCRIPT_DIR,'chapter_2.txt')
 
         when:
         generateOutput('passthrough.adoc')
@@ -44,7 +44,7 @@ This is an **extra** line.
     @Issue('https://github.com/ysb33r/asciidoctor-leanpub-converter/issues/22')
     def "Passthrough block multi-line"() {
         setup:
-        File chapter = new File(LeanpubSpecification.manuscriptDir,'chapter_3.txt')
+        File chapter = new File(LeanpubSpecification.MANUSCRIPT_DIR,'chapter_3.txt')
 
         when:
         generateOutput('passthrough.adoc')
@@ -61,7 +61,7 @@ This is an extra line.
     @Issue('https://github.com/ysb33r/asciidoctor-leanpub-converter/issues/22')
     def "Passthrough block multi-line with substitution"() {
         setup:
-        File chapter = new File(LeanpubSpecification.manuscriptDir,'chapter_4.txt')
+        File chapter = new File(LeanpubSpecification.MANUSCRIPT_DIR,'chapter_4.txt')
 
         when:
         generateOutput('passthrough.adoc')
