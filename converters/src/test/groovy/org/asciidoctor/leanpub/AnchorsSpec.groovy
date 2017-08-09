@@ -11,7 +11,7 @@ class AnchorsSpec extends LeanpubSpecification {
     @Issue('https://leanpub.com/help/manual#crosslink_from_endnotes')
     def "Anchors"() {
         setup:
-            File chapter = new File(LeanpubSpecification.manuscriptDir,'chapter_1.txt')
+            File chapter = new File(LeanpubSpecification.MANUSCRIPT_DIR,'chapter_1.txt')
 
         when:
             generateOutput('anchors-and-references.adoc')
@@ -29,7 +29,7 @@ This is a [reference with text](#RefText2).
     @Issue('https://leanpub.com/help/manual#leanpub-auto-links')
     def "Hyperlinks"() {
         setup:
-        File chapter = new File(LeanpubSpecification.manuscriptDir,'chapter_2.txt')
+        File chapter = new File(LeanpubSpecification.MANUSCRIPT_DIR,'chapter_2.txt')
 
         when:
         generateOutput('anchors-and-references.adoc')
@@ -44,7 +44,7 @@ With reference to the [Spock Framework](http://docs.spockframework.org/en/latest
 
     def "Embedded anchors with []"() {
         setup:
-        File chapter = new File(LeanpubSpecification.manuscriptDir,'chapter_3.txt')
+        File chapter = new File(LeanpubSpecification.MANUSCRIPT_DIR,'chapter_3.txt')
 
         when:
         generateOutput('anchors-and-references.adoc')

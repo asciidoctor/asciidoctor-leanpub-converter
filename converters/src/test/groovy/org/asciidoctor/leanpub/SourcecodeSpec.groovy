@@ -12,7 +12,7 @@ class SourcecodeSpec extends LeanpubSpecification {
     @Issue('https://leanpub.com/help/manual#leanpub-auto-code')
     def "Source code should add the language term"() {
         setup:
-            File chapter = new File(LeanpubSpecification.manuscriptDir,'chapter_1.txt')
+            File chapter = new File(LeanpubSpecification.MANUSCRIPT_DIR,'chapter_1.txt')
 
         when:
             generateOutput('sourcecode.adoc')
@@ -45,7 +45,7 @@ private List<Object> documents
     @Issue('https://leanpub.com/help/manual#leanpub-auto-code')
     def "Source code should add title if it is available"() {
         setup:
-        File chapter = new File(LeanpubSpecification.manuscriptDir,'chapter_2.txt')
+        File chapter = new File(LeanpubSpecification.MANUSCRIPT_DIR,'chapter_2.txt')
 
         when:
         generateOutput('sourcecode.adoc')
@@ -68,7 +68,7 @@ FileCollection getDocuments() {
     def "Source code with callouts adds linenumbers with a reference block below"() {
         setup:
         def whitespace = ' '.multiply(7)
-        File chapter = new File(LeanpubSpecification.manuscriptDir, 'chapter_3.txt')
+        File chapter = new File(LeanpubSpecification.MANUSCRIPT_DIR, 'chapter_3.txt')
 
         when:
         generateOutput('sourcecode.adoc')
@@ -117,7 +117,7 @@ very useful should another plugin author decide to extend your task type.
     @Issue('https://leanpub.com/help/manual#leanpub-auto-code, https://github.com/ysb33r/asciidoctor-leanpub-converter/issues/2')
     def "XML with callouts adds linenumbers with a reference block below"() {
         setup:
-        File chapter = new File(LeanpubSpecification.manuscriptDir,'chapter_4.txt')
+        File chapter = new File(LeanpubSpecification.MANUSCRIPT_DIR,'chapter_4.txt')
 
         when:
         generateOutput('sourcecode.adoc')
@@ -146,7 +146,7 @@ very useful should another plugin author decide to extend your task type.
     @Issue('https://leanpub.com/help/manual#leanpub-auto-code, https://github.com/ysb33r/asciidoctor-leanpub-converter/issues/2')
     def "Source code with aside style"() {
         setup:
-        File chapter = new File(LeanpubSpecification.manuscriptDir,'chapter_5.txt')
+        File chapter = new File(LeanpubSpecification.MANUSCRIPT_DIR,'chapter_5.txt')
 
         when:
         generateOutput('sourcecode.adoc')
@@ -173,7 +173,7 @@ A>''' + ' '.multiply(7) + LeanpubConverter.LINESEP.multiply(2)
     @Issue('https://leanpub.com/help/manual#leanpub-auto-code, https://github.com/ysb33r/asciidoctor-leanpub-converter/issues/2')
     def "Source code with discussion style"() {
         setup:
-        File chapter = new File(LeanpubSpecification.manuscriptDir,'chapter_6.txt')
+        File chapter = new File(LeanpubSpecification.MANUSCRIPT_DIR,'chapter_6.txt')
 
         when:
         generateOutput('sourcecode.adoc')

@@ -12,7 +12,7 @@ class BlocksSpec extends LeanpubSpecification {
     @Issue('https://leanpub.com/help/manual#crosslink_from_endnotes')
     def "Literal Block"() {
         setup:
-            File chapter = new File(LeanpubSpecification.manuscriptDir,'chapter_1.txt')
+            File chapter = new File(LeanpubSpecification.MANUSCRIPT_DIR,'chapter_1.txt')
 
         when:
             generateOutput('blocks.adoc')
@@ -30,7 +30,7 @@ class BlocksSpec extends LeanpubSpecification {
     @Issue('https://github.com/ysb33r/asciidoctor-leanpub-converter/issues/10, https://leanpub.com/help/manual#crosslink_from_endnotes')
     def "Poetry"() {
         setup:
-        File chapter = new File(LeanpubSpecification.manuscriptDir,'chapter_2.txt')
+        File chapter = new File(LeanpubSpecification.MANUSCRIPT_DIR,'chapter_2.txt')
 
         when:
         generateOutput('blocks.adoc')
@@ -48,7 +48,7 @@ Hier in my houthuis
 
     def "Verse"() {
         setup:
-        File chapter = new File(LeanpubSpecification.manuscriptDir,'chapter_3.txt')
+        File chapter = new File(LeanpubSpecification.MANUSCRIPT_DIR,'chapter_3.txt')
         generateOutput('blocks.adoc')
 
         expect:
@@ -64,7 +64,7 @@ A> *Fog*
 
     def "Sidebar"() {
         setup:
-        File chapter = new File(LeanpubSpecification.manuscriptDir,'chapter_4.txt')
+        File chapter = new File(LeanpubSpecification.MANUSCRIPT_DIR,'chapter_4.txt')
         generateOutput('blocks.adoc')
 
         expect:
@@ -83,7 +83,7 @@ A> minny
 
     def "Simple MD-style blockquote"() {
         setup:
-        File chapter = new File(LeanpubSpecification.manuscriptDir,'chapter_5.txt')
+        File chapter = new File(LeanpubSpecification.MANUSCRIPT_DIR,'chapter_5.txt')
         generateOutput('blocks.adoc')
 
         expect:
@@ -96,7 +96,7 @@ A> minny
 
     def "Simple MD-style blockquote with reference"() {
         setup:
-        File chapter = new File(LeanpubSpecification.manuscriptDir,'chapter_6.txt')
+        File chapter = new File(LeanpubSpecification.MANUSCRIPT_DIR,'chapter_6.txt')
         generateOutput('blocks.adoc')
 
         expect:
@@ -112,7 +112,7 @@ A> minny
 
     def "Multi-level MD-style blockquote"() {
         setup:
-        File chapter = new File(LeanpubSpecification.manuscriptDir,'chapter_7.txt')
+        File chapter = new File(LeanpubSpecification.MANUSCRIPT_DIR,'chapter_7.txt')
         generateOutput('blocks.adoc')
 
         expect:
@@ -136,7 +136,7 @@ A> minny
 
     def "Air quotes"() {
         setup:
-        File chapter = new File(LeanpubSpecification.manuscriptDir,'chapter_8.txt')
+        File chapter = new File(LeanpubSpecification.MANUSCRIPT_DIR,'chapter_8.txt')
         generateOutput('blocks.adoc')
 
         expect:
@@ -153,7 +153,7 @@ A> minny
 
     def "Quoted paragraph"() {
         setup:
-        File chapter = new File(LeanpubSpecification.manuscriptDir,'chapter_9.txt')
+        File chapter = new File(LeanpubSpecification.MANUSCRIPT_DIR,'chapter_9.txt')
         generateOutput('blocks.adoc')
 
         expect:
@@ -168,7 +168,7 @@ A> minny
 
     def "Quoted blocks"() {
         setup:
-        File chapter = new File(LeanpubSpecification.manuscriptDir,'chapter_10.txt')
+        File chapter = new File(LeanpubSpecification.MANUSCRIPT_DIR,'chapter_10.txt')
         generateOutput('blocks.adoc')
 
         expect:
@@ -191,6 +191,4 @@ A> minny
 > *Code of the Asciidoctors: Volume X*
 '''
     }
-
-
 }

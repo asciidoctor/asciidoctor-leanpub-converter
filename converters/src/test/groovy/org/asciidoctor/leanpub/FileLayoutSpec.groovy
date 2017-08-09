@@ -32,10 +32,10 @@ class FileLayoutSpec extends LeanpubSpecification {
 
         when: 'Generating a simple book with three chapters'
             generateOutput('simple-book.adoc')
-            def index= LeanpubSpecification.book1.readLines()
+            def index= LeanpubSpecification.BOOK_1.readLines()
 
         then: 'The same number of chapter files should be created'
-            LeanpubSpecification.manuscriptDir.listFiles(
+            LeanpubSpecification.MANUSCRIPT_DIR.listFiles(
                 new FilenameFilter() {
                     @Override
                     boolean accept(File dir, String name) {
@@ -56,7 +56,7 @@ class FileLayoutSpec extends LeanpubSpecification {
         generateOutput('book-with-matter.adoc')
 
         then: 'The same number of chapter files should be created'
-        LeanpubSpecification.manuscriptDir.listFiles(
+        LeanpubSpecification.MANUSCRIPT_DIR.listFiles(
                 new FilenameFilter() {
                     @Override
                     boolean accept(File dir, String name) {
@@ -66,16 +66,16 @@ class FileLayoutSpec extends LeanpubSpecification {
         ).size() == 4
 
         and: 'A preface should exist'
-            new File(LeanpubSpecification.manuscriptDir,'preface.txt').exists()
+            new File(LeanpubSpecification.MANUSCRIPT_DIR,'preface.txt').exists()
 
         and: 'frontmatter should contain a single line'
-            new File(LeanpubSpecification.manuscriptDir,'frontmatter.txt').text == '''{frontmatter}'''
+            new File(LeanpubSpecification.MANUSCRIPT_DIR,'frontmatter.txt').text == '''{frontmatter}'''
 
         and: 'mainmatter should contain a single line'
-            new File(LeanpubSpecification.manuscriptDir,'mainmatter.txt').text == '''{mainmatter}'''
+            new File(LeanpubSpecification.MANUSCRIPT_DIR,'mainmatter.txt').text == '''{mainmatter}'''
 
         and: 'Book.txt should contain preface, chapter entries + frontmatter, mainmatter files'
-            LeanpubSpecification.book1.text == layoutText('''frontmatter.txt
+            LeanpubSpecification.BOOK_1.text == layoutText('''frontmatter.txt
 preface.txt
 mainmatter.txt
 chapter_1.txt
@@ -92,7 +92,7 @@ chapter_4.txt
         generateOutput('book-with-front-and-backmatter.adoc')
 
         then: 'The same number of chapter files should be created'
-        LeanpubSpecification.manuscriptDir.listFiles(
+        LeanpubSpecification.MANUSCRIPT_DIR.listFiles(
             new FilenameFilter() {
                 @Override
                 boolean accept(File dir, String name) {
@@ -102,7 +102,7 @@ chapter_4.txt
         ).size() == 4
 
         and: 'Two backmatter files should be created'
-        LeanpubSpecification.manuscriptDir.listFiles(
+        LeanpubSpecification.MANUSCRIPT_DIR.listFiles(
             new FilenameFilter() {
                 @Override
                 boolean accept(File dir, String name) {
@@ -112,19 +112,19 @@ chapter_4.txt
         ).size() == 2
 
         and: 'A preface should exist'
-        new File(LeanpubSpecification.manuscriptDir,'preface.txt').exists()
+        new File(LeanpubSpecification.MANUSCRIPT_DIR,'preface.txt').exists()
 
         and: 'frontmatter should contain a single line'
-        new File(LeanpubSpecification.manuscriptDir,'frontmatter.txt').text == '''{frontmatter}'''
+        new File(LeanpubSpecification.MANUSCRIPT_DIR,'frontmatter.txt').text == '''{frontmatter}'''
 
         and: 'mainmatter should contain a single line'
-        new File(LeanpubSpecification.manuscriptDir,'mainmatter.txt').text == '''{mainmatter}'''
+        new File(LeanpubSpecification.MANUSCRIPT_DIR,'mainmatter.txt').text == '''{mainmatter}'''
 
         and: 'backmatter should contain a single line'
-        new File(LeanpubSpecification.manuscriptDir,'backmatter.txt').text == '''{backmatter}'''
+        new File(LeanpubSpecification.MANUSCRIPT_DIR,'backmatter.txt').text == '''{backmatter}'''
 
         and: 'Book.txt should contain chapter entries + backmatter, backmatter files'
-        LeanpubSpecification.book1.text == layoutText('''frontmatter.txt
+        LeanpubSpecification.BOOK_1.text == layoutText('''frontmatter.txt
 preface.txt
 mainmatter.txt
 chapter_1.txt
@@ -142,7 +142,7 @@ backmatter_6.txt
         generateOutput('sample-book.adoc')
 
         then: 'Sample.txt should contain the preface, if annotated and the annotated chapters'
-            LeanpubSpecification.sample1.text == layoutText('''frontmatter.txt
+            LeanpubSpecification.SAMPLE_1.text == layoutText('''frontmatter.txt
 preface.txt
 mainmatter.txt
 chapter_3.txt

@@ -1,14 +1,14 @@
 package org.asciidoctor.converter
 
+import groovy.transform.CompileDynamic
+import groovy.transform.CompileStatic
 import groovy.util.logging.Slf4j
 import org.apache.commons.io.FileUtils
 import org.asciidoctor.ast.*
-import org.asciidoctor.converter.ConverterFor
 import org.asciidoctor.converter.markdown.AbstractMultiOutputMarkdownConverter
 import org.asciidoctor.leanpub.ConvertedSection
 import org.asciidoctor.leanpub.LeanpubDocument
 import org.asciidoctor.markdown.internal.InlineQuotedTextFormatter
-import org.asciidoctor.markdown.internal.ListNodeProcessor
 import org.asciidoctor.markdown.internal.SourceParser
 import org.asciidoctor.leanpub.internal.CrossReference
 import org.asciidoctor.leanpub.internal.LeanpubCell
@@ -19,11 +19,9 @@ import static org.asciidoctor.leanpub.ConvertedSection.SectionType.*
 import java.util.regex.Matcher
 import java.util.regex.Pattern
 
-/**
- * @author Schalk W. Cronjé
- */
 @Slf4j
 @ConverterFor(format="leanpub",suffix="txt")
+@CompileStatic
 class LeanpubConverter extends AbstractMultiOutputMarkdownConverter {
 
     static final String LINESEP = "\n"
@@ -50,13 +48,13 @@ class LeanpubConverter extends AbstractMultiOutputMarkdownConverter {
             docOptions["${k}".toString()] = v
         }
 
-        destDir = new File(docOptions.to_dir ?: '.',DOCFOLDER).absoluteFile
-        docDir = new File(node.document.attributes.docdir ?: '.').absoluteFile
+        destDir = new File(docOptions.to_dir.toString() ?: '.',DOCFOLDER).absoluteFile
+        docDir = new File(node.document.attributes.docdir.toString() ?: '.').absoluteFile
 
         log.debug "Destination directory set to ${destDir}"
         log.debug "Document directory set to ${docDir}"
 
-        setFrontCoverFromAttribute(imagesDir(node),node.document.attributes['front-cover-image'])
+        setFrontCoverFromAttribute(imagesDir(node),(String)(node.document.attributes['front-cover-image']))
         node.attributes.put('nbsp','&nbsp;')
         node.attributes.put('vbar','\\|')
 
@@ -106,16 +104,16 @@ class LeanpubConverter extends AbstractMultiOutputMarkdownConverter {
         if (document.hasBackMatter()) {
             chapterNames += 'backmatter.txt'
             chaptersInSample += 'backmatter.txt'
-        }
 
-        document.backmatter.each { bm ->
-            File dest = new File(destDir,"backmatter_${index}.txt" )
-            dest.withWriter { bm.write(it) }
-            chapterNames+= dest.name
-            if(bm.sample) {
-                chaptersInSample+= dest.name
+            document.backmatter.each { bm ->
+                File dest = new File(destDir,"backmatter_${index}.txt" )
+                dest.withWriter { bm.write(it) }
+                chapterNames+= dest.name
+                if(bm.sample) {
+                    chaptersInSample+= dest.name
+                }
+                ++index
             }
-            ++index
         }
 
         new File(destDir,BOOK).withWriter { w ->
@@ -192,13 +190,9 @@ class LeanpubConverter extends AbstractMultiOutputMarkdownConverter {
 
     def convertSection(ContentNode node, Map<String, Object> opts) {
         Section section = node as Section
-        boolean  inSample = false
+        boolean  inSample = getLeanpubAttributes(section).keySet().contains('sample')
 
         log.debug "Transforming section: name=${section.sectname()}, level=${section.level} title=${section.title}"
-        if(section.attributes.leanpub) {
-            Set keywords = section.attributes.leanpub.split(',') as Set
-            inSample= keywords.contains('sample')
-        }
 
         if(section.level==0) {
             document.addPart()
@@ -253,14 +247,15 @@ class LeanpubConverter extends AbstractMultiOutputMarkdownConverter {
         // In table context it needs to get split otherwise formatting in Leanpub
         // will be messed up
         if(inline.parent.context == 'cell' || inline.parent.context=='column') {
-            inline.text.split(LINESEP).collect {
-                QuotedTextConverter."${inline.type}"(it)
+            inline.text.split(LINESEP).collect { String it ->
+                QuotedTextConverter.byMethod( (String)(inline.type),it)
             }.join(LINESEP)
         } else {
-            QuotedTextConverter."${inline.type}"(inline.text)
+            QuotedTextConverter.byMethod( (String)(inline.type),inline.text)
         }
     }
 
+    @CompileDynamic
     def convertAnchorTypeXref(ContentNode node, Map<String, Object> opts) {
         PhraseNode inline = node as PhraseNode
         "[${inline.text ?: ('['+inline.attributes.fragment+']')}](#${CrossReference.safeId(inline.attributes.refid)})"
@@ -282,6 +277,7 @@ class LeanpubConverter extends AbstractMultiOutputMarkdownConverter {
     }
 
     @Override
+    @CompileDynamic
     def convertColist(ContentNode node,Map<String, Object> opts) {
         if(lastSrcBlock) {
             def lookup = [:]
@@ -352,6 +348,7 @@ class LeanpubConverter extends AbstractMultiOutputMarkdownConverter {
      * @param opts
      * @return
      */
+    @CompileDynamic
     def convertListItemTypeBibreflist(ListItem item, Map<String, Object> opts) {
         // Strip the anchor, write it on a separate line the write the rest
 
@@ -377,9 +374,9 @@ class LeanpubConverter extends AbstractMultiOutputMarkdownConverter {
 
         // If a method referencing the role exists use that, otherwise fall back to default
         if(block.attributes.role ) {
-            def method = itemMethodName('convertLiteral',block.attributes.role)
-            if (this.metaClass.respondsTo(this,methodName,block,opts)) {
-                return "${methodName}"(block,opts)
+            def method = itemMethodName('convertLiteral',(String)(block.attributes.role))
+            if (this.metaClass.respondsTo(this,method,block,opts)) {
+                return byMethod(method,block,opts)
             }
         }
 
@@ -394,9 +391,9 @@ class LeanpubConverter extends AbstractMultiOutputMarkdownConverter {
 
         // If a method referencing the role exists use that, otherwise fall back to default
         if(block.attributes.role ) {
-            def method = itemMethodName('convertVerse',block.attributes.role)
+            String method = itemMethodName('convertVerse',(String)(block.attributes.role))
             if (this.metaClass.respondsTo(this,method,block,opts)) {
-                return "${method}"(block,opts)
+                return byMethod(method,block,opts)
             }
         }
 
@@ -418,7 +415,7 @@ class LeanpubConverter extends AbstractMultiOutputMarkdownConverter {
     def convertSidebar(ContentNode node,Map<String, Object> opts) {
         Block block = node as Block
         (block.title ? ("A> ## ${block.title}" + LINESEP) : '') +
-            block.content.readLines().collect {
+            getBlockLines(block).collect {
                 'A> ' + it
             }.join(LINESEP) + LINESEP
     }
@@ -426,7 +423,7 @@ class LeanpubConverter extends AbstractMultiOutputMarkdownConverter {
     def convertQuote(ContentNode node,Map<String, Object> opts) {
         Block block = node as Block
         String convertedBlock = (block.title ? ("> ## ${block.title}" + LINESEP) : '') +
-            block.content.readLines().collect {
+            getBlockLines(block).collect {
                 '> ' + it
             }.join(LINESEP) + LINESEP +
             (block.attributes.attribution ? "> ${LINESEP}> -- **${block.attributes.attribution}**${LINESEP}" : '') +
@@ -441,38 +438,26 @@ class LeanpubConverter extends AbstractMultiOutputMarkdownConverter {
     }
 
     def convertListingTypeSource(Block block,Map<String, Object> opts) {
-        Map annotations = [lang: "${block.attributes.language}"]
-        if (block.title) {
-            annotations['title'] = block.title
-        }
-
-        def parsedContent = SourceParser.parseSourceForCallouts(block)
-        String src
-        if (parsedContent.find ({ it.callouts != null }) != null) {
-            annotations['linenos'] = 'yes'
-            lastSrcBlock = parsedContent
-            src= parsedContent.collect { it.line }.join(LINESEP)
-        } else {
-            src=block.source
-        }
-
-        renderLeanpubAttributes(annotations) +
-            '~'.multiply(8) + LINESEP +
-            src  + LINESEP +
-            '~'.multiply(8) + LINESEP
+        convertSourceOrListing([lang: "${block.attributes.language}".toString()],block,opts)
     }
 
+    def convertListingTypeListing(Block block,Map<String, Object> opts) {
+        // TODO: Can we do anything if the role is 'terminal' ?
+        convertSourceOrListing([:],block,opts)
+    }
+
+    @CompileDynamic
     def convertAdmonition(ContentNode node,Map<String, Object> opts) {
         Block block = node as Block
 
-        def style = styleMap[block.attributes.name]
+        def style = STYLE_MAP[(String)(block.attributes.name)]
         if(!style) {
             log.warn "${block.attributes.name} not recognised as a Leanpub admonition. Will render as normal text"
             block.attributes.style + ': ' + block.lines.join(LINESEP)
         } else {
             String content = ''
-            if(style['icon'] && style['icon'].size()) {
-                content+= "{icon=${style.icon}}${LINESEP}"
+            if(style['icon'] && ((String)(style['icon'])).size()) {
+                content+= "{icon=${style.icon.toString()}}${LINESEP}"
             }
             if(block.title) {
                 content+= style.prefix + '> ## ' + block.title + LINESEP
@@ -491,15 +476,15 @@ class LeanpubConverter extends AbstractMultiOutputMarkdownConverter {
         String prefix = ''
 
         if(block.getRole()) {
-            def roles = block.getRole().split( ' ' )
-            // Find anything in roles that is in validImageFloats?, then set role to that
-            def foundFloat = roles.find { validImageFloats.contains(it) }
+            String[] roles = ((String)(block.getRole())).split( ' ' )
+            // Find anything in roles that is in VALID_IMAGE_FLOATS?, then set role to that
+            def foundFloat = roles.find { String it -> VALID_IMAGE_FLOATS.contains(it)  }
 
             if(foundFloat) {
                 imageAttrs+= "float=\"${foundFloat}\""
             }
         } else if (block.attributes.float) {
-            if(validImageFloats.contains(block.attributes.float)) {
+            if(VALID_IMAGE_FLOATS.contains(block.attributes.float)) {
                 imageAttrs+= "float=\"${block.attributes.float}\""
             } else {
                 log.error "'${block.attributes.float}' is not a valid image float string for Leanpub. Will ignore and continue."
@@ -509,19 +494,15 @@ class LeanpubConverter extends AbstractMultiOutputMarkdownConverter {
             prefix = 'C> '
         }
 
-        if(block.attributes.leanpub) {
-            block.attributes.leanpub.split(',').each { item ->
-                def kv = item.split('=')
-
-                switch(kv[0]) {
-                    case 'width':
-                        imageAttrs+= "width=${kv[1]}"
-                        break
-                }
+        getLeanpubAttributes(block).each { String key,String val ->
+            switch(key) {
+                case 'width':
+                    imageAttrs+= "width=${val}"
+                    break
             }
         }
 
-        File imageFile = new File(imagesDir(block,docDir),block.attributes.target)
+        File imageFile = new File(imagesDir(block,docDir),(String)(block.attributes.target))
         if(imageFile.exists()) {
             log.debug "Found image at '${imageFile}'"
             images.add imageFile
@@ -562,7 +543,7 @@ class LeanpubConverter extends AbstractMultiOutputMarkdownConverter {
                 tableAttrs['width'] = table.attributes.width
                 break
             default:
-                tableAttrs['width'] = table.attributes.width.endsWith('%') ? table.attributes.width : "${table.attributes.width}%"
+                tableAttrs['width'] = ((String)(table.attributes.width)).endsWith('%') ? table.attributes.width : "${table.attributes.width}%"
         }
 
         if(table.title) {
@@ -635,7 +616,7 @@ class LeanpubConverter extends AbstractMultiOutputMarkdownConverter {
     def convertOpen(ContentNode node,Map<String, Object> opts) {
         Block block = node as Block
         if(block.style) {
-            "convert${block.style.capitalize()}"(block,opts)
+            byMethod("convert${block.style.capitalize()}",block,opts)
         } else {
             log.error logMessageWithSourceTrace(
                 "Open block with no styling not yet implemented. Will not transform this node, but will try to carry on. " +
@@ -646,6 +627,7 @@ class LeanpubConverter extends AbstractMultiOutputMarkdownConverter {
         }
     }
 
+    @CompileDynamic
     def convertPartintro(Block block,Map<String, Object> opts) {
         if(document.currentPart) {
             document.currentPart.partIntro = block.content + LINESEP
@@ -693,6 +675,7 @@ class LeanpubConverter extends AbstractMultiOutputMarkdownConverter {
      * @param asciiRow An instance of a table row from Asciidoc
      * @param lpRow An instance of a table tow for Leanpub
      */
+    @CompileDynamic
     private void processOneAsciidocTableRow(Row asciiRow,LeanpubTableRow lpRow) {
         int cellIndex=0 // TODO: Maybe we can use cell.column.columnNumber instead to work out the position
 
@@ -700,7 +683,7 @@ class LeanpubConverter extends AbstractMultiOutputMarkdownConverter {
 
             def content = cell.content instanceof Collection ? cell.content : [cell.content]
 
-            lpRow.cells[cellIndex].content = content.collect{ it.split(LINESEP) }.flatten()
+            lpRow.cells[cellIndex].content = content.collect{ String it -> it.split(LINESEP) }.flatten()
             lpRow.cells[cellIndex].halign = cell.horizontalAlignment
 
             int colspan = cell.colspan - 1
@@ -714,7 +697,7 @@ class LeanpubConverter extends AbstractMultiOutputMarkdownConverter {
         }
     }
 
-
+    @CompileDynamic
     private String renderOneLeanpubTableRow(LeanpubTableRow ltr,def columnWidths,def columnAlignment,Character divCharAbove=null) {
 
         String ret= ''
@@ -751,6 +734,40 @@ class LeanpubConverter extends AbstractMultiOutputMarkdownConverter {
             renderedRow
         }.join(LINESEP)
     }
+
+    /** Converts a [source] or [listing] block
+     *
+     * @param additionalAnnotations Any additional annotations that needs to be added
+     * @param block Source of listing block
+     * @param opts
+     */
+    @CompileDynamic
+    private def convertSourceOrListing(final Map<String,String> additionalAnnotations,Block block,Map<String, Object> opts) {
+
+        block.removeSubstitution('specialcharacters')
+        Map<String,String> annotations = [:]
+        annotations.putAll additionalAnnotations
+
+        if (block.title) {
+            annotations['title'] = block.title
+        }
+
+        def parsedContent = SourceParser.parseSourceForCallouts(block)
+        String src
+        if (parsedContent.find ({ it.callouts != null }) != null) {
+            annotations['linenos'] = 'yes'
+            lastSrcBlock = parsedContent
+            src= parsedContent.collect { it.line }.join(LINESEP)
+        } else {
+            src=block.content
+        }
+
+        renderLeanpubAttributes(annotations) +
+            '~'.multiply(8) + LINESEP +
+            src  + LINESEP +
+            '~'.multiply(8) + LINESEP
+    }
+
 
     /** Formats the content in a dedication.
      *
@@ -849,6 +866,7 @@ class LeanpubConverter extends AbstractMultiOutputMarkdownConverter {
      * @param imgDir Directory where images are expected to be located. Can be null.
      * @param frontCover Text from the front-cover-image attribute.
      */
+    @CompileDynamic
     private void setFrontCoverFromAttribute(final File imgDir,final String frontCover) {
         frontCoverImage = null
         if(frontCover) {
@@ -869,7 +887,7 @@ class LeanpubConverter extends AbstractMultiOutputMarkdownConverter {
         }
     }
 
-    private String renderLeanpubAttributes( Map attrs ) {
+    private String renderLeanpubAttributes( Map<String,String> attrs ) {
         if(attrs?.size()) {
             return '{' + attrs.collect { k,v ->
                 "${k}=\"${v}\""
@@ -879,21 +897,56 @@ class LeanpubConverter extends AbstractMultiOutputMarkdownConverter {
         }
     }
 
-    private LeanpubDocument document = new LeanpubDocument()
+    private Iterable<String> getBlockLines(Block block) {
+        String content = ((String)(block.content))
+        content.readLines()
+    }
 
+    @CompileDynamic
+    private Map<String,String> getLeanpubAttributes(Block block) {
+        Map<String,String> attrs = [:]
+        if(block.attributes.leanpub) {
+            block.attributes.leanpub.split(',').each { String item ->
+                String[] kv = item.split('=')
+                attrs[kv[0]] = kv[1]
+            }
+        }
+
+        attrs
+    }
+
+    @CompileDynamic
+    private Map<String,String> getLeanpubAttributes(Section block) {
+        Map<String,String> attrs = [:]
+        if(block.attributes.leanpub) {
+            block.attributes.leanpub.split(',').each { String item ->
+                String[] kv = item.split('=')
+                attrs[kv[0]] = kv.size() == 1 ? '' : kv[1]
+            }
+        }
+
+        attrs
+    }
+
+    @CompileDynamic
+    def byMethod(final String methodName,ContentNode node,Map<String, Object> opts) {
+        return "${methodName}"(node,opts)
+    }
+
+    private LeanpubDocument document = new LeanpubDocument()
     private File docDir
     private File destDir
     private File frontCoverImage
     private Object lastSrcBlock
     private java.util.List<File> images = []
 
-    private static final def styleMap = [
+    private static final Map<String,Map<String,String> > STYLE_MAP = [
         'warning'   : [ prefix : 'W' ],
         'tip'       : [ prefix : 'T' ],
         'note'      : [ prefix : 'I' ],
         'caution'   : [ prefix : 'G', icon: 'fire' ],
-        'important' : [ prefix : 'G', icon: 'university' ],
-    ]
+        'important' : [ prefix : 'G', icon: 'university' ]
+    ] as Map<String,Map<String,String> >
 
-    private static final def validImageFloats = [ 'left', 'right', 'inside', 'outside']
+    private static final Set<String> VALID_IMAGE_FLOATS = ['left', 'right', 'inside', 'outside'] as Set<String>
 }

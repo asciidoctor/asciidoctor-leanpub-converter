@@ -9,18 +9,18 @@ class PrematterSpec extends LeanpubSpecification {
 
     def "Title image"() {
         setup:
-            File chapter = new File(manuscriptDir,'chapter_1.txt')
+            File chapter = new File(MANUSCRIPT_DIR,'chapter_1.txt')
 
         when:
             generateOutput('book-with-prematter.adoc')
 
         then:
-            new File(imagesDir,'title_page.png').exists()
+            new File(IMAGES_DIR,'title_page.png').exists()
     }
 
     def "Preamble"() {
         setup:
-            File chapter = new File(manuscriptDir,'preamble.txt')
+            File chapter = new File(MANUSCRIPT_DIR,'preamble.txt')
 
         when:
             generateOutput('book-with-prematter.adoc')

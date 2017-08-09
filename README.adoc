@@ -41,9 +41,12 @@ buildscript {
     }
 
     dependencies {
-        classpath 'org.asciidoctor:asciidoctor-gradle-plugin:1.5.2'
-        classpath 'org.ysb33r.asciidoctor:asciidoctor-leanpub-core:0.1-alpha.2'
+        classpath 'org.asciidoctor:asciidoctor-leanpub-markdown:0.1-alpha.2'
     }
+}
+
+plugins {
+    id 'org.asciidoctor.convert' version '1.5.3'
 }
 
 apply plugin : 'org.asciidoctor.convert'
