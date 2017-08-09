@@ -17,9 +17,12 @@
 // ============================================================================
 
 
+group = 'org.asciidoctor'
+version = '1.6.0-alpha.1-SNAPSHOT'
+
 repositories {
     jcenter()
-    if(!project.properties.RELEASE) {
+    if(version.endsWith('-SNAPSHOT')) {
         maven {
             name 'Asciidoctor Snapshots'
             url 'https://oss.jfrog.org/artifactory/oss-snapshot-local'
@@ -27,8 +30,6 @@ repositories {
     }
 }
 
-group = 'org.asciidoctor'
-version = '0.1-alpha.2'
 
 apply plugin : 'groovy'
 apply plugin : 'java-library'
