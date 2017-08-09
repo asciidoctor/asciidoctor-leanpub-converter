@@ -140,8 +140,8 @@ artifactory {
     publish {
         repository {
             repoKey = 'oss-snapshot-local'
-            username = System.env['BINTRAY_USER'] ?: (project.hasProperty('bintrayUsername') ? project.bintrayUsername : '')
-            password = System.env['BINTRAY_KEY'] ?: (project.hasProperty('bintrayApiKey') ? project.bintrayApiKey : '')
+            username = project.hasProperty('bintrayUsername') ? project.bintrayUsername : ''
+            password = project.hasProperty('bintrayApiKey') ? project.bintrayApiKey : ''
             maven = true
         }
         defaults {
@@ -160,8 +160,8 @@ artifactory {
 }
 
 bintray {
-    user = System.getenv('BINTRAY_USER') ?: (project.hasProperty('bintrayUsername') ? project.bintrayUsername : '')
-    key = System.getenv('BINTRAY_KEY') ?: (project.hasProperty('bintrayApiKey') ? project.bintrayApiKey : '')
+    user = project.hasProperty('bintrayUsername' ? project.bintrayUsername : ''
+    key = project.hasProperty('bintrayApiKey' ? project.bintrayApiKey : ''
 
     publications = ['jars']
 
