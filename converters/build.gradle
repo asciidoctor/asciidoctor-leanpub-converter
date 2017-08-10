@@ -85,7 +85,7 @@ dependencies {
     api "org.asciidoctor:asciidoctorj:${asciidoctorjVersion}"
     implementation 'org.codehaus.groovy:groovy:2.4.10'
     implementation 'org.slf4j:slf4j-api:1.7.5'
-    implementation 'commons-io:commons-io:2.4'
+//    implementation 'commons-io:commons-io:2.4'
 
     testImplementation('org.spockframework:spock-core:1.1-groovy-2.4') {
         exclude(module: 'groovy-all')

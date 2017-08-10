@@ -3,12 +3,12 @@ package org.asciidoctor.converter
 import groovy.transform.CompileDynamic
 import groovy.transform.CompileStatic
 import groovy.util.logging.Slf4j
-import org.apache.commons.io.FileUtils
 import org.asciidoctor.ast.*
 import org.asciidoctor.converter.markdown.AbstractMultiOutputMarkdownConverter
 import org.asciidoctor.leanpub.ConvertedPart
 import org.asciidoctor.leanpub.ConvertedSection
 import org.asciidoctor.leanpub.LeanpubDocument
+import org.asciidoctor.markdown.internal.FileUtils
 import org.asciidoctor.markdown.internal.InlineQuotedTextFormatter
 import org.asciidoctor.markdown.internal.SourceParser
 import org.asciidoctor.leanpub.internal.CrossReference
@@ -16,6 +16,9 @@ import org.asciidoctor.leanpub.internal.LeanpubCell
 import org.asciidoctor.leanpub.internal.LeanpubTable
 import org.asciidoctor.leanpub.internal.LeanpubTableRow
 import org.asciidoctor.leanpub.internal.QuotedTextConverter
+
+import java.nio.file.Files
+
 import static org.asciidoctor.leanpub.ConvertedSection.SectionType.*
 import java.util.regex.Matcher
 import java.util.regex.Pattern

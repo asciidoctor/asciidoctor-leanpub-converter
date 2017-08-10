@@ -17,9 +17,9 @@
 // ============================================================================
 package org.asciidoctor.leanpub.internal
 
-import org.apache.commons.io.FileUtils
 import org.asciidoctor.Asciidoctor
 import org.asciidoctor.converter.LeanpubConverter
+import org.asciidoctor.markdown.internal.FileUtils
 import spock.lang.Specification
 
 
@@ -27,6 +27,7 @@ import spock.lang.Specification
  * Created by schalkc on 11/12/14.
  */
 class LeanpubSpecification extends Specification {
+
 
     static final File OUTPUT_DIR     = new File('./build/test/leanpub')
     static final File SOURCE_DIR     = new File( OUTPUT_DIR, 'src')
