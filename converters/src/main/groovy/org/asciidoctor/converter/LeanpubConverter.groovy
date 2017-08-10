@@ -61,6 +61,7 @@ class LeanpubConverter extends AbstractMultiOutputMarkdownConverter {
         setFrontCoverFromAttribute(imagesDir(node),(String)(node.document.attributes['front-cover-image']))
         node.attributes.put('nbsp','&nbsp;')
         node.attributes.put('vbar','\\|')
+        node.attributes.put('source-highlighter','')
 
         if(!node.attributes.get('leanpub-colist-style')) {
             node.attributes.put('leanpub-colist-style','paragraph')

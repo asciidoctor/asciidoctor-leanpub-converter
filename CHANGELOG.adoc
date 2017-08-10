@@ -1,9 +1,15 @@
 = CHANGELOG
 :issue: https://github.com/asciidoctor/asciidoctor-leanpub-converter/issues/
 
-== Roadmap 0.1-alpha.1
+== Roadmap 0.1-alpha.2
 
-* {issue}18[#18] - Support for Listing blocks
+=== Features
+
+* {issue}18[#18] - Support for Listing blocks.
+
+=== Bugs
+
+* {issue}75[#75] - Source blocks are rendered as raw HTML.
 
 == 0.1-alpha.2
 
