@@ -467,9 +467,13 @@ class LeanpubConverter extends AbstractMultiOutputMarkdownConverter {
             if(block.title) {
                 content+= style.prefix + '> ## ' + block.title + LINESEP
             }
-            block.lines().each {
-                content+= style.prefix + '> ' + it + LINESEP
+
+            content+= applyToBlockLines(block) { String line ->
+                style.prefix + '> ' + line + LINESEP
             }
+//            getBlockLines(block).each {
+//                content+= style.prefix + '> ' + it + LINESEP
+//            }
             content + LINESEP
         }
     }
@@ -905,6 +909,10 @@ class LeanpubConverter extends AbstractMultiOutputMarkdownConverter {
     private Iterable<String> getBlockLines(Block block) {
         String content = ((String)(block.content))
         content.readLines()
+    }
+
+    private String applyToBlockLines(Block block,Closure lineProcessor) {
+        getBlockLines(block).collect(lineProcessor).join('')
     }
 
     @CompileDynamic

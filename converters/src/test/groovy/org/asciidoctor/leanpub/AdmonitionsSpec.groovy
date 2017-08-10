@@ -8,15 +8,17 @@ import spock.lang.Issue
  */
 class AdmonitionsSpec extends LeanpubSpecification {
 
+    void setup() {
+        documentName = 'admonitions'
+    }
+
     @Issue('https://github.com/ysb33r/asciidoctor-leanpub-converter/issues/4, https://leanpub.com/help/manual#leanpub-auto-warning')
     def "Warning"() {
         setup:
-            File chapter = new File(manuscriptDir,'chapter_1.txt')
+        setOutputRelativePath('Warning')
+        File chapter = chapterFromDocument(1)
 
-        when:
-            generateOutput('admonitions.adoc')
-
-        then:
+        expect:
             chapter.text == '''# Chapter with Warning
 
 Some text here, then
@@ -30,12 +32,10 @@ W>   And some more text.
     @Issue('https://leanpub.com/help/manual#leanpub-auto-warning')
     def "Warning with title"() {
         setup:
-        File chapter = new File(manuscriptDir,'chapter_2.txt')
+        setOutputRelativePath('WarningWithTitle')
+        File chapter = chapterFromDocument(2)
 
-        when:
-        generateOutput('admonitions.adoc')
-
-        then:
+        expect:
         chapter.text == '''# Another Chapter with Warning
 
 With some more text in between
@@ -49,12 +49,10 @@ W> This is a warning with title
     @Issue('https://github.com/ysb33r/asciidoctor-leanpub-converter/issues/28')
     def "Caution and Important"() {
         setup:
-        File chapter = new File(manuscriptDir,'chapter_3.txt')
+        setOutputRelativePath('Caution-Important')
+        File chapter = chapterFromDocument(3)
 
-        when:
-        generateOutput('admonitions.adoc')
-
-        then:
+        expect:
         chapter.text == '''# Caution and Important
 
 {icon=fire}
@@ -72,4 +70,18 @@ Some text afterwards
 '''
     }
 
+    @Issue('https://github.com/asciidoctor/asciidoctor-leanpub-converter/issues/76')
+    void 'Links inside admonitions'() {
+        setup:
+        setOutputRelativePath('Links')
+        File chapter = chapterFromDocument(4)
+
+        expect:
+        chapter.text == '''# Admonitions Containing Links
+
+I> If you do have a JDK installed, use the package manager for your operating system to install it, or download one from [Oracle Java site](http://www.oracle.com/technetwork/java/javase/downloads/index.html). JDK7 is the minimum required, but JDK8 is recommended. If you use [SDKMAN!](http://sdkman.io), it is also possible to use it to install the JDK.
+
+'''
+
+    }
 }

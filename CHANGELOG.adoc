@@ -10,6 +10,7 @@
 === Bugs
 
 * {issue}75[#75] - Source blocks are rendered as raw HTML.
+* {issue}76[#76] - Links are not processed within admonition blocks.
 
 == 0.1-alpha.2
 
