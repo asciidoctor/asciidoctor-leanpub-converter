@@ -17,20 +17,6 @@
 // ============================================================================
 
 
-group = 'org.asciidoctor'
-version = '1.6.0-alpha.2-SNAPSHOT'
-
-repositories {
-    jcenter()
-    if(version.endsWith('-SNAPSHOT')) {
-        maven {
-            name 'Asciidoctor Snapshots'
-            url 'https://oss.jfrog.org/artifactory/oss-snapshot-local'
-        }
-    }
-}
-
-
 apply plugin : 'groovy'
 apply plugin : 'java-library'
 apply plugin : 'com.jfrog.artifactory'
@@ -41,7 +27,6 @@ apply plugin : 'com.jfrog.bintray'
 apply plugin : 'maven-publish'
 
 ext {
-    asciidoctorjVersion = '1.6.0-alpha.4'
 
     dryRunPublications = project.hasProperty('dryRun') && project.dryRun.toBoolean()
     buildDateTime = new Date()

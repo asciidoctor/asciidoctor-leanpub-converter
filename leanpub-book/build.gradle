@@ -1,0 +1,83 @@
+buildscript {
+    repositories {
+        jcenter()
+    }
+
+    dependencies {
+        classpath 'commons-io:commons-io:2.4'
+        classpath 'org.slf4j:slf4j-simple:1.7.5'
+        classpath "org.asciidoctor:asciidoctorj:${project.properties.asciidoctorjVersion}"
+        classpath 'org.asciidoctor:asciidoctorj-diagram:1.5.4'
+        classpath files("${project.properties.jarLocation}/asciidoctor-leanpub-markdown-${project.properties.version}.jar")
+    }
+}
+
+plugins {
+    id 'org.asciidoctor.convert' version '1.5.3'
+}
+
+
+version = project.properties.version
+
+apply plugin : 'org.asciidoctor.convert'
+
+ext {
+    // Only needed if you plan to push to leanpub using Dropbox
+    // Change this for your own environment
+    dropboxFolder = "${System.getProperty('user.home')}/Dropbox/Leanpub/asciidoctortoleanpubsample"
+}
+
+repositories {
+    flatDir {
+        dirs project.properties.jarLocation
+    }
+
+    jcenter()
+
+    if (version.endsWith('-SNAPSHOT')) {
+        maven {
+            name 'Asciidoctor Snapshots'
+            url 'https://oss.jfrog.org/artifactory/oss-snapshot-local'
+        }
+    }
+}
+
+asciidoctorj {
+   version = project.properties.asciidoctorjVersion
+}
+
+dependencies {
+//    asciidoctor files("${project.properties.jarLocation}/asciidoctor-leanpub-markdown-${project.properties.version}.jar")
+}
+
+task CopyToDropbox ( type : Copy ) {
+    group 'leanpub'
+    description 'Copies completed files to a Dropbox folder'
+
+	from "${asciidoctor.outputDir}/leanpub/manuscript", {
+		include '**'
+	}
+
+	into "${dropboxFolder}/manuscript"
+	dependsOn asciidoctor
+}
+
+asciidoctor {
+
+    requires 'asciidoctor-diagram'
+
+    sources {
+        include 'leanpub.adoc'
+    }
+
+    resources {
+        // We don't want to copy any images as the converter will take care of that
+        from('src/docs/asciidoc/non-existing')
+    }
+
+    backends 'leanpub'
+
+    attributes revnumber: "${version}"
+    options sourcemap : 1
+}
+
