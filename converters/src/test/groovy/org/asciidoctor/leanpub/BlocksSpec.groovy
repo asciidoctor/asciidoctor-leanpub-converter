@@ -9,16 +9,18 @@ import spock.lang.Issue
  */
 class BlocksSpec extends LeanpubSpecification {
 
+    void setup() {
+        documentName = 'blocks'
+    }
+
     @Issue('https://leanpub.com/help/manual#crosslink_from_endnotes')
     def "Literal Block"() {
         setup:
-            File chapter = new File(LeanpubSpecification.MANUSCRIPT_DIR,'chapter_1.txt')
+        setOutputRelativePath('Literal')
+        File chapter = chapterFromDocument(1)
 
-        when:
-            generateOutput('blocks.adoc')
-
-        then:
-            chapter.text == '''# A Literal Block
+        expect:
+        chapter.text == '''# A Literal Block
 
 {linenos=off}
     Kommetjie, Kommegas, wees my gas
@@ -30,12 +32,10 @@ class BlocksSpec extends LeanpubSpecification {
     @Issue('https://github.com/ysb33r/asciidoctor-leanpub-converter/issues/10, https://leanpub.com/help/manual#crosslink_from_endnotes')
     def "Poetry"() {
         setup:
-        File chapter = new File(LeanpubSpecification.MANUSCRIPT_DIR,'chapter_2.txt')
+        setOutputRelativePath('Poetry')
+        File chapter = chapterFromDocument(2)
 
-        when:
-        generateOutput('blocks.adoc')
-
-        then:
+        expect:
         chapter.text == '''# A Poetry Block
 
 {style="poem"}
@@ -48,8 +48,8 @@ Hier in my houthuis
 
     def "Verse"() {
         setup:
-        File chapter = new File(LeanpubSpecification.MANUSCRIPT_DIR,'chapter_3.txt')
-        generateOutput('blocks.adoc')
+        setOutputRelativePath('Verse')
+        File chapter = chapterFromDocument(3)
 
         expect:
         chapter.text == '''# A Verse Block
@@ -64,8 +64,8 @@ A> *Fog*
 
     def "Sidebar"() {
         setup:
-        File chapter = new File(LeanpubSpecification.MANUSCRIPT_DIR,'chapter_4.txt')
-        generateOutput('blocks.adoc')
+        setOutputRelativePath('Sidebar')
+        File chapter = chapterFromDocument(4)
 
         expect:
         chapter.text == '''# Two Sidebar Blocks
@@ -83,8 +83,8 @@ A> minny
 
     def "Simple MD-style blockquote"() {
         setup:
-        File chapter = new File(LeanpubSpecification.MANUSCRIPT_DIR,'chapter_5.txt')
-        generateOutput('blocks.adoc')
+        setOutputRelativePath('MD-blockquote')
+        File chapter = chapterFromDocument(5)
 
         expect:
         chapter.text == '''# Simple MD-style blockquote
@@ -96,8 +96,8 @@ A> minny
 
     def "Simple MD-style blockquote with reference"() {
         setup:
-        File chapter = new File(LeanpubSpecification.MANUSCRIPT_DIR,'chapter_6.txt')
-        generateOutput('blocks.adoc')
+        setOutputRelativePath('MD-blockqupte-referenced')
+        File chapter = chapterFromDocument(6)
 
         expect:
         chapter.text == '''# Simple MD-style blockquote with reference
@@ -112,8 +112,10 @@ A> minny
 
     def "Multi-level MD-style blockquote"() {
         setup:
-        File chapter = new File(LeanpubSpecification.MANUSCRIPT_DIR,'chapter_7.txt')
-        generateOutput('blocks.adoc')
+        setOutputRelativePath('Multi-level-MD-blockquote')
+        File chapter = chapterFromDocument(7)
+
+        expect:
 
         expect:
         chapter.text == '''# Multi-level MD-style blockquote
@@ -136,8 +138,8 @@ A> minny
 
     def "Air quotes"() {
         setup:
-        File chapter = new File(LeanpubSpecification.MANUSCRIPT_DIR,'chapter_8.txt')
-        generateOutput('blocks.adoc')
+        setOutputRelativePath('Air')
+        File chapter = chapterFromDocument(8)
 
         expect:
         chapter.text == '''# Air Quotes
@@ -153,8 +155,10 @@ A> minny
 
     def "Quoted paragraph"() {
         setup:
-        File chapter = new File(LeanpubSpecification.MANUSCRIPT_DIR,'chapter_9.txt')
-        generateOutput('blocks.adoc')
+        setOutputRelativePath('QuotedParagraph')
+        File chapter = chapterFromDocument(9)
+
+        expect:
 
         expect:
         chapter.text == '''# Quoted Paragraph
@@ -168,8 +172,8 @@ A> minny
 
     def "Quoted blocks"() {
         setup:
-        File chapter = new File(LeanpubSpecification.MANUSCRIPT_DIR,'chapter_10.txt')
-        generateOutput('blocks.adoc')
+        setOutputRelativePath('QuotedBlocks')
+        File chapter = chapterFromDocument(10)
 
         expect:
         chapter.text == '''# Quote Blocks

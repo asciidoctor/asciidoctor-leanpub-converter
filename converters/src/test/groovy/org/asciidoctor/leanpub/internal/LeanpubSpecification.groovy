@@ -28,16 +28,17 @@ import spock.lang.Specification
  */
 class LeanpubSpecification extends Specification {
 
-
-    static final File OUTPUT_DIR     = new File('./build/test/leanpub')
-    static final File SOURCE_DIR     = new File( OUTPUT_DIR, 'src')
-    static final File MANUSCRIPT_DIR = new File(OUTPUT_DIR,'manuscript')
-    static final File IMAGES_DIR     = new File(MANUSCRIPT_DIR,'images')
-    static final File IMAGES_OUT_DIR = new File(OUTPUT_DIR,'generated-images')
-    static final File BOOK_1         = new File(MANUSCRIPT_DIR,LeanpubConverter.BOOK)
-    static final File SAMPLE_1       = new File(MANUSCRIPT_DIR,LeanpubConverter.SAMPLE)
+    static final File OUTPUT_ROOT    = new File( System.getProperty('TESTROOT') ?: './build/test/leanpub')
     static final File RESOURCE_DIR   = new File('./src/test/resources/test-documents')
     static final File GEM_PATH       = new File('./build/gems')
+
+    File outputDir = OUTPUT_ROOT
+    File sourceDir
+    File manuscriptDir
+    File imagesDir
+    File imagesOutputDir
+    File book1
+    File sample1
 
     Asciidoctor asciidoctor
     String documentName
@@ -46,30 +47,44 @@ class LeanpubSpecification extends Specification {
         asciidoctor = Asciidoctor.Factory.create(GEM_PATH.absolutePath)
         asciidoctor.javaConverterRegistry().register(LeanpubConverter,'leanpub')
 
-        if(OUTPUT_DIR.exists()) {
-            OUTPUT_DIR.deleteDir()
+        if(OUTPUT_ROOT.exists()) {
+            OUTPUT_ROOT.deleteDir()
         }
-        OUTPUT_DIR.mkdirs()
+        OUTPUT_ROOT.mkdirs()
+        setPaths()
+    }
 
+    void setOutputRelativePath(final String path) {
+        outputDir = new File(OUTPUT_ROOT,path)
+        setPaths()
+    }
+
+    void setPaths() {
+        sourceDir     = new File(outputDir, 'src')
+        manuscriptDir = new File(outputDir,'manuscript')
+        imagesDir     = new File(manuscriptDir,'images')
+        imagesOutputDir = new File(outputDir,'generated-images')
+        book1         = new File(manuscriptDir, LeanpubConverter.BOOK)
+        sample1       = new File(manuscriptDir, LeanpubConverter.SAMPLE)
     }
 
     void generateOutput(final String documentFileName,boolean safeMode=true) {
-        File targetFile = new File(SOURCE_DIR,documentFileName)
+        File targetFile = new File(sourceDir,documentFileName)
         FileUtils.copyFile(new File(RESOURCE_DIR,documentFileName),targetFile)
         def options = [
-            to_dir : OUTPUT_DIR.absolutePath,
+            to_dir : outputDir.absolutePath,
             mkdirs : true,
             backend : 'leanpub',
             sourcemap : true,
             safe : safeMode ? 1 : 0,
-            attributes : ['imagesoutdir': IMAGES_OUT_DIR.absolutePath, 'a-test-value': '1.2.3.4' ]
+            attributes : ['imagesoutdir': imagesOutputDir.absolutePath, 'a-test-value': '1.2.3.4' ]
         ]
         asciidoctor.convertFile(targetFile,options )
 
     }
 
     File chapterFromDocument(final String docName,int numero) {
-        File chapter = new File(LeanpubSpecification.MANUSCRIPT_DIR,"chapter_${numero}.txt")
+        File chapter = new File(manuscriptDir,"chapter_${numero}.txt")
         generateOutput("${docName}.adoc")
         chapter
     }

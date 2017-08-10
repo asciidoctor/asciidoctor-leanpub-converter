@@ -11,7 +11,7 @@ class AdmonitionsSpec extends LeanpubSpecification {
     @Issue('https://github.com/ysb33r/asciidoctor-leanpub-converter/issues/4, https://leanpub.com/help/manual#leanpub-auto-warning')
     def "Warning"() {
         setup:
-            File chapter = new File(MANUSCRIPT_DIR,'chapter_1.txt')
+            File chapter = new File(manuscriptDir,'chapter_1.txt')
 
         when:
             generateOutput('admonitions.adoc')
@@ -30,7 +30,7 @@ W>   And some more text.
     @Issue('https://leanpub.com/help/manual#leanpub-auto-warning')
     def "Warning with title"() {
         setup:
-        File chapter = new File(MANUSCRIPT_DIR,'chapter_2.txt')
+        File chapter = new File(manuscriptDir,'chapter_2.txt')
 
         when:
         generateOutput('admonitions.adoc')
@@ -49,7 +49,7 @@ W> This is a warning with title
     @Issue('https://github.com/ysb33r/asciidoctor-leanpub-converter/issues/28')
     def "Caution and Important"() {
         setup:
-        File chapter = new File(MANUSCRIPT_DIR,'chapter_3.txt')
+        File chapter = new File(manuscriptDir,'chapter_3.txt')
 
         when:
         generateOutput('admonitions.adoc')

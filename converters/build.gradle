@@ -100,6 +100,8 @@ test {
         showStandardStreams = true
         exceptionFormat "full"
     }
+
+    systemProperties 'TESTROOT' : file("${buildDir}/test/leanpub")
 }
 
 task sourcesJar(type: Jar, dependsOn: classes, group: 'Release') {

@@ -8,16 +8,18 @@ import spock.lang.Issue
  */
 class AnchorsSpec extends LeanpubSpecification {
 
+    void setup() {
+        documentName = 'anchors-and-references'
+    }
+
     @Issue('https://leanpub.com/help/manual#crosslink_from_endnotes')
     def "Anchors"() {
         setup:
-            File chapter = new File(LeanpubSpecification.MANUSCRIPT_DIR,'chapter_1.txt')
+        setOutputRelativePath('Anchors')
+        File chapter = chapterFromDocument(1)
 
-        when:
-            generateOutput('anchors-and-references.adoc')
-
-        then:
-            chapter.text == '''# Chapter A
+        expect:
+        chapter.text == '''# Chapter A
 
 This is a cross-reference to [[Asciidoctor Project]](#Asciidoctor-Project).
 
@@ -29,12 +31,10 @@ This is a [reference with text](#RefText2).
     @Issue('https://leanpub.com/help/manual#leanpub-auto-links')
     def "Hyperlinks"() {
         setup:
-        File chapter = new File(LeanpubSpecification.MANUSCRIPT_DIR,'chapter_2.txt')
+        setOutputRelativePath('Hyperlinks')
+        File chapter = chapterFromDocument(2)
 
-        when:
-        generateOutput('anchors-and-references.adoc')
-
-        then:
+        expect:
         chapter.text == '''# Chapter B
 
 With reference to the [Spock Framework](http://docs.spockframework.org/en/latest) used in testing.
@@ -44,12 +44,10 @@ With reference to the [Spock Framework](http://docs.spockframework.org/en/latest
 
     def "Embedded anchors with []"() {
         setup:
-        File chapter = new File(LeanpubSpecification.MANUSCRIPT_DIR,'chapter_3.txt')
+        setOutputRelativePath('EmbeddedAnchors')
+        File chapter = chapterFromDocument(3)
 
-        when:
-        generateOutput('anchors-and-references.adoc')
-
-        then:
+        expect:
         chapter.text == '''# Chapter C
 
 {#embeddedAnchor}
