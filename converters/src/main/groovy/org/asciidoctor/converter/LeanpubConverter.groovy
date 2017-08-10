@@ -6,6 +6,7 @@ import groovy.util.logging.Slf4j
 import org.apache.commons.io.FileUtils
 import org.asciidoctor.ast.*
 import org.asciidoctor.converter.markdown.AbstractMultiOutputMarkdownConverter
+import org.asciidoctor.leanpub.ConvertedPart
 import org.asciidoctor.leanpub.ConvertedSection
 import org.asciidoctor.leanpub.LeanpubDocument
 import org.asciidoctor.markdown.internal.InlineQuotedTextFormatter
@@ -77,7 +78,7 @@ class LeanpubConverter extends AbstractMultiOutputMarkdownConverter {
         def chaptersInSample = []
 
         int index=1
-        document.parts.each { part ->
+        for(ConvertedPart part in document.parts) {
             if(document.isMultiPart()) {
                 File dest = new File(destDir,"part_${index}.txt" )
                 dest.withWriter { part.write(it) }
@@ -192,7 +193,7 @@ class LeanpubConverter extends AbstractMultiOutputMarkdownConverter {
         Section section = node as Section
         boolean  inSample = getLeanpubAttributes(section).keySet().contains('sample')
 
-        log.debug "Transforming section: name=${section.sectname()}, level=${section.level} title=${section.title}"
+        log.debug "Transforming section: name=${section.sectionName}, level=${section.level} title=${section.title}"
 
         if(section.level==0) {
             document.addPart()
