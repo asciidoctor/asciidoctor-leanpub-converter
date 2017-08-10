@@ -1,15 +1,18 @@
 package org.asciidoctor.leanpub
 
+import groovy.transform.CompileStatic
+
 /**
  * @author Schalk W. Cronjé
  */
+@CompileStatic
 class LeanpubDocument {
 
     ConvertedSection preamble
     ConvertedSection dedication
     ConvertedSection preface
-    List<ConvertedPart> parts
-    List<ConvertedSection> backmatter
+    final List<ConvertedPart> parts = []
+    final List<ConvertedSection> backmatter = []
 
     boolean hasFrontMatter() {
         dedication != null || preface != null || preamble != null
@@ -23,33 +26,24 @@ class LeanpubDocument {
     }
 
     ConvertedPart getCurrentPart() {
-        parts ? parts[-1] : null
+        parts.empty ? null : parts[-1]
     }
 
     ConvertedPart addPart() {
-        if(parts==null) {
-            parts = [ new ConvertedPart() ]
-        } else {
-            parts+= new ConvertedPart()
-        }
-
+        parts.add new ConvertedPart()
         currentPart
     }
 
     void addChapterToPart(ConvertedSection chapter) {
         if(currentPart == null) {
-            parts = [ new ConvertedPart() ]
+            parts.add new ConvertedPart()
         }
 
         currentPart.chapters+= chapter
     }
 
     ConvertedSection addBackmatter(ConvertedSection bm) {
-        if(backmatter==null) {
-            backmatter = [ bm ]
-        } else {
-            backmatter+= bm
-        }
+        backmatter.add bm
         backmatter[-1]
     }
 }
