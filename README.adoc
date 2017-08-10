@@ -4,31 +4,7 @@ Schalk Cronjé
 The very early stages of demonstrating how to create a converter written in
 Groovy using the experimental asciidoctorj-1.6.0 branch.
 
-== Building
-
-////
-[source,bash]
-----
-git clone https://github.com/asciidoctor/asciidoctorj.git -b asciidoctorj-1.6.0
-cd asciidoctorj
-cd asciidoctorj-core
-../gradlew -i build publishToMavenLocal
-cd ../asciidoctorj-distribution
-../gradlew -i build
-----
-
-Now you're ready to clone and build this converter.
-////
-
-[source,bash]
-----
-cd ../..
-git clone https://github.com/ysb33r/asciidoctor-leanpub-converter.git
-cd asciidoctor-leanpub-converter/leanpub
-./gradlew build install
-----
-
-== Using your snapshot build
+== Bootstrap
 
 If you are using Asciidoctor plugin for Gradle then you should be able to do
 
@@ -72,6 +48,30 @@ NOTE: Ignore the warning `Passing through unknown backend: leanpub`.
 If you want to try the command-line version of asciidoctorj, then you are in luck. You can run it from
  `asciidoctorj/asciidoctorj-distribution/build/install/asciidoctorj-distribution/bin/asciidoctorj`. All you have to do is
  pass the `--cp` command-line parameter and tell it where the leanpub-converter-core.jar is.
+
+== Using SNAPSHOT versions
+
+Since this backend is very much in active development, you might want to try latest features as they are committed. If you are using the Gradle plugins you need to add an additional repository and use the SNAPSHOT instead.
+
+[source,groovy]
+----
+buildscript {
+    repositories {
+        jcenter()
+        maven { url "http://dl.bintray.com/asciidoctor/maven" }
+        maven {
+            name 'Asciidoctor Snapshots'
+            url 'https://oss.jfrog.org/artifactory/oss-snapshot-local'
+        }
+    }
+
+    dependencies {
+        classpath 'org.asciidoctor:asciidoctor-leanpub-markdown:1.6.0-alpha.1-SNAPSHOT'
+    }
+}
+----
+
+NOTE: You should obviously not use this for production works as SNAPSHOT-based dependencies lead to non-repeatable builds.
 
 == Parts & Chapters
 

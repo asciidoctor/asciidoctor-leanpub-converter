@@ -18,7 +18,7 @@
 
 
 group = 'org.asciidoctor'
-version = '1.6.0-alpha.1-SNAPSHOT'
+version = '1.6.0-alpha.1'
 
 repositories {
     jcenter()
@@ -39,8 +39,6 @@ apply plugin : 'com.jfrog.bintray'
 // NOTE replace deficient built-in publishing plugin with nebula-publishing,
 // which does a better job generating the POM and properly aggregates signature files for upload to Bintray
 apply plugin : 'maven-publish'
-
-archivesBaseName = 'asciidoctor-leanpub-markdown'
 
 ext {
     asciidoctorjVersion = '1.6.0-alpha.4'
