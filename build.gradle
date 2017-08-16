@@ -34,7 +34,7 @@ plugins {
 
 allprojects {
     group = 'org.asciidoctor'
-    version = '1.6.0-alpha.2-SNAPSHOT'
+    version = '1.6.0-alpha.2'
 
     ext {
         asciidoctorjVersion = '1.6.0-alpha.4'
