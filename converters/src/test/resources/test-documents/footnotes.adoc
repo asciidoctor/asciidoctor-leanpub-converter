@@ -1,0 +1,40 @@
+= Title
+Asciidoctor Team <foo@bar.example>
+
+[preface]
+== Preface
+
+This is a preface.footnoteref:[prefaceref,This is a footnote used in a preface and a chapter]
+
+[chapter]
+== Multiple footnotes in a chapter
+
+=== Level 3
+
+Full stop, space, then footnote. footnote:[FS-SP-FN this is footnote.]
+
+==== Level 4
+
+Space, footnote, then full stop footnote:[SP-FN-FS this is footnote.].
+
+===== Level 5
+
+Full stop, no space, then footnote.footnote:[FS-FN this is footnote.]
+
+[chapter]
+== Chapter re-using a footnote from a preface
+
+With no text.footnoteref:[prefaceref]
+
+Some more nothing text.footnoteref:[prefaceref]
+
+[appendix]
+== Appendix with multi-line footnote
+
+Has nothing to do with a bodily part.footnote:[Footnote in an appendix
+pass:p[ +]
+pass:p[ +]
+with multiple lines.]
+
+
+

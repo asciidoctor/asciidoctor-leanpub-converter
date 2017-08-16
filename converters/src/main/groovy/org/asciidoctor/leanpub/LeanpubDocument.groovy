@@ -1,6 +1,7 @@
 package org.asciidoctor.leanpub
 
 import groovy.transform.CompileStatic
+import org.asciidoctor.leanpub.internal.Footnote
 
 /**
  * @author Schalk W. Cronjé
@@ -13,6 +14,7 @@ class LeanpubDocument {
     ConvertedSection preface
     final List<ConvertedPart> parts = []
     final List<ConvertedSection> backmatter = []
+    final Footnote footnotes = new Footnote()
 
     boolean hasFrontMatter() {
         dedication != null || preface != null || preamble != null
@@ -34,12 +36,18 @@ class LeanpubDocument {
         currentPart
     }
 
-    void addChapterToPart(ConvertedSection chapter) {
+    /** Adds a chapter to a part
+     *
+     * @param chapter Chapter to add
+     * @return CHapter that was added
+     */
+    ConvertedSection addChapterToPart(ConvertedSection chapter) {
         if(currentPart == null) {
             parts.add new ConvertedPart()
         }
 
         currentPart.chapters+= chapter
+        chapter
     }
 
     ConvertedSection addBackmatter(ConvertedSection bm) {

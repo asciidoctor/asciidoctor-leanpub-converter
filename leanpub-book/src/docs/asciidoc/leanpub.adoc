@@ -276,6 +276,11 @@ a trivial exercise.
 
 At this point in time, we have not tested other diagramming tools yet, therefore feedback would be welcome!
 
+[chapter]
+== Footnotes
+
+Footnotes footnote:[This is a normal footnote] and footnote references footnoteref:[fnref,This is a footnote reference] are easily supported. The converter will keep track of the various footnotes and references and generate them at the end of each chapter file. You can also reuse footnote references more than once.footnoteref:[fnref]
+
 = Reference Materials
 
 [appendix]

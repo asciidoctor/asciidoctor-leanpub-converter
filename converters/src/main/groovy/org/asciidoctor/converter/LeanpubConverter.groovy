@@ -121,6 +121,17 @@ class LeanpubConverter extends AbstractMultiOutputMarkdownConverter {
             }
         }
 
+        [   preamble : document.preamble,
+            dedication : document.dedication,
+            preface : document.preface
+        ].each { String item, ConvertedSection fm ->
+            if(fm) {
+                new File(destDir,"${item}.txt").withWriter { writer ->
+                    fm.write(writer)
+                }
+            }
+        }
+
         new File(destDir,BOOK).withWriter { w ->
 
             if( document.hasFrontMatter() ) {
@@ -157,18 +168,6 @@ class LeanpubConverter extends AbstractMultiOutputMarkdownConverter {
             }
 
             chaptersInSample.each { w.println it }
-        }
-
-        if(document.preamble) {
-            new File(destDir,'preamble.txt').text = document.preamble.content.toString()
-        }
-
-        if(document.dedication) {
-            new File(destDir,'dedication.txt').text = document.dedication.content.toString()
-        }
-
-        if(document.preface) {
-            new File(destDir,'preface.txt').text = document.preface.content.toString()
         }
 
         if(document.hasFrontMatter() || document.hasBackMatter() ) {
@@ -208,7 +207,13 @@ class LeanpubConverter extends AbstractMultiOutputMarkdownConverter {
             switch(section.sectionName) {
                 case 'preface':
                     if(document.preface == null) {
-                        document.preface = new ConvertedSection(content: formatSection(section), type: PREFACE, sample: inSample)
+                        document.preface = new ConvertedSection(
+                            document : document,
+                            type: PREFACE,
+                            sample: inSample
+                        )
+                        currentSection = document.preface
+                        currentSection.content = formatSection(section)
                         return document.preface.content
                     } else {
                         log.warn "A [preface] level one section was processed previously. This one will be ignored."
@@ -216,21 +221,34 @@ class LeanpubConverter extends AbstractMultiOutputMarkdownConverter {
                     }
                 case 'dedication' :
                     if(document.dedication == null) {
-                        document.dedication = new ConvertedSection(content: formatDedication(section), type: DEDICATION, sample: false)
+                        document.dedication = new ConvertedSection(
+                            document : document,
+                            type: DEDICATION,
+                            sample: false
+                        )
+                        currentSection = document.dedication
+                        currentSection.content = formatDedication(section)
                         return document.dedication.content
                     } else {
                         log.warn "A [dedication] level one section was processed previously. This one will be ignored."
                         return ''
                     }
                 case 'chapter':
-                    document.addChapterToPart(new ConvertedSection(content: formatSection(section), type: CHAPTER, sample: inSample))
+                    currentSection = document.addChapterToPart(new ConvertedSection(
+                        document : document,
+                        type: CHAPTER,
+                        sample: inSample
+                    ))
+                    currentSection.content = formatSection(section)
                     return document.currentPart.chapters[-1].content
                 case ~/appendix|bibliography|index|glossary/:
-                    return document.addBackmatter(new ConvertedSection(
-                        content: formatSection(section),
+                    currentSection = new ConvertedSection(
+                        document : document,
                         type: BACKMATTER,
                         sample: inSample
-                    )).content
+                    )
+                    currentSection.content = formatSection(section)
+                    return document.addBackmatter(currentSection).content
             }
         }
 
@@ -527,6 +545,66 @@ class LeanpubConverter extends AbstractMultiOutputMarkdownConverter {
         PhraseNode inline = node as PhraseNode
         images.add new File(imagesDir(inline,docDir),inline.target)
         "![](images/${inline.target} \"${inline.attributes.alt}\")"
+    }
+
+    /** Converts inline footnote of the form {@code footnote:[TEXT]}
+     *
+     * @param node Footnotes will have a null {@code type}. For new references it will be of value {@code ref} and for
+     *   re-used references {@code xref}.
+     * @param opts Ignored.
+     * @return Leanpub Markdown
+     */
+    def convertInlineFootnote(ContentNode node,Map<String, Object> opts) {
+        PhraseNode inline = node as PhraseNode
+        if(currentSection == null) {
+            log.error logMessageWithSourceTrace(
+                "No active section found. Ignoring footnote",
+                inline.parent.document
+            )
+            return null
+        }
+        switch(inline.type) {
+            case null:
+                Integer idx = document.footnotes.addNewFootnote(inline.text)
+                currentSection.footnotes.add(idx)
+                document.footnotes.tag(idx)
+                break
+            case 'ref':
+                String xref = inline.id
+                Integer idx = document.footnotes.addNewFootnoteWithReference(xref,inline.text)
+                currentSection.footnotes.add(idx)
+                document.footnotes.tag(idx)
+                break
+            case 'xref':
+                String xref = inline.target
+                Integer idx = document.footnotes.getIndexForReference(xref)
+                if(-1 == idx) {
+                    log.error logMessageWithSourceTrace(
+                        "Invalid footnote reference '${xref}' for inline footnote. Will skip and carry on processing",
+                        inline.parent.document
+                    )
+                    null
+                } else {
+                    document.footnotes.tag(idx)
+                }
+                break
+            default:
+                log.error logMessageWithSourceTrace(
+                    "Did not recognize type '${inline.type}' for inline footnote. Will skip and carry on processing",
+                    inline.parent.document
+                )
+                null
+        }
+    }
+
+    /** Converts an inline break to a Leanpub break
+     *
+     * @param node
+     * @param opts
+     * @return
+     */
+    def convertInlineBreak(ContentNode node,Map<String, Object> opts) {
+        LINESEP
     }
 
     def convertTable(ContentNode node,Map<String, Object> opts) {
@@ -952,6 +1030,7 @@ class LeanpubConverter extends AbstractMultiOutputMarkdownConverter {
     private File frontCoverImage
     private Object lastSrcBlock
     private java.util.List<File> images = []
+    private ConvertedSection currentSection
 
     private static final Map<String,Map<String,String> > STYLE_MAP = [
         'warning'   : [ prefix : 'W' ],

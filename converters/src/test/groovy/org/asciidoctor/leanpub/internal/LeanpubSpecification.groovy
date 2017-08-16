@@ -31,6 +31,7 @@ class LeanpubSpecification extends Specification {
     static final File OUTPUT_ROOT    = new File( System.getProperty('TESTROOT') ?: './build/test/leanpub')
     static final File RESOURCE_DIR   = new File('./src/test/resources/test-documents')
     static final File GEM_PATH       = new File('./build/gems')
+    static final String LINESEP      = LeanpubConverter.LINESEP
 
     File outputDir = OUTPUT_ROOT
     File sourceDir
@@ -89,7 +90,27 @@ class LeanpubSpecification extends Specification {
         chapter
     }
 
+    File prefaceFromDocument(final String docName) {
+        File chapter = new File(manuscriptDir,"preface.txt")
+        generateOutput("${docName}.adoc")
+        chapter
+    }
+
+    File backmatterFromDocument(final String docName,int numero) {
+        File chapter = new File(manuscriptDir,"backmatter_${numero}.txt")
+        generateOutput("${docName}.adoc")
+        chapter
+    }
+
     File chapterFromDocument(int numero) {
         chapterFromDocument(documentName,numero)
+    }
+
+    File backmatterFromDocument(int numero) {
+        backmatterFromDocument(documentName,numero)
+    }
+
+    File prefaceFromDocument() {
+        prefaceFromDocument(documentName)
     }
 }
