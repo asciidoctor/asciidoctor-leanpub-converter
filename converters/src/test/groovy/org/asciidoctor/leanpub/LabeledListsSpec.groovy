@@ -15,11 +15,11 @@ class LabeledListsSpec extends LeanpubSpecification {
     'https://github.com/asciidoctor/asciidoctor-leanpub-converter/issues/30'])
     def "Labeled lists should process examples from Asciidoctor user guide"() {
         setup:
-        File single = new File(LeanpubSpecification.MANUSCRIPT_DIR, 'chapter_1.txt')
-        File multi = new File(LeanpubSpecification.MANUSCRIPT_DIR, 'chapter_2.txt')
-        File qanda = new File(LeanpubSpecification.MANUSCRIPT_DIR, 'chapter_3.txt')
-        File mixed = new File(LeanpubSpecification.MANUSCRIPT_DIR, 'chapter_4.txt')
-        File multilevel = new File(LeanpubSpecification.MANUSCRIPT_DIR, 'chapter_4.txt')
+        File single = new File(manuscriptDir, 'chapter_1.txt')
+        File multi = new File(manuscriptDir, 'chapter_2.txt')
+        File qanda = new File(manuscriptDir, 'chapter_3.txt')
+        File mixed = new File(manuscriptDir, 'chapter_4.txt')
+        File multilevel = new File(manuscriptDir, 'chapter_4.txt')
 
         when:
         generateOutput('labeled-lists.adoc')
@@ -87,7 +87,7 @@ second term
     @Issue('https://github.com/asciidoctor/asciidoctor-leanpub-converter/issues/54')
     def "Labeled lists should process hybrid example from Asciidoctor user guide"() {
         setup:
-        File hybrid = new File(LeanpubSpecification.MANUSCRIPT_DIR, 'chapter_1.txt')
+        File hybrid = new File(manuscriptDir, 'chapter_1.txt')
 
         when:
         generateOutput('labeled-hybrid-lists.adoc')

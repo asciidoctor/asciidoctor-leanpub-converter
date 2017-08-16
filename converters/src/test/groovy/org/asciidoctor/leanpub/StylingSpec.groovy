@@ -22,7 +22,7 @@ class StylingSpec extends LeanpubSpecification {
     @Issue('https://leanpub.com/help/manual#leanpub-auto-styling-text')
     def "Basic styling should translate correctly"() {
         setup:
-            File chapter = new File(LeanpubSpecification.MANUSCRIPT_DIR,'chapter_2.txt')
+            File chapter = new File(manuscriptDir,'chapter_2.txt')
 
         when:
             generateOutput('simple-book.adoc')
@@ -51,7 +51,7 @@ Non&nbsp;breaking&nbsp;spaces
         'https://github.com/asciidoctor/asciidoctor-leanpub-converter/issues/53'])
     def "Basic ordered and unordered lists"() {
         setup:
-        File chapter = new File(LeanpubSpecification.MANUSCRIPT_DIR,'chapter_3.txt')
+        File chapter = new File(manuscriptDir,'chapter_3.txt')
 
         when:
         generateOutput('simple-book.adoc')
@@ -77,7 +77,7 @@ Non&nbsp;breaking&nbsp;spaces
     @Issue('https://leanpub.com/help/manual#leanpub-auto-styling-text')
     def "Underlined text not supported by Asciidoctor, so expecting passthrough to be used"() {
         setup:
-        File chapter = new File(LeanpubSpecification.MANUSCRIPT_DIR,'chapter_4.txt')
+        File chapter = new File(manuscriptDir,'chapter_4.txt')
 
         when:
         generateOutput('simple-book.adoc')
@@ -91,7 +91,7 @@ ____Underlined text one____
 
     def "Horizontal rule"() {
         setup:
-        File chapter = new File(LeanpubSpecification.MANUSCRIPT_DIR,'chapter_5.txt')
+        File chapter = new File(manuscriptDir,'chapter_5.txt')
 
         when:
         generateOutput('simple-book.adoc')
