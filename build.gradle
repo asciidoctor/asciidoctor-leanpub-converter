@@ -59,7 +59,7 @@ task leanpubBook ( type : GradleBuild ) {
 
     dependsOn ':asciidoctor-leanpub-markdown:jar', ':asciidoctor-leanpub-markdown:test'
 
-    tasks = ['asciidoctor']
+    tasks = ['asciidoctor','copyToDropbox']
     dir = file("${projectDir}/leanpub-book")
     buildFile = file("${projectDir}/leanpub-book/build.gradle")
     startParameter.projectProperties.version = version

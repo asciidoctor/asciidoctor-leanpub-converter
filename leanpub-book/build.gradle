@@ -24,7 +24,7 @@ apply plugin : 'org.asciidoctor.convert'
 ext {
     // Only needed if you plan to push to leanpub using Dropbox
     // Change this for your own environment
-    dropboxFolder = "${System.getProperty('user.home')}/Dropbox/Leanpub/asciidoctortoleanpubsample"
+    dropboxFolder = file("${System.getProperty('user.home')}/Dropbox/Leanpub/asciidoctortoleanpubsample")
 }
 
 repositories {
@@ -50,9 +50,10 @@ dependencies {
 //    asciidoctor files("${project.properties.jarLocation}/asciidoctor-leanpub-markdown-${project.properties.version}.jar")
 }
 
-task CopyToDropbox ( type : Copy ) {
+task copyToDropbox ( type : Copy ) {
     group 'leanpub'
     description 'Copies completed files to a Dropbox folder'
+    enabled = dropboxFolder.exists()
 
 	from "${asciidoctor.outputDir}/leanpub/manuscript", {
 		include '**'
