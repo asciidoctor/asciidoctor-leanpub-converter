@@ -6,6 +6,7 @@
 === Features
 
 * {issue}18[#18] - Support for Listing blocks.
+* {issue}77[#77] - Support for inline footnotes and footnote references.
 
 === Bugs
 
