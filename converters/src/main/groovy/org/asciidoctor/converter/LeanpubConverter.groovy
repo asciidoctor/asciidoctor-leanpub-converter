@@ -23,6 +23,8 @@ import static org.asciidoctor.leanpub.ConvertedSection.SectionType.*
 import java.util.regex.Matcher
 import java.util.regex.Pattern
 
+import static org.asciidoctor.markdown.internal.InlineQuotedTextFormatter.strong
+
 @Slf4j
 @ConverterFor(format="leanpub",suffix="txt")
 @CompileStatic
@@ -296,7 +298,7 @@ class LeanpubConverter extends AbstractMultiOutputMarkdownConverter {
 
     def convertAnchorTypeRef(ContentNode node,Map<String, Object> opts) {
         PhraseNode inline = node as PhraseNode
-        "{#${inline.text[1..-2]}}${LINESEP}"
+        "{#${inline.target}}${LINESEP}"
     }
 
     @Override
@@ -377,8 +379,16 @@ class LeanpubConverter extends AbstractMultiOutputMarkdownConverter {
 
         def matcher = item.text.replaceAll(LINESEP,' ') =~ LISTITEM_BIBREF_PATTERN
         if(matcher.matches()) {
-            return matcher[0][2] + LINESEP +
-                '[' + InlineQuotedTextFormatter.strong(matcher[0][2][2..-2]) + '] ' +
+            final String extractedRef = matcher[0][2]
+            String ref
+            if(extractedRef.size() < 6) {
+                log.error("Found bibref, but ref is invalid (${extractedRef})")
+                ref = '<INVALID>'
+            } else {
+                ref = extractedRef[3..-3]
+            }
+            return '{#' + ref + '}' + LINESEP +
+                '[' + strong(ref) + '] ' +
                 (matcher[0][1] ?: '') +
                 matcher[0][3].trim() + LINESEP + item.content + LINESEP
         }

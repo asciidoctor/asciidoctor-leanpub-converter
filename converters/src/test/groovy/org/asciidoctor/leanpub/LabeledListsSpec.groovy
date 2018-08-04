@@ -4,6 +4,7 @@ import org.asciidoctor.converter.LeanpubConverter
 import org.asciidoctor.leanpub.internal.LeanpubSpecification
 import spock.lang.FailsWith
 import spock.lang.Issue
+import spock.lang.PendingFeature
 
 
 /**
@@ -11,8 +12,13 @@ import spock.lang.Issue
  */
 class LabeledListsSpec extends LeanpubSpecification {
 
-    @Issue(['https://github.com/asciidoctor/asciidoctorj/issues/404',
-    'https://github.com/asciidoctor/asciidoctor-leanpub-converter/issues/30'])
+    @PendingFeature
+    @Issue([
+        'https://github.com/asciidoctor/asciidoctorj/issues/404',
+        'https://github.com/asciidoctor/asciidoctor-leanpub-converter/issues/30',
+        'https://github.com/asciidoctor/asciidoctorj/issues/671',
+        'https://github.com/asciidoctor/asciidoctor-leanpub-converter/issues/79'
+    ])
     def "Labeled lists should process examples from Asciidoctor user guide"() {
         setup:
         File single = new File(manuscriptDir, 'chapter_1.txt')
@@ -24,7 +30,7 @@ class LabeledListsSpec extends LeanpubSpecification {
         when:
         generateOutput('labeled-lists.adoc')
 
-        then: "Single line defintions with empty line separations are translated"
+        then: "Single line definitions with empty line separations are translated"
         single.text == '''# Single line
 
 first term
@@ -83,7 +89,7 @@ second term
 '''
     }
 
-    @FailsWith(org.asciidoctor.internal.AsciidoctorCoreException)
+    @PendingFeature
     @Issue('https://github.com/asciidoctor/asciidoctor-leanpub-converter/issues/54')
     def "Labeled lists should process hybrid example from Asciidoctor user guide"() {
         setup:

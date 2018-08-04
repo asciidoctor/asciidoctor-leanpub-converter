@@ -16,25 +16,25 @@ all developers.
 === Section with References
 
 [bibliography]
-- [[[prag]]] Andy Hunt + Dave Thomas. The Pragmatic Programmer:
+- [[[prag1]]] Andy Hunt + Dave Thomas. The Pragmatic Programmer:
   From Journeyman to Master. Addison-Wesley. 1999.
-- [[[seam]]] Dan Allen. Seam in Action. Manning Publications.
+- [[[seam1]]] Dan Allen. Seam in Action. Manning Publications.
   2008.
 
 [bibliography]
 == Chapter with References
 
-- [[[prag]]] Andy Hunt + Dave Thomas. The Pragmatic Programmer:
+- [[[prag2]]] Andy Hunt + Dave Thomas. The Pragmatic Programmer:
   From Journeyman to Master. Addison-Wesley. 1999.
-- [[[seam]]] Dan Allen. Seam in Action. Manning Publications.
+- [[[seam2]]] Dan Allen. Seam in Action. Manning Publications.
   2008.
 
 [bibliography]
 == Chapter with Escaped Characters
 
-- [[[prag]]] Andy Hunt & Dave Thomas. The Pragmatic Programmer:
+- [[[prag3]]] Andy Hunt & Dave Thomas. The Pragmatic Programmer:
   From Journeyman to Master. Addison-Wesley. 1999.
-- [[[seam]]] Dan Allen. Seam in Action. Manning Publications.
+- [[[seam3]]] Dan Allen. Seam in Action. Manning Publications.
   2008.
 
 [bibliography]
