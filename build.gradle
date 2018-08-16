@@ -22,7 +22,7 @@ buildscript {
     }
 
     dependencies {
-        classpath 'org.asciidoctor:asciidoctorj-diagram:1.5.4'
+        classpath 'org.asciidoctor:asciidoctorj-diagram:1.5.8'
     }
 }
 
@@ -34,10 +34,10 @@ plugins {
 
 allprojects {
     group = 'org.asciidoctor'
-    version = '1.6.0-alpha.2'
+    version = '1.6.0-alpha.3'
 
     ext {
-        asciidoctorjVersion = '1.6.0-alpha.4'
+        asciidoctorjVersion = '1.6.0-alpha.7'
     }
 
 }

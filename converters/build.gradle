@@ -83,7 +83,7 @@ targetCompatibility = 1.7
 dependencies {
 
     api "org.asciidoctor:asciidoctorj:${asciidoctorjVersion}"
-    implementation 'org.codehaus.groovy:groovy:2.4.10'
+    implementation 'org.codehaus.groovy:groovy:2.4.15'
     implementation 'org.slf4j:slf4j-api:1.7.5'
 //    implementation 'commons-io:commons-io:2.4'
 
@@ -91,7 +91,7 @@ dependencies {
         exclude(module: 'groovy-all')
     }
 
-    testRuntimeOnly 'org.asciidoctor:asciidoctorj-diagram:1.5.4'
+    testRuntimeOnly 'org.asciidoctor:asciidoctorj-diagram:1.5.8'
     testRuntimeOnly 'org.slf4j:slf4j-simple:1.7.5'
 }
 

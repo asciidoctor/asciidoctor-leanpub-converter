@@ -199,7 +199,7 @@ class TablesSpec extends LeanpubSpecification {
 |Cell **in** column 1, row 1,|*Cell in column 2, row 1,*|Cell in column 3, row 1,|
 |asciidoc|*emphasized*|header style|
 |:----|:----|:----|
-|```Cell **in** column 1, row 2,```|`Cell in column 2, row 2,`|**Cell in column 3, row 2,**|
+|```Cell *in* column 1, row 2,```|`Cell in column 2, row 2,`|**Cell in column 3, row 2,**|
 |```literal```|`monospaced`|**bold**|
 |:----|:----|:----|
 |Cell in column 1, row 2,|Cell in column 2, row 2|Cell in column 3, row 2|
