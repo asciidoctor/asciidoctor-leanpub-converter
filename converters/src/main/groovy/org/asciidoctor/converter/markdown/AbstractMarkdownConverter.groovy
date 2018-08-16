@@ -66,7 +66,7 @@ abstract class AbstractMarkdownConverter extends StringConverter {
             } else if(name.startsWith('convertListingType')) {
                 Block inline = args[0] as Block
                 log.error logMessageWithSourceTrace(
-                    "Listing type '${block.attributes.style}' is not defined. Will not transform this node, but will try to carry on.",
+                    "Listing type '${inline.attributes.style}' is not defined. Will not transform this node, but will try to carry on.",
                     inline
                 )
             } else if(name.startsWith('convertListItemType')) {

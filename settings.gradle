@@ -1,4 +1,7 @@
 rootProject.name = 'asciidoctor-leanpub'
+
 include 'converters'
-//include 'leanpub-example-book'
+project(':converters').name='asciidoctor-leanpub-markdown'
+
+//include 'leanpub-book'
 

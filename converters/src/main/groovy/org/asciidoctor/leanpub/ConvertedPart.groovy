@@ -1,7 +1,7 @@
 package org.asciidoctor.leanpub
 
 /**
- * @author Schalk W. Cronjé
+ *
  */
 class ConvertedPart {
     final ConvertedSection.SectionType type = ConvertedSection.SectionType.PART

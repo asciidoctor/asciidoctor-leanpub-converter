@@ -17,20 +17,6 @@
 // ============================================================================
 
 
-group = 'org.asciidoctor'
-version = '1.6.0-alpha.1-SNAPSHOT'
-
-repositories {
-    jcenter()
-    if(version.endsWith('-SNAPSHOT')) {
-        maven {
-            name 'Asciidoctor Snapshots'
-            url 'https://oss.jfrog.org/artifactory/oss-snapshot-local'
-        }
-    }
-}
-
-
 apply plugin : 'groovy'
 apply plugin : 'java-library'
 apply plugin : 'com.jfrog.artifactory'
@@ -40,10 +26,7 @@ apply plugin : 'com.jfrog.bintray'
 // which does a better job generating the POM and properly aggregates signature files for upload to Bintray
 apply plugin : 'maven-publish'
 
-archivesBaseName = 'asciidoctor-leanpub-markdown'
-
 ext {
-    asciidoctorjVersion = '1.6.0-alpha.4'
 
     dryRunPublications = project.hasProperty('dryRun') && project.dryRun.toBoolean()
     buildDateTime = new Date()
@@ -100,15 +83,15 @@ targetCompatibility = 1.7
 dependencies {
 
     api "org.asciidoctor:asciidoctorj:${asciidoctorjVersion}"
-    implementation 'org.codehaus.groovy:groovy:2.4.10'
+    implementation 'org.codehaus.groovy:groovy:2.4.15'
     implementation 'org.slf4j:slf4j-api:1.7.5'
-    implementation 'commons-io:commons-io:2.4'
+//    implementation 'commons-io:commons-io:2.4'
 
     testImplementation('org.spockframework:spock-core:1.1-groovy-2.4') {
         exclude(module: 'groovy-all')
     }
 
-    testRuntimeOnly 'org.asciidoctor:asciidoctorj-diagram:1.5.4'
+    testRuntimeOnly 'org.asciidoctor:asciidoctorj-diagram:1.5.8'
     testRuntimeOnly 'org.slf4j:slf4j-simple:1.7.5'
 }
 
@@ -117,6 +100,8 @@ test {
         showStandardStreams = true
         exceptionFormat "full"
     }
+
+    systemProperties 'TESTROOT' : file("${buildDir}/test/leanpub")
 }
 
 task sourcesJar(type: Jar, dependsOn: classes, group: 'Release') {

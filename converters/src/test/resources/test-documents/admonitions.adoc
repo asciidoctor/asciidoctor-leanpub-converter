@@ -27,3 +27,8 @@ Some text in between
 IMPORTANT: This is important text
 
 Some text afterwards
+
+[chapter]
+== Admonitions Containing Links
+
+NOTE: If you do have a JDK installed, use the package manager for your operating system to install it, or download one from link:http://www.oracle.com/technetwork/java/javase/downloads/index.html[Oracle Java site]. JDK7 is the minimum required, but JDK8 is recommended. If you use link:http://sdkman.io[SDKMAN!], it is also possible to use it to install the JDK.

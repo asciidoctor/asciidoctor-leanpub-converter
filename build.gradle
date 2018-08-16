@@ -22,16 +22,47 @@ buildscript {
     }
 
     dependencies {
-        classpath 'org.asciidoctor:asciidoctorj-diagram:1.5.4'
+        classpath 'org.asciidoctor:asciidoctorj-diagram:1.5.8'
     }
 }
 
 plugins {
     id 'com.jfrog.artifactory' version '4.4.17' apply false
-    id 'org.asciidoctor.convert' version '1.5.3' apply false
     id 'com.jfrog.bintray' version '1.7' apply false
     id 'org.ysb33r.cloudci' version '1.0'
 }
 
+allprojects {
+    group = 'org.asciidoctor'
+    version = '1.6.0-alpha.3'
+
+    ext {
+        asciidoctorjVersion = '1.6.0-alpha.7'
+    }
+
+}
+
 subprojects {
+
+    repositories {
+        jcenter()
+        if (version.endsWith('-SNAPSHOT')) {
+            maven {
+                name 'Asciidoctor Snapshots'
+                url 'https://oss.jfrog.org/artifactory/oss-snapshot-local'
+            }
+        }
+    }
+}
+
+task leanpubBook ( type : GradleBuild ) {
+
+    dependsOn ':asciidoctor-leanpub-markdown:jar', ':asciidoctor-leanpub-markdown:test'
+
+    tasks = ['asciidoctor','copyToDropbox']
+    dir = file("${projectDir}/leanpub-book")
+    buildFile = file("${projectDir}/leanpub-book/build.gradle")
+    startParameter.projectProperties.version = version
+    startParameter.projectProperties.asciidoctorjVersion = asciidoctorjVersion
+    startParameter.projectProperties.jarLocation = new File(project(':asciidoctor-leanpub-markdown').buildDir,'libs').absolutePath
 }

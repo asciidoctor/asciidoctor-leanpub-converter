@@ -11,7 +11,7 @@ class PageBreakSpec extends LeanpubSpecification {
     @Issue('https://github.com/ysb33r/asciidoctor-leanpub-converter/issues/29')
     def "Horizontal Rule"() {
         setup:
-        File chapter = new File(LeanpubSpecification.manuscriptDir,'chapter_1.txt')
+        File chapter = new File(manuscriptDir,'chapter_1.txt')
         generateOutput('pagebreak.adoc')
 
         expect:

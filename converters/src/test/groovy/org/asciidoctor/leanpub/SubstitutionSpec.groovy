@@ -8,7 +8,7 @@ import org.asciidoctor.leanpub.internal.LeanpubSpecification
 class SubstitutionSpec extends LeanpubSpecification {
     def "Source code should add the language term"() {
         setup:
-        File chapter = new File(LeanpubSpecification.manuscriptDir, 'chapter_1.txt')
+        File chapter = new File(manuscriptDir, 'chapter_1.txt')
 
         when:
         generateOutput('substitutions.adoc')
