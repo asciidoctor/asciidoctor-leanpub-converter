@@ -34,10 +34,10 @@ plugins {
 
 allprojects {
     group = 'org.asciidoctor'
-    version = '1.6.0-alpha.3'
+    version = '1.6.0-alpha.4'
 
     ext {
-        asciidoctorjVersion = '1.6.0-alpha.7'
+        asciidoctorjVersion = '1.6.0-RC.2'
     }
 
 }
