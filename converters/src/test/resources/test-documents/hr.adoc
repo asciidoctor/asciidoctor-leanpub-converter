@@ -1,6 +1,5 @@
 = Horizontal Rules
 
-[chapter]
 == HR
 
 This line is separated from the next

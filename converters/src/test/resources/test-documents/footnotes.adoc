@@ -6,7 +6,6 @@ Asciidoctor Team <foo@bar.example>
 
 This is a preface.footnoteref:[prefaceref,This is a footnote used in a preface and a chapter]
 
-[chapter]
 == Multiple footnotes in a chapter
 
 === Level 3
@@ -21,7 +20,6 @@ Space, footnote, then full stop footnote:[SP-FN-FS this is footnote.].
 
 Full stop, no space, then footnote.footnote:[FS-FN this is footnote.]
 
-[chapter]
 == Chapter re-using a footnote from a preface
 
 With no text.footnoteref:[prefaceref]

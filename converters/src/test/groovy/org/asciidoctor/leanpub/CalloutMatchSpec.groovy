@@ -15,7 +15,7 @@ class CalloutMatchSpec extends Specification {
 
     static final Pattern EXTRACTOR = SourceParser.CALLOUT_PATTERN
 
-    def "Match lines with callouts"() {
+    def "Match lines where callouts are like #callouts"() {
         given:
         def matcher = source =~ EXTRACTOR
 

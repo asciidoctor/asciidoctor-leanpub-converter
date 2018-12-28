@@ -1,6 +1,5 @@
 = Page Breaks
 
-[chapter]
 == Page Break
 
 This line is separated from the next

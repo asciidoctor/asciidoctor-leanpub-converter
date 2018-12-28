@@ -16,34 +16,31 @@ buildscript {
         maven { url "http://dl.bintray.com/asciidoctor/maven" } // <1>
     }
 
-    dependencies {
-        classpath 'org.asciidoctor:asciidoctor-leanpub-markdown:0.1-alpha.2'
-    }
 }
 
 plugins {
-    id 'org.asciidoctor.convert' version '1.5.3'
+    id 'org.asciidoctor.jvm.convert' version '2.0-alpha.5'
 }
-
-apply plugin : 'org.asciidoctor.convert'
 
 repositories {
     jcenter()
     mavenLocal()
 }
 
-asciidoctorj {
-   version = '1.6.0-alpha.4' // <2>
+configurations {
+    leanpub
+}
+
+dependencies {
+    leanpub 'org.asciidoctor:asciidoctor-leanpub-markdown:0.1-alpha.4'
 }
 
 asciidoctor {
   backends 'leanpub'
+
+  configurations 'leanpub'
 }
 ----
-<1> Temporary measure until releases synchronize to JCenter.
-<2> You need to use one of the 1.6.0 Alpha versions.
-
-NOTE: Ignore the warning `Passing through unknown backend: leanpub`.
 
 If you want to try the command-line version of asciidoctorj, then you are in luck. You can run it from
  `asciidoctorj/asciidoctorj-distribution/build/install/asciidoctorj-distribution/bin/asciidoctorj`. All you have to do is
@@ -55,19 +52,16 @@ Since this backend is very much in active development, you might want to try lat
 
 [source,groovy]
 ----
-buildscript {
-    repositories {
-        jcenter()
-        maven { url "http://dl.bintray.com/asciidoctor/maven" }
-        maven {
-            name 'Asciidoctor Snapshots'
-            url 'https://oss.jfrog.org/artifactory/oss-snapshot-local'
-        }
+repositories {
+    jcenter()
+    maven {
+        name 'Asciidoctor Snapshots'
+        url 'https://oss.jfrog.org/artifactory/oss-snapshot-local'
     }
+}
 
-    dependencies {
-        classpath 'org.asciidoctor:asciidoctor-leanpub-markdown:1.6.0-alpha.1-SNAPSHOT'
-    }
+dependencies {
+    leanpub 'org.asciidoctor:asciidoctor-leanpub-markdown:1.6.0-alpha.1-SNAPSHOT'
 }
 ----
 
@@ -83,12 +77,10 @@ Level 0 heading becomes a Leanpub part and creates a new part file
 
 Level 1 heading becomes a Leanpub chapter. In addition if it is annotated with `[chapter]` it creates a new chapter file.
 At least one level 1 heading should be annotated with `[chapter]`.
-When writing a multi-part book, ensure that level 1 headings that follow a level 0, are annotated wth '
-`[chapter]`, otherwise they will disappear from the Leanpub output.
+When writing a multi-part book, ensure that level 1 headings that follow a level 0, and which are not marked special sections wil be treated as Leanpub chapters/
 
 
 ```
-[chapter]
 == This becomes a chapter
 ```
 
@@ -106,7 +98,7 @@ add `leanpub='sample'` metadata to the chapter or preface block
 [preface,leanpub='sample']
 == Preface
 
-[chapter,leanpub='sample']
+[leanpub='sample']
 == Chapter
 ```
 == Blocks
