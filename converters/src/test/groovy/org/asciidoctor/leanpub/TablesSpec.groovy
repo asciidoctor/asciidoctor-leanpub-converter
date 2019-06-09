@@ -5,6 +5,7 @@ import org.spockframework.runtime.ConditionNotSatisfiedError
 import spock.lang.FailsWith
 import spock.lang.Ignore
 import spock.lang.Issue
+import spock.lang.PendingFeature
 
 /**
  * @author Schalk W. Cronjé
@@ -114,7 +115,7 @@ class TablesSpec extends LeanpubSpecification {
     }
 
     @Issue('https://github.com/asciidoctor/asciidoctor-leanpub-converter/issues/37')
-    @Ignore
+    @PendingFeature
     def "Various vertical alignments"() {
         setup:
         File chapter = new File(manuscriptDir,'chapter_6.txt')
@@ -126,7 +127,7 @@ class TablesSpec extends LeanpubSpecification {
     }
 
     @Issue('https://github.com/asciidoctor/asciidoctor-leanpub-converter/issues/38')
-    @Ignore
+    @PendingFeature
     def "Setting widths"() {
         setup:
         File chapter = new File(manuscriptDir,'chapter_7.txt')
@@ -185,6 +186,7 @@ class TablesSpec extends LeanpubSpecification {
 '''
     }
 
+    @PendingFeature
     def "Column Styles"() {
         setup:
         File chapter = new File(manuscriptDir,'chapter_11.txt')

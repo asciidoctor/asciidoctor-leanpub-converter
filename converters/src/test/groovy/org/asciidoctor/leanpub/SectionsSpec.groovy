@@ -2,9 +2,6 @@ package org.asciidoctor.leanpub
 
 import org.asciidoctor.leanpub.internal.LeanpubSpecification
 
-/**
- * Created by schalkc on 14/12/14.
- */
 class SectionsSpec extends LeanpubSpecification {
 
     def "Levels should translate to one less level"() {

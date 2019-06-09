@@ -16,15 +16,15 @@
  */
 // ============================================================================
 
-buildscript {
-    repositories {
-        jcenter()
-    }
-
-    dependencies {
-        classpath 'org.asciidoctor:asciidoctorj-diagram:1.5.8'
-    }
-}
+//buildscript {
+//    repositories {
+//        jcenter()
+//    }
+//
+//    dependencies {
+//        classpath 'org.asciidoctor:asciidoctorj-diagram:1.5.16'
+//    }
+//}
 
 plugins {
     id 'com.jfrog.artifactory' version '4.4.17' apply false
@@ -34,10 +34,10 @@ plugins {
 
 allprojects {
     group = 'org.asciidoctor'
-    version = '1.6.0-alpha.3'
+    version = '2.0-alpha.1'
 
     ext {
-        asciidoctorjVersion = '1.6.0-alpha.7'
+        asciidoctorjVersion = '2.0.0'
     }
 
 }

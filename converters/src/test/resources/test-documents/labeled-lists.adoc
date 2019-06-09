@@ -1,14 +1,12 @@
 = Labeled lists
 Asciidoctor Team <foo@bar.example>
 
-[chapter]
 == Single line
 
 first term:: definition of first term
 
 second term:: definition of second term
 
-[chapter]
 == Multi-line
 
 first term::
@@ -19,7 +17,6 @@ second term::
 definition of second term
 can be on multiple lines
 
-[chapter]
 == Q & A
 
 .Q & A block
@@ -29,7 +26,6 @@ What is Asciidoctor?::
 
 What is the answer to the Ultimate Question?:: 42
 
-[chapter]
 == Definition list with no blank lines
 
 first term:: definition of first term

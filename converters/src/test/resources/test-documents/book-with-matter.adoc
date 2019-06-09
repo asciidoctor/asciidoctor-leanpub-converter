@@ -6,7 +6,6 @@ Asciidoctor Team <foo@bar.example>
 
 This is a preface
 
-[chapter]
 == Chapter A
 
 === Level 3
@@ -21,17 +20,14 @@ Plain text at level 4
 
 Plain text at level 5
 
-[chapter]
 == Chapter B
 
 With no text
 
-[chapter]
 == Chapter C
 
 Text
 
-[chapter]
 == Chapter D
 
 More text

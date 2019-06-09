@@ -1,7 +1,7 @@
 = Labeled Hybrid Lists
 Asciidoctor Team <foo@bar.example>
 
-[chapter]
+
 == Hybrid
 
 Operating Systems::

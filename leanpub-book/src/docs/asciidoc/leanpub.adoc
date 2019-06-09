@@ -32,7 +32,6 @@ ____
 [partintro]
 It is easy to author a multi-part book. Introductory text can be added to parts using the `[partintro]` block.
 
-[chapter]
 == Blocks
 
 If you would have read from the beginning you would have already discovered the <<QuoteInPreface,first quote block used in the preface>>.
@@ -176,7 +175,6 @@ documentBinder {
 <3> Even closures can be used to allow for late evaluation of documents
 
 
-[chapter]
 == Tables
 
 Asciidoctor tables are far more poerful than those in Leanpub. Although we attempt to to support as much as we can there
@@ -209,7 +207,6 @@ horizontal grid lines.
   width. Leanpub does not support settign separate column widths either. A future version of the converter might add
   some formatting to compensate - see https://github.com/asciidoctor/asciidoctor-leanpub-converter/issues/38[GH issue #38].
 
-[chapter]
 == Admonitions
 
 All five standard admonitions will work.
@@ -225,7 +222,6 @@ NOTE: Want to add a note? No, problem!
 .Tip with title
 TIP: That's right, you can have block titles on admonitions.
 
-[chapter]
 == Mathematical Equations
 
 Only `latexmath` is supported. If you are targeting Leanpub it might be better to set `:stem: latexmath` at he beginning
@@ -250,7 +246,6 @@ C = \alpha + \beta Y^{\gamma} + \epsilon
 
 NOTE: The Leanpub converter will not call MathJax to process the content. It will pass the content unmodified to Leanpub.
 
-[chapter]
 == Diagramming
 
 If the asciidoctor-diagramming-extension is used, the Ditaa is supported out of the box and a diagram such as below becomes

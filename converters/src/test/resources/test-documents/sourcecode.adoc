@@ -1,7 +1,6 @@
 = Title
 Asciidoctor Team <foo@bar.example>
 
-[chapter]
 == Chapter Source Listing
 
 [source,groovy]
@@ -23,7 +22,6 @@ void documents(Object... docs) {
 private List<Object> documents
 ----
 
-[chapter]
 == Chapter Source Listing with Title
 
 .Source code with title
@@ -35,7 +33,7 @@ FileCollection getDocuments() {
 }
 ----
 
-[chapter]
+
 == Chapter Source Listing with Callouts
 
 [source,groovy]
@@ -66,7 +64,7 @@ private List<Object> documents // <5> <6>
 <5> The property is left private as appropriate access is already provided.
 <6> This extra callout is just a test.
 
-[chapter]
+
 == Chapter XML Source with Callouts
 
 [source,xml]
@@ -80,7 +78,7 @@ private List<Object> documents // <5> <6>
 <2> First XML callout on a line
 <3> Second XML callout on a line
 
-[chapter]
+
 == Chapter XML Source with Aside
 
 :leanpub-colist-style: aside
@@ -95,7 +93,7 @@ private List<Object> documents // <5> <6>
 <2> First XML callout on a line
 <3> Second XML callout on a line
 
-[chapter]
+
 == Chapter XML Source with Discussion
 
 :leanpub-colist-style: discussion

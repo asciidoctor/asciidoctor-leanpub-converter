@@ -12,7 +12,6 @@ Happy hacking people!
 
 = Part One
 
-[chapter]
 == Chapter A
 
 === Level 3
@@ -27,7 +26,6 @@ Plain text at level 4
 
 Plain text at level 5
 
-[chapter]
 == Chapter B
 
 With no text
@@ -37,12 +35,10 @@ With no text
 [partintro]
 We can write a paragraph to introduce a part.
 
-[chapter]
 == Chapter C
 
 Text
 
-[chapter]
 == Chapter D
 
 More text

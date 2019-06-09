@@ -1,6 +1,6 @@
 = Blocks
 
-[chapter]
+
 == A Literal Block
 
 ....
@@ -9,7 +9,7 @@ Hier in my houthuis
 ....
 
 
-[chapter]
+
 == A Poetry Block
 
 [verse.poem]
@@ -18,7 +18,7 @@ Kommetjie, Kommegas, wees my gas
 Hier in my houthuis
 ____
 
-[chapter]
+
 == A Verse Block
 
 [verse, Carl Sandburg, Fog]
@@ -27,7 +27,7 @@ The fog comes
 on little cat feet
 ____
 
-[chapter]
+
 == Two Sidebar Blocks
 
 
@@ -45,20 +45,20 @@ mickey
 minny
 ****
 
-[chapter]
+
 == Simple MD-style blockquote
 
 > First line,
 > Second line.
 
-[chapter]
+
 == Simple MD-style blockquote with reference
 
 > First line,
 > Second line.
 > -- Asciidoctor Team, Code of the Asciidoctors: Volume X
 
-[chapter]
+
 == Multi-level MD-style blockquote
 
 ////
@@ -79,7 +79,7 @@ This is straight from Asciidoctor documentation
 >
 > Yep. AsciiDoc and Markdown share a lot of common syntax already.
 
-[chapter]
+
 == Air Quotes
 
 [,African proverb]
@@ -93,13 +93,13 @@ When you want to go far, go together.
 Simple air quotes, but not citation.
 ""
 
-[chapter]
+
 == Quoted Paragraph
 
 "Quoted paragraph with citation."
 -- Asciidoctor Team, Code of the Asciidoctors: Volume X
 
-[chapter]
+
 == Quote Blocks
 
 [quote, Asciidoctor Team, Code of the Asciidoctors: Volume X]

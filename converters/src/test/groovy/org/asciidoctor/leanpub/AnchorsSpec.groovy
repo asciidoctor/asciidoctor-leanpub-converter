@@ -2,6 +2,7 @@ package org.asciidoctor.leanpub
 
 import org.asciidoctor.leanpub.internal.LeanpubSpecification
 import spock.lang.Issue
+import spock.lang.PendingFeature
 
 /**
  * Created by schalkc on 15/12/14.
@@ -42,6 +43,7 @@ With reference to the [Spock Framework](http://docs.spockframework.org/en/latest
 
     }
 
+    @PendingFeature
     def "Embedded anchors with []"() {
         setup:
         setOutputRelativePath('EmbeddedAnchors')

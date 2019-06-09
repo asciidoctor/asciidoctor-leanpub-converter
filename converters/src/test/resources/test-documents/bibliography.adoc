@@ -4,7 +4,6 @@
 Re-using examples from Asciidoctor documentation
 ////
 
-[chapter]
 == Content
 
 _The Pragmatic Programmer_ <<prag>> should be required reading for
