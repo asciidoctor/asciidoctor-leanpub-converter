@@ -2,6 +2,7 @@ language: java
 sudo: true
 jdk:
 - oraclejdk8
+- openjdk11  
 install: true
 script: ./gradlew -S -Pskip.signing build artifactoryPublish bintrayUpload -PbintrayUsername=$BINTRAY_USER
   -PbintrayApiKey=$BINTRAY_KEY
