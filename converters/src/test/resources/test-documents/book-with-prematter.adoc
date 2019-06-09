@@ -8,7 +8,6 @@ First *paragraph* of preamble
 
 Second paragrah of preamble
 
-[chapter]
 == Chapter A
 
 :leanpub-lang: english

@@ -4,7 +4,6 @@
 Most of these test cases come straight from the Asciidoctor User Manual
 ////
 
-[chapter]
 == Simple Table
 
 .Simple table with single text rows and no header
@@ -64,7 +63,6 @@ Most of these test cases come straight from the Asciidoctor User Manual
 
 
 
-[chapter]
 == Columns on consecutive lines
 
 .Columns on consecutive lines
@@ -79,7 +77,6 @@ Most of these test cases come straight from the Asciidoctor User Manual
 |Cell in column 3, row 2
 |===
 
-[chapter]
 == Text centered in columns
 
 [cols="3*^"]
@@ -93,7 +90,6 @@ Most of these test cases come straight from the Asciidoctor User Manual
 |Cell in column 3, row 2
 |===
 
-[chapter]
 == Text right-aligned in columns
 
 [cols="3*>"]
@@ -107,7 +103,6 @@ Most of these test cases come straight from the Asciidoctor User Manual
 |Cell in column 3, row 2
 |===
 
-[chapter]
 == Last column right-aligned
 
 [cols="2*,>"]
@@ -122,7 +117,6 @@ Most of these test cases come straight from the Asciidoctor User Manual
 |===
 
 // TODO: https://github.com/asciidoctor/asciidoctor-leanpub-converter/issues/37
-[chapter]
 == Various vertical alignments
 
 [cols=".<,.^,.>"]
@@ -137,7 +131,6 @@ Most of these test cases come straight from the Asciidoctor User Manual
 |===
 
 // TODO: https://github.com/asciidoctor/asciidoctor-leanpub-converter/issues/38
-[chapter]
 == Setting widths
 
 [cols="1,2,6"]
@@ -152,7 +145,6 @@ Most of these test cases come straight from the Asciidoctor User Manual
 |===
 
 
-[chapter]
 == Columns that span
 
 |===
@@ -163,7 +155,6 @@ Most of these test cases come straight from the Asciidoctor User Manual
 |Cell in column 1, row 3|Cell in column 2, row 3|Cell in column 3, row 3
 |===
 
-[chapter]
 == Columns with vbars
 
 .This table also has a vbar
@@ -179,7 +170,6 @@ Most of these test cases come straight from the Asciidoctor User Manual
 |Cell in column 3, row 3
 |===
 
-[chapter]
 == Controlling overall table width
 
 .Setting overall width and use implicit header row
@@ -196,7 +186,6 @@ Most of these test cases come straight from the Asciidoctor User Manual
 |Cell in column 3, row 2
 |===
 
-[chapter]
 == Column Styles
 
 .Column styles will multiple rows
@@ -223,7 +212,6 @@ verse
 |===
 
 ////
-[chapter]
 == Rowspan and Colspan
 
 .Rowspan and colspan

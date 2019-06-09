@@ -1,7 +1,6 @@
 = Working with Images
 :imagesdir: ./build/resources/test/test-documents/images
 
-[chapter]
 == Images
 
 === Block image

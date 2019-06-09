@@ -4,9 +4,6 @@ import org.asciidoctor.converter.LeanpubConverter
 import org.asciidoctor.leanpub.internal.LeanpubSpecification
 import spock.lang.Issue
 
-/**
- * Created by schalkc on 15/12/14.
- */
 class SourcecodeSpec extends LeanpubSpecification {
 
     @Issue('https://leanpub.com/help/manual#leanpub-auto-code')

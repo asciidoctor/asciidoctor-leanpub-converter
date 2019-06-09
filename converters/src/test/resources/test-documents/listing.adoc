@@ -1,7 +1,6 @@
 = Title
 Asciidoctor Team <foo@bar.example>
 
-[chapter]
 == Listing block without substitution
 
 [listing]
@@ -13,7 +12,6 @@ $ gradle wrapper --gradle-version={a-test-value}
 :wrapper
 ----
 
-[chapter]
 == Listing terminal block with substitution
 
 [listing.terminal,subs=attributes]
@@ -25,7 +23,6 @@ $ gradle wrapper --gradle-version={a-test-value}
 :wrapper
 ----
 
-[chapter]
 == Listing terminal block with substitution and callout
 
 [listing.terminal,subs=attributes]

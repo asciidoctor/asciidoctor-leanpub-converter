@@ -1,5 +1,7 @@
 package org.asciidoctor.converter.markdown
 
+import groovy.transform.CompileDynamic
+import groovy.transform.CompileStatic
 import groovy.util.logging.Slf4j
 import org.asciidoctor.ast.*
 
@@ -7,6 +9,7 @@ import org.asciidoctor.ast.*
  * @author Schalk W. Cronjé
  */
 @Slf4j
+@CompileStatic
 abstract class AbstractMultiOutputMarkdownConverter extends AbstractMarkdownConverter {
 
     AbstractMultiOutputMarkdownConverter(final String backend,Map<String, Object> opts) {
@@ -32,6 +35,7 @@ abstract class AbstractMultiOutputMarkdownConverter extends AbstractMarkdownConv
      * @return the converted result
      */
     @Override
+    @CompileDynamic
     String convert(ContentNode node, String transform, Map<Object, Object> opts) {
         if (node instanceof Document) {
             if(setupComplete) {
@@ -54,7 +58,7 @@ abstract class AbstractMultiOutputMarkdownConverter extends AbstractMarkdownConv
      * @return Returns a File instance of resovled, otherwise null
      */
     File imagesDir(ContentNode node) {
-        node.document.attributes['imagesdir'] ? new File(node.document.attributes['imagesdir']) : null
+        node.document.attributes['imagesdir'] ? new File((String)node.document.attributes['imagesdir']) : null
     }
 
     /** Try to resolve an image directory, by looking for {@code imagesdir}.
@@ -64,7 +68,7 @@ abstract class AbstractMultiOutputMarkdownConverter extends AbstractMarkdownConv
      * @return Returns a File instance of resovled, otherwise docDir
      */
     File imagesDir(ContentNode node,final File docDir) {
-        node.document.attributes['imagesdir'] ? new File(node.document.attributes['imagesdir']) : docDir
+        node.document.attributes['imagesdir'] ? new File((String)node.document.attributes['imagesdir']) : docDir
     }
 
     /** Called before any processing on the document node starts. Use this to set up any appropriate
@@ -99,6 +103,7 @@ abstract class AbstractMultiOutputMarkdownConverter extends AbstractMarkdownConv
     abstract def convertOpen(ContentNode node,Map<String, Object> opts)
     abstract def convertPreamble(ContentNode node,Map<String, Object> opts)
     abstract def convertAnchorTypeRef(ContentNode node,Map<String, Object> opts)
+    abstract def convertInlineCallout(ContentNode node,Map<String, Object> opts)
 
 //    /** Paragraph conversion just passes the content back.
 //     *
@@ -125,6 +130,7 @@ abstract class AbstractMultiOutputMarkdownConverter extends AbstractMarkdownConv
 //    }
 
     @Override
+    @CompileDynamic
     def convertListItem(ContentNode node,Map<String, Object> opts) {
         ListItem item = node as ListItem
 
@@ -145,6 +151,7 @@ abstract class AbstractMultiOutputMarkdownConverter extends AbstractMarkdownConv
      * @param opts
      * @return
      */
+    @CompileDynamic
     def convertInlineAnchor(ContentNode node, Map<String, Object> opts) {
         PhraseNode inline = node as PhraseNode
         "${itemMethodName('convertAnchorType',inline.type)}"(node,opts)
@@ -154,6 +161,7 @@ abstract class AbstractMultiOutputMarkdownConverter extends AbstractMarkdownConv
     abstract def convertAnchorTypeLink(ContentNode node, Map<String, Object> opts)
     abstract def convertAnchorTypeBibref(ContentNode node, Map<String, Object> opts)
 
+    @CompileDynamic
     def convertListing(ContentNode node,Map<String, Object> opts) {
         Block block = node as Block
         if(block.attributes.style == null) {

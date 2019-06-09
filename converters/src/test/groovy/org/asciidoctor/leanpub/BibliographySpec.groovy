@@ -3,12 +3,14 @@ package org.asciidoctor.leanpub
 import org.asciidoctor.leanpub.internal.LeanpubSpecification
 import spock.lang.Ignore
 import spock.lang.Issue
+import spock.lang.PendingFeature
 
 /**
  * Created by schalkc on 15/12/14.
  */
 class BibliographySpec extends LeanpubSpecification {
 
+    @PendingFeature
     def "Bibliography"() {
         setup:
         File backmatter2 = new File(manuscriptDir,'backmatter_2.txt')

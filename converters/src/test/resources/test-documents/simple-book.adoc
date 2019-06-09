@@ -1,7 +1,6 @@
 = Title
 Asciidoctor Team <foo@bar.example>
 
-[chapter]
 == Chapter A
 
 === Level 3
@@ -16,7 +15,6 @@ Plain text at level 4
 
 Plain text at level 5
 
-[chapter]
 == Chapter With Basic Styling
 
 *Bold text*
@@ -31,7 +29,6 @@ Super^script^ text
 
 Non{nbsp}breaking{nbsp}spaces
 
-[chapter]
 == Chapter With Simple Lists
 
 * List #1
@@ -47,7 +44,6 @@ Non{nbsp}breaking{nbsp}spaces
 .. List #2 #2
 . List #3
 
-[chapter]
 == Chapter with Underlined Text
 
 ifdef::backend-leanpub[]
@@ -57,7 +53,6 @@ ifdef::backend-markdown[]
 +++<span style="text-decoration: underline"/>Underlined text one</span>+++
 endif::backend-markdown[]
 
-[chapter]
 == Chapter with Lines
 
 '''
