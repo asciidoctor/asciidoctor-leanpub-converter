@@ -19,6 +19,7 @@ package org.asciidoctor.markdown.internal
 
 import org.asciidoctor.Asciidoctor
 import org.asciidoctor.converter.MarkdownConverter
+import org.asciidoctor.jruby.AsciidoctorJRuby
 import spock.lang.Specification
 
 /**
@@ -26,14 +27,14 @@ import spock.lang.Specification
  */
 class MarkdownSpecification extends Specification {
 
-    Asciidoctor asciidoctor
+    AsciidoctorJRuby asciidoctor
     static final File outputDir = new File('./build/test/markdown')
     static final File resourceDir = new File('./build/resources/test/test-documents')
     static final File expectedDir = new File('./build/resources/test/expected-markdown-documents')
     static final File gemPath = new File('./build/gems')
 
     void setup() {
-        asciidoctor = Asciidoctor.Factory.create(gemPath.absolutePath)
+        asciidoctor = AsciidoctorJRuby.Factory.create(gemPath.absolutePath)
         asciidoctor.javaConverterRegistry().register(MarkdownConverter,'markdown')
 
         if(outputDir.exists()) {

@@ -23,13 +23,14 @@ import static org.asciidoctor.markdown.internal.InlineQuotedTextFormatter.strong
 @CompileStatic
 class LeanpubConverter extends AbstractMultiOutputMarkdownConverter {
 
-    static final String LINESEP = "\n"
-    static final String BOOK = 'Book.txt'
-    static final String SAMPLE = 'Sample.txt'
-    static final String DOCFOLDER = 'manuscript'
-    static final String FRONTCOVER = 'title_page.png'
-    static final Pattern INLINE_IMG_PATTERN = ~/^image:(.+?)\[(.*?)\]$/
-    static final Pattern LISTITEM_BIBREF_PATTERN = ~/(?s)(.+\s+)?(\{#.+?\})(.+)/
+    public static final String LINESEP = "\n"
+    public static final String LINESEP2 = LINESEP * 2
+    public static final String BOOK = 'Book.txt'
+    public static final String SAMPLE = 'Sample.txt'
+    public static final String DOCFOLDER = 'manuscript'
+    public static final String FRONTCOVER = 'title_page.png'
+    public static final Pattern INLINE_IMG_PATTERN = ~/^image:(.+?)\[(.*?)\]$/
+    public static final Pattern LISTITEM_BIBREF_PATTERN = ~/(?s)(.+\s+)?(\{#.+?\})(.+)/
 
     String encoding = 'utf-8'
 
@@ -648,7 +649,7 @@ class LeanpubConverter extends AbstractMultiOutputMarkdownConverter {
         table.header.eachWithIndex { Row row, int rowIndex ->
             processOneAsciidocTableRow row, leanpubTable.header[rowIndex]
         }
-\
+
          table.footer.eachWithIndex { Row row, int rowIndex ->
             processOneAsciidocTableRow row, leanpubTable.footer[rowIndex]
         }
@@ -674,10 +675,18 @@ class LeanpubConverter extends AbstractMultiOutputMarkdownConverter {
 
         // Wee need to generate a separator line if header exists or we don't have default alignment or we
         // have multi-line cells.
-        Character charAbove = (leanpubTable.header || !leanpubTable.isDefaultAlignment || leanpubTable.hasMultilineCells) ? '-' : null
+        String charAbove =
+            (leanpubTable.header || !leanpubTable.isDefaultAlignment || leanpubTable.hasMultilineCells) ?
+                '-' :
+                null
 
         for (ltr in leanpubTable.rows) {
-            renderedTable += renderOneLeanpubTableRow(ltr, leanpubTable.columnWidths, leanpubTable.columnAlignment, charAbove) + LINESEP
+            renderedTable += renderOneLeanpubTableRow(
+                ltr,
+                leanpubTable.columnWidths,
+                leanpubTable.columnAlignment,
+                charAbove
+            ) + LINESEP
             if (!leanpubTable.heterogeneousColumnAlignment && !leanpubTable.hasMultilineCells) {
                 charAbove = null
             }
@@ -699,7 +708,7 @@ class LeanpubConverter extends AbstractMultiOutputMarkdownConverter {
 
         switch (stem.style) {
             case 'latexmath':
-                (stem.title ? QuotedTextConverter.latexmath("${LINESEP}\\textbf{${stem.title}}${LINESEP}") + LINESEP + LINESEP : '') +
+                (stem.title ? QuotedTextConverter.latexmath("${LINESEP}\\textbf{${stem.title}}${LINESEP}") + LINESEP2 : '') +
                     QuotedTextConverter.latexmath("${LINESEP}${stem.content}${LINESEP}") + LINESEP
                 break
             default:
@@ -740,7 +749,8 @@ class LeanpubConverter extends AbstractMultiOutputMarkdownConverter {
         return document.preamble.content
     }
 
-    private String leanpubTableAlignmentRow(Character divCharAbove, LeanpubTable.HorizontalAlignment ha) {
+
+    private String leanpubTableAlignmentRow(String divCharAbove, LeanpubTable.HorizontalAlignment ha) {
 
         if (divCharAbove == null) {
             return ''
@@ -794,7 +804,7 @@ class LeanpubConverter extends AbstractMultiOutputMarkdownConverter {
 
     @CompileDynamic
     private String renderOneLeanpubTableRow(LeanpubTableRow ltr,
-                                            def columnWidths, def columnAlignment, Character divCharAbove = null) {
+                                            def columnWidths, def columnAlignment, String divCharAbove = null) {
 
         String ret = ''
         if (divCharAbove) {
@@ -902,7 +912,7 @@ class LeanpubConverter extends AbstractMultiOutputMarkdownConverter {
         (section.level == 0 ? '-#' : '#'.multiply( section.level + (level ?: 0))) +
             ' ' +
             section.title +
-            LINESEP + LINESEP +
+            LINESEP2 +
             section.content
     }
 

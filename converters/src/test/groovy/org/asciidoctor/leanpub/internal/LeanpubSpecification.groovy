@@ -17,8 +17,8 @@
 // ============================================================================
 package org.asciidoctor.leanpub.internal
 
-import org.asciidoctor.Asciidoctor
 import org.asciidoctor.converter.LeanpubConverter
+import org.asciidoctor.jruby.AsciidoctorJRuby
 import org.asciidoctor.markdown.internal.FileUtils
 import spock.lang.Specification
 
@@ -41,11 +41,11 @@ class LeanpubSpecification extends Specification {
     File book1
     File sample1
 
-    Asciidoctor asciidoctor
+    AsciidoctorJRuby asciidoctor
     String documentName
 
     void setup() {
-        asciidoctor = Asciidoctor.Factory.create(GEM_PATH.absolutePath)
+        asciidoctor = AsciidoctorJRuby.Factory.create(GEM_PATH.absolutePath)
         asciidoctor.javaConverterRegistry().register(LeanpubConverter,'leanpub')
 
         if(OUTPUT_ROOT.exists()) {

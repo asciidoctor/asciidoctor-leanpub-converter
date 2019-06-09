@@ -3,6 +3,7 @@ package org.asciidoctor.leanpub
 import org.asciidoctor.converter.LeanpubConverter
 import org.asciidoctor.leanpub.internal.LeanpubSpecification
 import spock.lang.Issue
+import spock.lang.PendingFeature
 
 /**
  * Created by schalkc on 15/12/14.
@@ -136,6 +137,7 @@ A> minny
 '''
     }
 
+    @PendingFeature
     def "Air quotes"() {
         setup:
         setOutputRelativePath('Air')
