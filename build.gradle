@@ -27,9 +27,9 @@
 //}
 
 plugins {
-    id 'com.jfrog.artifactory' version '4.4.17' apply false
-    id 'com.jfrog.bintray' version '1.7' apply false
-    id 'org.ysb33r.cloudci' version '1.0'
+    id 'com.jfrog.artifactory' version '4.9.6' apply false
+    id 'com.jfrog.bintray' version '1.8.4' apply false
+    id 'org.ysb33r.cloudci' version '2.5'
 }
 
 allprojects {
