@@ -17,14 +17,14 @@
 // ============================================================================
 
 
-apply plugin : 'groovy'
-apply plugin : 'java-library'
-apply plugin : 'com.jfrog.artifactory'
-apply plugin : 'com.jfrog.bintray'
+apply plugin: 'groovy'
+apply plugin: 'java-library'
+apply plugin: 'com.jfrog.artifactory'
+apply plugin: 'com.jfrog.bintray'
 
 // NOTE replace deficient built-in publishing plugin with nebula-publishing,
 // which does a better job generating the POM and properly aggregates signature files for upload to Bintray
-apply plugin : 'maven-publish'
+apply plugin: 'maven-publish'
 
 ext {
 
@@ -101,7 +101,7 @@ test {
         exceptionFormat "full"
     }
 
-    systemProperties 'TESTROOT' : file("${buildDir}/test/leanpub")
+    systemProperties 'TESTROOT': file("${buildDir}/test/leanpub")
 }
 
 task sourcesJar(type: Jar, dependsOn: classes, group: 'Release') {
@@ -121,7 +121,8 @@ artifacts {
 }
 
 artifactory {
-    contextUrl = 'https://oss.jfrog.org/artifactory'   //The base Artifactory URL if not overridden by the publisher/resolver
+    contextUrl = 'https://oss.jfrog.org/artifactory'
+    //The base Artifactory URL if not overridden by the publisher/resolver
     publish {
         repository {
             repoKey = 'oss-snapshot-local'
@@ -222,8 +223,7 @@ publishing.publications {
 
 jar {
     manifest {
-        attributes \
-      'Built-By': System.properties['user.name'],
+        attributes 'Built-By': System.properties['user.name'],
             'Created-By': "${System.properties['java.version']} (${System.properties['java.vendor']} ${System.properties['java.vm.version']})".toString(),
             'Build-Date': buildDateOnly,
             'Implementation-Title': project.name,
@@ -232,7 +232,7 @@ jar {
     }
 }
 
-artifactoryPublish{
+artifactoryPublish {
     onlyIf { version.endsWith('-SNAPSHOT') }
     dependsOn build
 }
@@ -247,44 +247,46 @@ bintrayUpload {
     dependsOn build
 }
 
-travisci {
-    ext {
-        travisPublishableRepo = System.getenv('TRAVIS_REPO_SLUG') == 'asciidoctor/asciidoctor-leanpub-converter' &&
-            System.getenv('TRAVIS_JDK_VERSION') == 'oraclejdk8' &&
-            System.getenv('TRAVIS_PULL_REQUEST') == 'false'
+ci {
+    travisci {
+        ext {
+            travisPublishableRepo = System.getenv('TRAVIS_REPO_SLUG') == 'asciidoctor/asciidoctor-leanpub-converter' &&
+                System.getenv('TRAVIS_JDK_VERSION') == 'oraclejdk8' &&
+                System.getenv('TRAVIS_PULL_REQUEST') == 'false'
 
-        travisAllowPublish = travisPublishableRepo && System.getenv('TRAVIS_BRANCH') == 'master'
-        travisAllowDryRun = travisPublishableRepo && System.getenv('TRAVIS_BRANCH') != 'master' 
-    }
+            travisAllowPublish = travisPublishableRepo && System.getenv('TRAVIS_BRANCH') == 'master'
+            travisAllowDryRun = travisPublishableRepo && System.getenv('TRAVIS_BRANCH') != 'master'
+        }
 
-    task travisParams {
-        doLast {
-            ['TRAVIS_BRANCH','TRAVIS_REPO_SLUG','TRAVIS_PULL_REQUEST','TRAVIS_JDK_VERSION'].each {
-                println "${it}: ${System.getenv(it)}"
+        task travisParams {
+            doLast {
+                ['TRAVIS_BRANCH', 'TRAVIS_REPO_SLUG', 'TRAVIS_PULL_REQUEST', 'TRAVIS_JDK_VERSION'].each {
+                    println "${it}: ${System.getenv(it)}"
+                }
+                println "Allow publish: ${travisAllowPublish}"
+                println "Allow dry run: ${travisAllowDryRun}"
             }
-            println "Allow publish: ${travisAllowPublish}"
-            println "Allow dry run: ${travisAllowDryRun}"
+        }
+
+        ['artifactoryPublish', 'bintrayUpload'].each {
+            Task t = tasks.getByName(it)
+            t.dependsOn travisParams
+            t.enabled = travisAllowPublish || travisAllowDryRun
+        }
+
+        bintray {
+            dryRun = travisAllowDryRun
+        }
+
+        artifactory {
+            publish {
+                defaults {
+                    publishBuildInfo = travisAllowDryRun
+                    publishArtifacts = travisAllowDryRun
+                    publishPom = travisAllowDryRun
+                }
+            }
         }
     }
 
-    [ 'artifactoryPublish', 'bintrayUpload'].each {
-        Task t = tasks.getByName(it)
-        t.dependsOn travisParams
-        t.enabled = travisAllowPublish || travisAllowDryRun
-    }
-
-    bintray {
-        dryRun = travisAllowDryRun
-    }
-
-    artifactory {
-        publish {
-            defaults {
-                publishBuildInfo = travisAllowDryRun
-                publishArtifacts = travisAllowDryRun
-                publishPom       = travisAllowDryRun
-            }
-        }
-    }
 }
-
