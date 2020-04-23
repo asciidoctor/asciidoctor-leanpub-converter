@@ -28,7 +28,7 @@ class FileLayoutSpec extends LeanpubSpecification {
 
     static final boolean IS_WINDOWS = System.getProperty('os.name').toLowerCase().contains('windows')
 
-    def "Each chapter should be written to a separate file and Book.txt updated"() {
+    def "Each chapter should be written to a separate file and Book_txt updated"() {
 
         when: 'Generating a simple book with three chapters'
             generateOutput('simple-book.adoc')

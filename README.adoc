@@ -1,19 +1,23 @@
 = Asciidoctor Markdown & Leanpub Converters
 Schalk Cronjé
+:version: 2.0-alpha.2
+:asciidoctorj-version: 2.2.0
+:asciidoctor-maven-plugin-version: 2.0.0-RC.1
 
-The very early stages of demonstrating how to create a converter written in
-Groovy using the experimental asciidoctorj-1.6.0 branch.
+The very early stages of demonstrating how to create a converter written in Groovy using asciidoctorj-{asciidoctorj-version}.
 
 == Bootstrap
 
+=== Gradle
+
 If you are using Asciidoctor plugin for Gradle then you should be able to do
 
-[source,groovy]
+[source,groovy,subs=attributes+]
 ----
 buildscript {
     repositories {
         jcenter()
-        maven { url "http://dl.bintray.com/asciidoctor/maven" } // <1>
+        maven { url "http://dl.bintray.com/asciidoctor/maven" }
     }
 
 }
@@ -32,7 +36,7 @@ configurations {
 }
 
 dependencies {
-    leanpub 'org.asciidoctor:asciidoctor-leanpub-markdown:0.1-alpha.4'
+    leanpub 'org.asciidoctor:asciidoctor-leanpub-markdown:{version}'
 }
 
 asciidoctor {
@@ -42,13 +46,58 @@ asciidoctor {
 }
 ----
 
-If you want to try the command-line version of asciidoctorj, then you are in luck. You can run it from
- `asciidoctorj/asciidoctorj-distribution/build/install/asciidoctorj-distribution/bin/asciidoctorj`. All you have to do is
- pass the `--cp` command-line parameter and tell it where the leanpub-converter-core.jar is.
+=== Maven
+
+If you want to integrate the converter in a maven project, just add
+
+[source,xml,subs=attributes+]
+----
+<build>
+    <plugins>
+        <plugin>
+            <groupId>org.asciidoctor</groupId>
+            <artifactId>asciidoctor-maven-plugin</artifactId>
+            <version>{asciidoctor-maven-plugin-version}</version>
+            <dependencies>
+                <dependency> <!-- 1 -->
+                    <groupId>org.asciidoctor</groupId>
+                    <artifactId>asciidoctor-leanpub-markdown</artifactId>
+                    <version>{version}</version>
+                </dependency>
+            </dependencies>
+            <configuration>
+                <backend>leanpub</backend> <!-- 2 -->
+            </configuration>
+        </plugin>
+    </plugins>
+</build>
+
+<pluginRepositories> <!-- 3 -->
+    <pluginRepository>
+        <id>jcenter</id>
+        <name>bintray-plugins</name>
+        <url>http://dl.bintray.com/asciidoctor/maven</url>
+        <snapshots>
+            <enabled>false</enabled>
+        </snapshots>
+    </pluginRepository>
+</pluginRepositories>
+----
+<1> The converter as a plugin dependency
+<2> Set backend to `leanpub` or `markdown`
+<3> Add jcenter as plugin repository
+
+=== Command line
+
+If you want to try the command-line version of asciidoctorj, then you are in luck.
+You can run it from `asciidoctorj/asciidoctorj-distribution/build/install/asciidoctorj-distribution/bin/asciidoctorj`.
+
+All you have to do is pass the `--cp` command-line parameter and tell it where the leanpub-converter-core.jar is.
 
 == Using SNAPSHOT versions
 
-Since this backend is very much in active development, you might want to try latest features as they are committed. If you are using the Gradle plugins you need to add an additional repository and use the SNAPSHOT instead.
+Since this backend is very much in active development, you might want to try latest features as they are committed.
+If you are using the Gradle plugins you need to add an additional repository and use the SNAPSHOT instead.
 
 [source,groovy]
 ----
@@ -78,7 +127,6 @@ Level 0 heading becomes a Leanpub part and creates a new part file
 Level 1 heading becomes a Leanpub chapter. In addition if it is annotated with `[chapter]` it creates a new chapter file.
 At least one level 1 heading should be annotated with `[chapter]`.
 When writing a multi-part book, ensure that level 1 headings that follow a level 0, and which are not marked special sections wil be treated as Leanpub chapters/
-
 
 ```
 == This becomes a chapter
