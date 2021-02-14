@@ -27,9 +27,23 @@
 //}
 
 plugins {
-    id 'com.jfrog.artifactory' version '4.9.6' apply false
-    id 'com.jfrog.bintray' version '1.8.4' apply false
+    id "signing"
+    id "io.codearte.nexus-staging" version "0.22.0"
+    id "de.marcphilipp.nexus-publish" version "0.4.0"
     id 'org.ysb33r.cloudci' version '2.5'
+}
+
+apply plugin: 'io.codearte.nexus-staging'
+
+
+nexusStaging {
+    if (project.hasProperty("sonatypeUsername")) {
+        username = project.sonatypeUsername
+    }
+    if (project.hasProperty("sonatypePassword")) {
+        password = project.sonatypePassword
+    }
+    repositoryDescription = "Release ${project.group} ${project.version}"
 }
 
 allprojects {
@@ -45,7 +59,7 @@ allprojects {
 subprojects {
 
     repositories {
-        jcenter()
+        mavenCentral()
         if (version.endsWith('-SNAPSHOT')) {
             maven {
                 name 'Asciidoctor Snapshots'
