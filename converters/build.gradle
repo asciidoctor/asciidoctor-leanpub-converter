@@ -19,12 +19,7 @@
 
 apply plugin: 'groovy'
 apply plugin: 'java-library'
-apply plugin: 'com.jfrog.artifactory'
-apply plugin: 'com.jfrog.bintray'
-
-// NOTE replace deficient built-in publishing plugin with nebula-publishing,
-// which does a better job generating the POM and properly aggregates signature files for upload to Bintray
-apply plugin: 'maven-publish'
+apply plugin: 'de.marcphilipp.nexus-publish'
 
 ext {
 
@@ -104,122 +99,65 @@ test {
     systemProperties 'TESTROOT': file("${buildDir}/test/leanpub")
 }
 
-task sourcesJar(type: Jar, dependsOn: classes, group: 'Release') {
-    description 'Assembles a jar archive containing the main source code.'
-    from sourceSets.main.allSource
-    classifier 'sources'
+java {
+    withSourcesJar()
+    withJavadocJar()
 }
 
-task javadocJar(type: Jar, dependsOn: javadoc, group: 'Release') {
-    description 'Assembles a jar archive containing the Javadoc API documentation for the main source code.'
-    from javadoc.destinationDir
-    classifier 'javadoc'
-}
+publishing {
+    publications {
+        maven(MavenPublication) {
+            from components.java
+            artifactId 'asciidoctor-leanpub-markdown'
 
-artifacts {
-    archives sourcesJar, javadocJar
-}
-
-artifactory {
-    contextUrl = 'https://oss.jfrog.org/artifactory'
-    //The base Artifactory URL if not overridden by the publisher/resolver
-    publish {
-        repository {
-            repoKey = 'oss-snapshot-local'
-            username = project.hasProperty('bintrayUsername') ? project.bintrayUsername : ''
-            password = project.hasProperty('bintrayApiKey') ? project.bintrayApiKey : ''
-            maven = true
-        }
-        defaults {
-
-            publications('jars')
-            publicConfigs('archives')
-
-            publishBuildInfo = !dryRunPublications  //Publish build-info to Artifactory (true by default)
-            publishArtifacts = !dryRunPublications   //Publish artifacts to Artifactory (true by default)
-            publishPom = !dryRunPublications  //Publish generated POM files to Artifactory (true by default).
-            publishIvy = false   //Publish generated Ivy descriptor files to Artifactory (true by default).
-
+            pom.withXml {
+                asNode().children().last() + projectMeta
+            }
         }
     }
 
-}
-
-bintray {
-    user = project.hasProperty('bintrayUsername') ? project.bintrayUsername : ''
-    key = project.hasProperty('bintrayApiKey') ? project.bintrayApiKey : ''
-
-    publications = ['jars']
-
-//    if ( !project.hasProperty('skip.signing') ) {
-//        // Copy the signed pom to bintrayDestination
-//        filesSpec {
-//            from signPom
-//            into signPom.bintrayDestination
-//        }
-//        bintrayUpload.dependsOn signPom
-//    }
-
-    dryRun = project.hasProperty('dryRun') && project.dryRun.toBoolean()
-    publish = !version.endsWith('-SNAPSHOT')
-
-    pkg {
-        repo = System.env['BINTRAY_REPO'] ?: (project.hasProperty('bintrayRepo') ? project.bintrayRepo : 'maven')
-        userOrg = 'asciidoctor'
-        name = 'asciidoctor-leanpub-backend'
-        desc = project.description
-
-        licenses = ['Apache-2.0']
-        labels = ['asciidoctor', 'asciidoctorj', 'asciidoc']
-        websiteUrl = 'http://asciidoctor.org/docs/asciidoctorj'
-        issueTrackerUrl = 'https://github.com/asciidoctor/asciidoctor-leanpub-converter/issues'
-        vcsUrl = 'https://github.com/asciidoctor/asciidoctor-leanpub-converter'
-        publicDownloadNumbers = true
-
-        version {
-            name = project.version
-            vcsTag = "${rootProject.name}-${rootProject.version}"
+    repositories {
+        maven {
+            name = "local"
+            def releasesRepoUrl = "$buildDir/repos/releases"
+            def snapshotsRepoUrl = "$buildDir/repos/snapshots"
+            url = version.endsWith("SNAPSHOT") ? snapshotsRepoUrl : releasesRepoUrl
         }
     }
 }
 
-
-publishing.publications {
-    jars(MavenPublication) {
-        artifactId 'asciidoctor-leanpub-markdown'
-
-        artifact sourcesJar
-        artifact javadocJar
-
-        from components.java
-
-        pom.withXml {
-            asNode().children().last() + projectMeta
+nexusPublishing {
+    repositories {
+        sonatype {
+            if (project.hasProperty("sonatypeUsername")) {
+                username = project.sonatypeUsername
+            }
+            if (project.hasProperty("sonatypePassword")) {
+                password = project.sonatypePassword
+            }
         }
     }
 }
 
-//if ( !project.hasProperty('skip.signing') ) {
-//    task addSignaturesToPublication(dependsOn: signArchives) {
-//        group "publishing"
-//        description "add all signatures to the publication"
-//
-//        doLast {
-//            publishing.publications {
-//                jars(MavenPublication) {
-//                    configurations.signatures.getArtifacts().each { sig ->
-//                        logger.debug "adding signature to jars publication: $sig"
-//                        artifact(sig) {
-//                            extension "jar.asc"
-//                        }
-//                    }
-//                }
-//            }
-//        }
-//    }
-//
-//    tasks["signPom"].finalizedBy addSignaturesToPublication
-//}
+def hasSigningKey = project.hasProperty("signing.keyId") || project.findProperty("signingKey")
+if(hasSigningKey && !project.hasProperty('skip.signing')) {
+    apply plugin: 'signing'
+    sign(project)
+}
+void sign(Project project) {
+    project.signing {
+        required { project.gradle.taskGraph.hasTask("required") }
+        def signingKeyId = project.findProperty("signingKeyId")
+        def signingKey = project.findProperty("signingKey")
+        def signingPassword = project.findProperty("signingPassword")
+        if (signingKeyId) {
+            useInMemoryPgpKeys(signingKeyId, signingKey, signingPassword)
+        } else if (signingKey) {
+            useInMemoryPgpKeys(signingKey, signingPassword)
+        }
+        sign publishing.publications.maven
+    }
+}
 
 jar {
     manifest {
@@ -230,21 +168,6 @@ jar {
             'Implementation-Version': project.version,
             'Implementation-Vendor': 'asciidoctor.org'
     }
-}
-
-artifactoryPublish {
-    onlyIf { version.endsWith('-SNAPSHOT') }
-    dependsOn build
-}
-
-publish {
-    onlyIf { !version.endsWith('-SNAPSHOT') }
-    dependsOn build
-}
-
-bintrayUpload {
-    onlyIf { !version.endsWith('-SNAPSHOT') }
-    dependsOn build
 }
 
 ci {
@@ -272,10 +195,6 @@ ci {
             Task t = tasks.getByName(it)
             t.dependsOn travisParams
             t.enabled = travisAllowPublish || travisAllowDryRun
-        }
-
-        bintray {
-            dryRun = travisAllowDryRun
         }
 
         artifactory {
